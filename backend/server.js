@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const roomRoutes = require('./routes/roomRoutes');
+const contractRoutes = require('./routes/contractRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +20,7 @@ mongoose.connect(MONGO_URI)
 
 // Đăng ký Router
 app.use('/api', roomRoutes);
+app.use('/api', contractRoutes);
 
 // Route mặc định kiểm tra server
 app.get('/', (req, res) => {
