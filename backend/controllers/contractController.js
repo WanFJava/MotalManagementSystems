@@ -19,6 +19,16 @@ exports.createContract = async (req, res) => {
       return res.status(400).json({ message: 'Phòng đang có hợp đồng hoạt động' });
     }
 
+    // Kiểm tra nếu phòng đang bảo trì
+    if (existingRoom.status === 'MAINTENANCE') {
+      return res.status(400).json({ message: 'Phòng đang trong trạng thái bảo trì, không thể lập hợp đồng' });
+    }
+
+    // Kiểm tra logic thời gian hợp đồng
+    if (startDate && endDate && new Date(startDate) >= new Date(endDate)) {
+      return res.status(400).json({ message: 'Ngày kết thúc hợp đồng phải sau ngày bắt đầu' });
+    }
+
     const newContract = new Contract({
       room,
       tenantName,
