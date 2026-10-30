@@ -4,7 +4,10 @@
   "description": "Basic CRUD Backend for Motel Management System (SWD392)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed": "node seeds/seed_rooms.js",
+    "test:room": "node tests/test_room_cases.js",
+    "test:contract": "node tests/test_rental_contract_cases.js"
   },
   "dependencies": {
     "express": "^4.19.2",
