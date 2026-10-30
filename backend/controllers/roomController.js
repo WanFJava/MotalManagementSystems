@@ -3,9 +3,10 @@ const roomService = require('../services/roomService');
 /**
  * «control» / Controller trong mô hình MVC
  * Chỉ đóng vai trò nhận request, gọi Service xử lý và trả response về View/Client
+ * Phân hệ đảm nhiệm: Thành viên 1 - Quang (Room Management)
  */
 
-// 1. [CREATE] Tạo phòng mới
+// 1. [CREATE] Tạo phòng mới (UC04 / TC_ROOM_01, TC_ROOM_02)
 exports.createRoom = async (req, res) => {
   try {
     const newRoom = await roomService.createRoom(req.body);
@@ -39,7 +40,33 @@ exports.getAllRooms = async (req, res) => {
   }
 };
 
-// 3. [READ ONE] Lấy chi tiết phòng theo ID
+// 3. [SEARCH] Tìm kiếm và lọc phòng đa tiêu chí (UC02 / TC_ROOM_03)
+exports.searchRooms = async (req, res) => {
+  try {
+    const filters = {
+      keyword: req.query.keyword,
+      status: req.query.status,
+      minPrice: req.query.minPrice,
+      maxPrice: req.query.maxPrice,
+      minArea: req.query.minArea,
+      maxArea: req.query.maxArea,
+      amenity: req.query.amenity
+    };
+    const rooms = await roomService.searchRooms(filters);
+    return res.status(200).json({
+      success: true,
+      count: rooms.length,
+      data: rooms
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// 4. [READ ONE] Lấy chi tiết phòng theo ID
 exports.getRoomById = async (req, res) => {
   try {
     const room = await roomService.getRoomById(req.params.id);
@@ -55,7 +82,7 @@ exports.getRoomById = async (req, res) => {
   }
 };
 
-// 4. [UPDATE] Cập nhật thông tin phòng
+// 5. [UPDATE] Cập nhật thông tin phòng (UC04 / TC_ROOM_04)
 exports.updateRoom = async (req, res) => {
   try {
     const updatedRoom = await roomService.updateRoom(req.params.id, req.body);
@@ -72,13 +99,31 @@ exports.updateRoom = async (req, res) => {
   }
 };
 
-// 5. [DELETE] Xóa phòng
+// 6. [DELETE] Xóa phòng (UC04 / TC_ROOM_05)
 exports.deleteRoom = async (req, res) => {
   try {
-    await roomService.deleteRoom(req.params.id);
+    const deletedRoom = await roomService.deleteRoom(req.params.id);
     return res.status(200).json({
       success: true,
-      message: "Đã xóa phòng trọ thành công!"
+      message: "Đã xóa phòng trọ thành công!",
+      data: deletedRoom
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// 7. [RENTAL REQUEST] Gửi yêu cầu thuê phòng (Phối hợp UC03)
+exports.submitRentalRequest = async (req, res) => {
+  try {
+    const result = await roomService.submitRentalRequest(req.params.id, req.body);
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+      data: result
     });
   } catch (error) {
     return res.status(400).json({
