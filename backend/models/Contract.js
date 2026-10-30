@@ -6,6 +6,10 @@ const contractSchema = new mongoose.Schema({
     ref: 'Room',
     required: true
   },
+  tenant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   tenantName: {
     type: String,
     required: true

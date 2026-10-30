@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const roomRoutes = require('./routes/roomRoutes');
 const contractRoutes = require('./routes/contractRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,6 +22,7 @@ mongoose.connect(MONGO_URI)
 // Đăng ký Router
 app.use('/api', roomRoutes);
 app.use('/api', contractRoutes);
+app.use('/api', userRoutes);
 
 // Route mặc định kiểm tra server
 app.get('/', (req, res) => {
@@ -31,4 +33,5 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server đang chạy tại: http://localhost:${PORT}`);
   console.log(`📌 Test API Rooms tại: http://localhost:${PORT}/api/rooms`);
+  console.log(`📌 Test API Users & Auth tại: http://localhost:${PORT}/api/users`);
 });
