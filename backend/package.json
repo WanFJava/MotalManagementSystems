@@ -7,7 +7,8 @@
     "start": "node server.js",
     "seed": "node seeds/seed_rooms.js",
     "test:room": "node tests/test_room_cases.js",
-    "test:contract": "node tests/test_rental_contract_cases.js"
+    "test:contract": "node tests/test_rental_contract_cases.js",
+    "test:invoice": "node tests/test_utility_invoice_cases.js"
   },
   "dependencies": {
     "express": "^4.19.2",

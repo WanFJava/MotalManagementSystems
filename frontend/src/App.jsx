@@ -7,7 +7,10 @@ import RoomDetailScreen from './screens/RoomDetailScreen';
 import ManageRoomScreen from './screens/ManageRoomScreen';
 import ManageRentalRequestsScreen from './screens/ManageRentalRequestsScreen';
 import ManageContractsScreen from './screens/ManageContractsScreen';
+import ManageUtilitiesScreen from './screens/ManageUtilitiesScreen';
+import ManageInvoicesScreen from './screens/ManageInvoicesScreen';
 import { roomClientService } from './services/roomClientService';
+import { invoiceClientService } from './services/invoiceClientService';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
@@ -18,6 +21,9 @@ export default function App() {
 
   // State prefill khi duyệt yêu cầu thuê -> chuyển sang tạo hợp đồng
   const [contractPrefill, setContractPrefill] = useState(null);
+
+  // State prefill khi từ chỉ số điện nước -> chuyển sang lập hóa đơn
+  const [invoicePrefill, setInvoicePrefill] = useState(null);
 
   // Hiển thị Toast thông báo tự động biến mất sau 3.5s
   const showToast = (message, type = 'info') => {
@@ -41,8 +47,28 @@ export default function App() {
     }
   };
 
+  // Kiểm tra callback VNPay Return URL trên trang chủ nếu có query parameters
   useEffect(() => {
     fetchRooms();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('vnp_ResponseCode') || urlParams.get('vnpay') === 'return') {
+      setCurrentScreen('invoices');
+      const paramsObj = {};
+      urlParams.forEach((val, key) => { paramsObj[key] = val; });
+
+      invoiceClientService.confirmVNPayReturn(paramsObj)
+        .then((res) => {
+          if (res.success) {
+            showToast('🎉 Thanh toán VNPay thành công! Hóa đơn đã chuyển sang trạng thái ĐÃ THANH TOÁN.', 'success');
+          } else {
+            showToast(res.message || 'Thanh toán VNPay không thành công hoặc đã bị hủy.', 'error');
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
   }, []);
 
   // Xử lý khi chọn xem chi tiết phòng
@@ -62,6 +88,13 @@ export default function App() {
   const handleNavigateToCreateContract = (prefillData) => {
     setContractPrefill(prefillData);
     setCurrentScreen('contracts');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Chuyển từ quản lý điện nước sang lập hóa đơn
+  const handleNavigateToInvoice = (prefillData) => {
+    setInvoicePrefill(prefillData);
+    setCurrentScreen('invoices');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -148,6 +181,21 @@ export default function App() {
             onNotify={(msg, type) => showToast(msg, type)}
             initialPrefill={contractPrefill}
             onClearPrefill={() => setContractPrefill(null)}
+          />
+        )}
+
+        {currentScreen === 'utilities' && (
+          <ManageUtilitiesScreen
+            onNotify={(msg, type) => showToast(msg, type)}
+            onNavigateToInvoice={handleNavigateToInvoice}
+          />
+        )}
+
+        {currentScreen === 'invoices' && (
+          <ManageInvoicesScreen
+            onNotify={(msg, type) => showToast(msg, type)}
+            initialPrefill={invoicePrefill}
+            onClearPrefill={() => setInvoicePrefill(null)}
           />
         )}
       </main>

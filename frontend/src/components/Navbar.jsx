@@ -7,7 +7,9 @@ export default function Navbar({ currentScreen, setCurrentScreen }) {
     { key: 'search', label: '🔍 Tìm kiếm', desc: 'Tìm phòng trống' },
     { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Dành cho quản lý/chủ trọ' },
     { key: 'requests', label: '📋 Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê' },
-    { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng' }
+    { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng' },
+    { key: 'utilities', label: '⚡ Điện & Nước', desc: 'Chốt số điện nước' },
+    { key: 'invoices', label: '🧾 Hóa đơn & VNPay', desc: 'Quản lý hóa đơn & thanh toán' }
   ];
 
   return (
@@ -71,13 +73,13 @@ export default function Navbar({ currentScreen, setCurrentScreen }) {
                   color: isActive ? '#1e3a8a' : '#ffffff',
                   border: 'none',
                   borderRadius: '8px',
-                  padding: '9px 14px',
+                  padding: '8px 12px',
                   fontSize: '13px',
                   fontWeight: isActive ? '700' : '500',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
+                  gap: '5px',
                   transition: 'all 0.2s ease',
                   boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.15)' : 'none'
                 }}
