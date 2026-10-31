@@ -15,6 +15,10 @@ const contractSchema = new mongoose.Schema({
     ref: 'User',
     default: null
   },
+  tenant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   tenantName: {
     type: String,
     required: true
