@@ -5,7 +5,7 @@ import React from 'react';
  * Tích hợp Phân quyền người dùng (Role-Based Access Control - RBAC)
  * - Guest (Chưa đăng nhập): Chỉ xem Trang chủ, Danh sách phòng, Tìm phòng, Đăng nhập.
  * - Tenant (Khách thuê): Trang chủ, Phòng trọ, Tìm phòng, Yêu cầu của tôi, Hợp đồng của tôi, Hồ sơ cá nhân.
- * - Staff (Nhân viên): Quản lý phòng, Yêu cầu thuê, Hợp đồng, Quản lý khách thuê & CCCD.
+ * - Staff (Nhân viên): Quản lý phòng, Yêu cầu thuê, Hợp đồng, Điện & Nước, Hóa đơn & VNPay, Quản lý khách thuê & CCCD.
  * - Manager (Chủ trọ): Kế thừa Staff + Quản trị nhân viên (UC15).
  */
 export default function Navbar({ currentScreen, setCurrentScreen, currentUser, onLogout }) {
@@ -41,6 +41,8 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
         { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Quản lý phòng trọ (UC04)' },
         { key: 'requests', label: '📋 Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê (UC03)' },
         { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng (UC05)' },
+        { key: 'utilities', label: '⚡ Điện & Nước', desc: 'Chốt số điện nước' },
+        { key: 'invoices', label: '🧾 Hóa đơn & VNPay', desc: 'Quản lý hóa đơn & thanh toán' },
         { key: 'tenants', label: '👥 Khách thuê', desc: 'Quản lý CCCD & Tạm trú (UC06)' },
         { key: 'profile', label: '👤 Hồ sơ', desc: 'Hồ sơ cá nhân' }
       ];
@@ -54,6 +56,8 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
       { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Quản lý phòng trọ (UC04)' },
       { key: 'requests', label: '📋 Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê (UC03)' },
       { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng (UC05)' },
+      { key: 'utilities', label: '⚡ Điện & Nước', desc: 'Chốt số điện nước' },
+      { key: 'invoices', label: '🧾 Hóa đơn & VNPay', desc: 'Quản lý hóa đơn & thanh toán' },
       { key: 'tenants', label: '👥 Khách thuê', desc: 'Quản lý CCCD & Tạm trú (UC06)' },
       { key: 'staff', label: '🛡️ Nhân viên', desc: 'Quản lý nhân viên (UC15)' },
       { key: 'profile', label: '👤 Hồ sơ', desc: 'Hồ sơ cá nhân' }
@@ -72,7 +76,7 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
       zIndex: 100
     }}>
       <div style={{
-        maxWidth: '1240px',
+        maxWidth: '1280px',
         margin: '0 auto',
         padding: '10px 20px',
         display: 'flex',
@@ -123,13 +127,13 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
                   color: isActive ? '#1e3a8a' : '#ffffff',
                   border: 'none',
                   borderRadius: '8px',
-                  padding: '9px 14px',
+                  padding: '8px 12px',
                   fontSize: '13px',
                   fontWeight: isActive ? '700' : '500',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px',
+                  gap: '4px',
                   transition: 'all 0.2s ease',
                   boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.15)' : 'none'
                 }}
@@ -151,7 +155,7 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
                   border: 'none',
                   borderRadius: '8px',
                   padding: '7px 12px',
-                  fontSize: '13px',
+                  fontSize: '12px',
                   fontWeight: '700',
                   cursor: 'pointer',
                   display: 'flex',
@@ -198,13 +202,13 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
                 color: currentScreen === 'auth' ? '#1e3a8a' : '#ffffff',
                 border: 'none',
                 borderRadius: '8px',
-                padding: '7px 14px',
-                fontSize: '13px',
+                padding: '7px 12px',
+                fontSize: '12px',
                 fontWeight: '700',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '4px',
                 marginLeft: '6px'
               }}
             >

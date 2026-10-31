@@ -3,8 +3,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const roomRoutes = require('./routes/roomRoutes');
 const contractRoutes = require('./routes/contractRoutes');
-const userRoutes = require('./routes/userRoutes');
 const rentalRequestRoutes = require('./routes/rentalRequestRoutes');
+const utilityRoutes = require('./routes/utilityRoutes');
+const invoiceRoutes = require('./routes/invoiceRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+const userRoutes = require('./routes/userRoutes');
 const { seedAll } = require('./seeds/seed_helper');
 
 const app = express();
@@ -36,6 +39,9 @@ async function startServer() {
   app.use('/api', roomRoutes);
   app.use('/api', contractRoutes);
   app.use('/api', rentalRequestRoutes);
+  app.use('/api', utilityRoutes);
+  app.use('/api', invoiceRoutes);
+  app.use('/api', paymentRoutes);
   app.use('/api', userRoutes);
 
   // Route mặc định kiểm tra server
@@ -49,6 +55,9 @@ async function startServer() {
     console.log(`📌 Test API Rooms tại: http://localhost:${PORT}/api/rooms`);
     console.log(`📌 Test API Contracts tại: http://localhost:${PORT}/api/contracts`);
     console.log(`📌 Test API Rental Requests tại: http://localhost:${PORT}/api/rental-requests`);
+    console.log(`📌 Test API Utilities tại: http://localhost:${PORT}/api/utilities`);
+    console.log(`📌 Test API Invoices tại: http://localhost:${PORT}/api/invoices`);
+    console.log(`📌 Test API VNPay Sandbox tại: http://localhost:${PORT}/api/payment/create-payment-url`);
     console.log(`📌 Test API Users & Auth tại: http://localhost:${PORT}/api/users`);
   });
 }

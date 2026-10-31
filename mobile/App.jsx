@@ -9,20 +9,27 @@ import {
   ScrollView
 } from 'react-native';
 
-// Phân hệ 2: User Authentication & Tenant Management
+// Phân hệ 2: User Authentication & Tenant Management (Khánh)
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import TenantManagementScreen from './screens/TenantManagementScreen';
 import StaffManagementScreen from './screens/StaffManagementScreen';
 
-// Phân hệ 3: Rental Request & Contract Management
+// Phân hệ 3: Rental Request & Contract Management (Đức)
 import RentalRequestScreen from './screens/RentalRequestScreen';
 import MyRentalRequestScreen from './screens/MyRentalRequestScreen';
 import RequestManagementScreen from './screens/RequestManagementScreen';
 import ContractListScreen from './screens/ContractListScreen';
 import ContractDetailScreen from './screens/ContractDetailScreen';
 import ManageContractScreen from './screens/ManageContractScreen';
+
+// Phân hệ 4: Utility, Invoice & VNPay Payment (Mạnh)
+import UtilityScreen from './screens/UtilityScreen';
+import InvoiceListScreen from './screens/InvoiceListScreen';
+import InvoiceDetailScreen from './screens/InvoiceDetailScreen';
+import PaymentScreen from './screens/PaymentScreen';
+import PaymentHistoryScreen from './screens/PaymentHistoryScreen';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Login');
@@ -40,7 +47,7 @@ export default function App() {
 
   const renderScreen = () => {
     switch (currentScreen) {
-      // User & Tenant Screens
+      // User & Tenant Screens (Khánh)
       case 'Login':
         return <LoginScreen navigation={navigation} route={{ params }} />;
       case 'Register':
@@ -52,7 +59,7 @@ export default function App() {
       case 'StaffManagement':
         return <StaffManagementScreen navigation={navigation} route={{ params }} />;
 
-      // Rental & Contract Screens
+      // Rental & Contract Screens (Đức)
       case 'RentalRequest':
         return <RentalRequestScreen navigation={navigation} route={{ params }} />;
       case 'MyRentalRequests':
@@ -66,6 +73,18 @@ export default function App() {
       case 'ManageContract':
         return <ManageContractScreen navigation={navigation} route={{ params }} />;
 
+      // Utility, Invoice & Payment Screens (Mạnh)
+      case 'Utility':
+        return <UtilityScreen navigation={navigation} route={{ params }} />;
+      case 'InvoiceList':
+        return <InvoiceListScreen navigation={navigation} route={{ params }} />;
+      case 'InvoiceDetail':
+        return <InvoiceDetailScreen navigation={navigation} route={{ params }} />;
+      case 'Payment':
+        return <PaymentScreen navigation={navigation} route={{ params }} />;
+      case 'PaymentHistory':
+        return <PaymentHistoryScreen navigation={navigation} route={{ params }} />;
+
       default:
         return <LoginScreen navigation={navigation} route={{ params }} />;
     }
@@ -78,7 +97,7 @@ export default function App() {
       {/* Top Navigation Bar / Quick Switcher for Demo & Testing */}
       <View style={styles.topTabBar}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsRow}>
-          {/* Nhóm Xác thực & Khách thuê */}
+          {/* Nhóm Xác thực & Khách thuê (Khánh) */}
           <TabButton
             title="🔑 Đăng nhập"
             active={currentScreen === 'Login'}
@@ -90,22 +109,22 @@ export default function App() {
             onPress={() => setCurrentScreen('Register')}
           />
           <TabButton
-            title="👤 Hồ sơ cá nhân"
+            title="👤 Hồ sơ"
             active={currentScreen === 'Profile'}
             onPress={() => setCurrentScreen('Profile')}
           />
           <TabButton
-            title="👥 Khách thuê (UC06)"
+            title="👥 Khách thuê"
             active={currentScreen === 'TenantManagement'}
             onPress={() => setCurrentScreen('TenantManagement')}
           />
           <TabButton
-            title="👔 Nhân viên (UC15)"
+            title="👔 Nhân viên"
             active={currentScreen === 'StaffManagement'}
             onPress={() => setCurrentScreen('StaffManagement')}
           />
 
-          {/* Nhóm Thuê phòng & Hợp đồng */}
+          {/* Nhóm Thuê phòng & Hợp đồng (Đức) */}
           <TabButton
             title="🚪 Thuê phòng"
             active={currentScreen === 'RentalRequest'}
@@ -122,7 +141,7 @@ export default function App() {
             onPress={() => setCurrentScreen('RequestManagement')}
           />
           <TabButton
-            title="📄 DS Hợp đồng"
+            title="📄 Hợp đồng"
             active={currentScreen === 'ContractList'}
             onPress={() => setCurrentScreen('ContractList')}
           />
@@ -130,6 +149,28 @@ export default function App() {
             title="✍️ Lập HĐ"
             active={currentScreen === 'ManageContract'}
             onPress={() => setCurrentScreen('ManageContract')}
+          />
+
+          {/* Nhóm Điện nước & Hóa đơn (Mạnh) */}
+          <TabButton
+            title="⚡ Điện Nước"
+            active={currentScreen === 'Utility'}
+            onPress={() => setCurrentScreen('Utility')}
+          />
+          <TabButton
+            title="🧾 Hóa Đơn"
+            active={currentScreen === 'InvoiceList'}
+            onPress={() => setCurrentScreen('InvoiceList')}
+          />
+          <TabButton
+            title="💳 Thanh Toán"
+            active={currentScreen === 'Payment'}
+            onPress={() => setCurrentScreen('Payment')}
+          />
+          <TabButton
+            title="📜 Lịch Sử GD"
+            active={currentScreen === 'PaymentHistory'}
+            onPress={() => setCurrentScreen('PaymentHistory')}
           />
         </ScrollView>
       </View>
