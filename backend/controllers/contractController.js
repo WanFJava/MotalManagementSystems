@@ -7,24 +7,37 @@ const User = require('../models/User');
 // TC_CTR_02: Cố tình tạo hợp đồng cho phòng đã có người -> Báo lỗi 400
 exports.createContract = async (req, res) => {
   try {
-    const { 
-      room, 
-      roomId, 
-      tenantId, 
-      tenantName, 
-      tenantPhone, 
-      tenantIdentityNumber, 
-      tenantHometown, 
-      tenantAddress, 
+    const {
+      room,
+      roomId,
+      signedDate,
+      // Bên cho thuê (Bên A)
+      landlordName,
+      landlordDob,
+      landlordCccd,
+      landlordAddress,
+      landlordPhone,
+      landlordWorkplace,
+      // Bên thuê (Bên B)
+      tenantId,
+      tenantName,
+      tenantDob,
       tenantDateOfBirth,
+      tenantCccd,
+      tenantIdentityNumber,
+      tenantAddress,
+      tenantHometown,
+      tenantPhone,
+      tenantWorkplace,
       tenantGender,
       tenantIdentityIssuedDate,
       tenantIdentityIssuedPlace,
-      startDate, 
-      endDate, 
-      depositAmount, 
-      rentalPrice, 
-      status 
+      // Thời hạn & Tài chính
+      startDate,
+      endDate,
+      depositAmount,
+      rentalPrice,
+      status
     } = req.body;
 
     const targetRoomId = roomId || room;
@@ -61,13 +74,14 @@ exports.createContract = async (req, res) => {
 
     // Tra cứu thêm thông tin CCCD từ User nếu có tenantId
     let finalPhone = tenantPhone || '';
-    let finalCccd = tenantIdentityNumber || '';
+    let finalCccd = tenantCccd || tenantIdentityNumber || '';
     let finalHometown = tenantHometown || '';
     let finalAddress = tenantAddress || '';
-    let finalDob = tenantDateOfBirth || null;
+    let finalDob = tenantDob || tenantDateOfBirth || null;
     let finalGender = tenantGender || 'OTHER';
     let finalIssuedDate = tenantIdentityIssuedDate || null;
     let finalIssuedPlace = tenantIdentityIssuedPlace || '';
+    let finalWorkplace = tenantWorkplace || '';
 
     if (tenantId) {
       const user = await User.findById(tenantId);
@@ -75,7 +89,7 @@ exports.createContract = async (req, res) => {
         if (!finalPhone) finalPhone = user.phone || '';
         if (!finalCccd) finalCccd = user.identityNumber || '';
         if (!finalHometown) finalHometown = user.hometown || '';
-        if (!finalAddress) finalAddress = user.currentAddress || '';
+        if (!finalAddress) finalAddress = user.currentAddress || user.address || '';
         if (!finalDob && user.dateOfBirth) finalDob = user.dateOfBirth;
         if ((!finalGender || finalGender === 'OTHER') && user.gender) finalGender = user.gender;
         if (!finalIssuedDate && user.identityIssuedDate) finalIssuedDate = user.identityIssuedDate;
@@ -86,16 +100,29 @@ exports.createContract = async (req, res) => {
     const newContract = new Contract({
       room: targetRoomId,
       roomId: targetRoomId,
+      signedDate: signedDate ? new Date(signedDate) : new Date(),
+      // Bên A
+      landlordName: landlordName || 'Chủ nhà',
+      landlordDob: landlordDob ? new Date(landlordDob) : null,
+      landlordCccd: landlordCccd || '',
+      landlordAddress: landlordAddress || '',
+      landlordPhone: landlordPhone || '',
+      landlordWorkplace: landlordWorkplace || '',
+      // Bên B
       tenantId: tenantId || null,
       tenantName: tenantName || 'Khách thuê',
-      tenantPhone: finalPhone,
+      tenantDob: finalDob ? new Date(finalDob) : null,
+      tenantDateOfBirth: finalDob ? new Date(finalDob) : null,
+      tenantCccd: finalCccd,
       tenantIdentityNumber: finalCccd,
-      tenantHometown: finalHometown,
       tenantAddress: finalAddress,
-      tenantDateOfBirth: finalDob,
+      tenantHometown: finalHometown,
+      tenantPhone: finalPhone,
+      tenantWorkplace: finalWorkplace,
       tenantGender: finalGender,
       tenantIdentityIssuedDate: finalIssuedDate,
       tenantIdentityIssuedPlace: finalIssuedPlace,
+      // HĐ & tài chính
       startDate,
       endDate,
       depositAmount: Number(depositAmount),
@@ -129,11 +156,12 @@ exports.createContract = async (req, res) => {
 // Xem danh sách hợp đồng (hỗ trợ lọc theo tenantId, tenantPhone, roomId, status)
 exports.getAllContracts = async (req, res) => {
   try {
-    const { tenantId, tenantPhone, tenantIdentityNumber, roomId, status } = req.query;
+    const { tenantId, tenantPhone, tenantIdentityNumber, tenantCccd, roomId, status } = req.query;
     const conditions = [];
 
-    // Lọc theo người thuê: kiểm tra tenantId hoặc tenantPhone hoặc tenantIdentityNumber
-    if (tenantId || tenantPhone || tenantIdentityNumber) {
+    // Lọc theo người thuê: kiểm tra tenantId hoặc tenantPhone hoặc tenantIdentityNumber/tenantCccd
+    const cccdVal = tenantIdentityNumber || tenantCccd;
+    if (tenantId || tenantPhone || cccdVal) {
       const tenantMatch = [];
       if (tenantId) {
         tenantMatch.push({ tenantId }, { tenant: tenantId });
@@ -141,8 +169,8 @@ exports.getAllContracts = async (req, res) => {
       if (tenantPhone) {
         tenantMatch.push({ tenantPhone });
       }
-      if (tenantIdentityNumber) {
-        tenantMatch.push({ tenantIdentityNumber });
+      if (cccdVal) {
+        tenantMatch.push({ tenantIdentityNumber: cccdVal }, { tenantCccd: cccdVal });
       }
       if (tenantMatch.length > 0) {
         conditions.push({ $or: tenantMatch });
@@ -160,9 +188,9 @@ exports.getAllContracts = async (req, res) => {
     const filter = conditions.length > 0 ? { $and: conditions } : {};
 
     const contracts = await Contract.find(filter)
-      .populate('room', 'roomNumber basePrice status maxOccupants amenities')
-      .populate('roomId', 'roomNumber basePrice status maxOccupants amenities')
-      .populate('tenantId', 'fullName phone email identityNumber identityIssuedDate identityIssuedPlace hometown currentAddress')
+      .populate('room', 'roomNumber basePrice status maxOccupants address area amenities')
+      .populate('roomId', 'roomNumber basePrice status maxOccupants address area amenities')
+      .populate('tenantId', 'fullName phone email identityNumber identityIssuedDate identityIssuedPlace hometown currentAddress address')
       .sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, data: contracts });
@@ -175,10 +203,9 @@ exports.getAllContracts = async (req, res) => {
 exports.getContractById = async (req, res) => {
   try {
     const contract = await Contract.findById(req.params.id)
-      .populate('room', 'roomNumber basePrice status maxOccupants amenities')
-      .populate('roomId', 'roomNumber basePrice status maxOccupants amenities')
-      .populate('tenantId', 'fullName phone email identityNumber identityIssuedDate identityIssuedPlace hometown currentAddress');
-
+      .populate('room', 'roomNumber basePrice status maxOccupants address area amenities')
+      .populate('roomId', 'roomNumber basePrice status maxOccupants address area amenities')
+      .populate('tenantId', 'fullName phone email identityNumber identityIssuedDate identityIssuedPlace hometown currentAddress address');
     if (!contract) {
       return res.status(404).json({ success: false, message: 'Hợp đồng không tồn tại' });
     }

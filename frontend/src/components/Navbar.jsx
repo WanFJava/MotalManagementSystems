@@ -123,7 +123,7 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
                   color: isActive ? '#1e3a8a' : '#ffffff',
                   border: 'none',
                   borderRadius: '8px',
-                  padding: '7px 12px',
+                  padding: '9px 14px',
                   fontSize: '13px',
                   fontWeight: isActive ? '700' : '500',
                   cursor: 'pointer',

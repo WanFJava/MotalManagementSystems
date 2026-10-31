@@ -10,6 +10,40 @@ const contractSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Room'
   },
+
+  // Ngày ký kết hợp đồng
+  signedDate: {
+    type: Date,
+    default: Date.now
+  },
+
+  // Thông tin Bên cho thuê (Bên A - Chủ nhà)
+  landlordName: {
+    type: String,
+    default: 'Chủ nhà'
+  },
+  landlordDob: {
+    type: Date,
+    default: null
+  },
+  landlordCccd: {
+    type: String,
+    default: ''
+  },
+  landlordAddress: {
+    type: String,
+    default: ''
+  },
+  landlordPhone: {
+    type: String,
+    default: ''
+  },
+  landlordWorkplace: {
+    type: String,
+    default: ''
+  },
+
+  // Thông tin Bên thuê (Bên B - Khách trọ)
   tenantId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -27,7 +61,23 @@ const contractSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  tenantCccd: {
+    type: String,
+    default: ''
+  },
   tenantIdentityNumber: {
+    type: String,
+    default: ''
+  },
+  tenantDob: {
+    type: Date,
+    default: null
+  },
+  tenantDateOfBirth: {
+    type: Date,
+    default: null
+  },
+  tenantAddress: {
     type: String,
     default: ''
   },
@@ -35,13 +85,9 @@ const contractSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  tenantAddress: {
+  tenantWorkplace: {
     type: String,
     default: ''
-  },
-  tenantDateOfBirth: {
-    type: Date,
-    default: null
   },
   tenantGender: {
     type: String,
@@ -56,6 +102,8 @@ const contractSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+
+  // Thời hạn & Tài chính
   startDate: {
     type: Date,
     required: true
@@ -82,7 +130,7 @@ const contractSchema = new mongoose.Schema({
   timestamps: true 
 });
 
-// Đồng bộ giữa roomId và room trước khi lưu
+// Đồng bộ giữa roomId và room và các trường định danh trước khi lưu
 contractSchema.pre('validate', function(next) {
   if (this.roomId && !this.room) {
     this.room = this.roomId;
@@ -92,6 +140,18 @@ contractSchema.pre('validate', function(next) {
   }
   if (!this.roomId && !this.room) {
     return next(new Error('Phải cung cấp roomId hoặc room'));
+  }
+  if (this.tenantIdentityNumber && !this.tenantCccd) {
+    this.tenantCccd = this.tenantIdentityNumber;
+  }
+  if (this.tenantCccd && !this.tenantIdentityNumber) {
+    this.tenantIdentityNumber = this.tenantCccd;
+  }
+  if (this.tenantDateOfBirth && !this.tenantDob) {
+    this.tenantDob = this.tenantDateOfBirth;
+  }
+  if (this.tenantDob && !this.tenantDateOfBirth) {
+    this.tenantDateOfBirth = this.tenantDob;
   }
   next();
 });
