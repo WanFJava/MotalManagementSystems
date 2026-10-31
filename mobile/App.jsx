@@ -5,9 +5,11 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  StatusBar
+  StatusBar,
+  ScrollView
 } from 'react-native';
 
+// Màn hình Thành viên 3 (Đức)
 import RentalRequestScreen from './screens/RentalRequestScreen';
 import MyRentalRequestScreen from './screens/MyRentalRequestScreen';
 import RequestManagementScreen from './screens/RequestManagementScreen';
@@ -15,8 +17,15 @@ import ContractListScreen from './screens/ContractListScreen';
 import ContractDetailScreen from './screens/ContractDetailScreen';
 import ManageContractScreen from './screens/ManageContractScreen';
 
+// Màn hình Thành viên 4 (Mạnh)
+import UtilityScreen from './screens/UtilityScreen';
+import InvoiceListScreen from './screens/InvoiceListScreen';
+import InvoiceDetailScreen from './screens/InvoiceDetailScreen';
+import PaymentScreen from './screens/PaymentScreen';
+import PaymentHistoryScreen from './screens/PaymentHistoryScreen';
+
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState('RentalRequest');
+  const [currentScreen, setCurrentScreen] = useState('Utility');
   const [params, setParams] = useState({});
 
   const navigation = {
@@ -25,12 +34,13 @@ export default function App() {
       setCurrentScreen(screenName);
     },
     goBack: () => {
-      setCurrentScreen('ContractList');
+      setCurrentScreen('InvoiceList');
     }
   };
 
   const renderScreen = () => {
     switch (currentScreen) {
+      // Phân hệ Hợp đồng & Yêu cầu thuê (Đức)
       case 'RentalRequest':
         return <RentalRequestScreen navigation={navigation} route={{ params }} />;
       case 'MyRentalRequests':
@@ -43,8 +53,21 @@ export default function App() {
         return <ContractDetailScreen navigation={navigation} route={{ params }} />;
       case 'ManageContract':
         return <ManageContractScreen navigation={navigation} route={{ params }} />;
+
+      // Phân hệ Điện nước, Hóa đơn & Thanh toán (Mạnh)
+      case 'Utility':
+        return <UtilityScreen navigation={navigation} route={{ params }} />;
+      case 'InvoiceList':
+        return <InvoiceListScreen navigation={navigation} route={{ params }} />;
+      case 'InvoiceDetail':
+        return <InvoiceDetailScreen navigation={navigation} route={{ params }} />;
+      case 'Payment':
+        return <PaymentScreen navigation={navigation} route={{ params }} />;
+      case 'PaymentHistory':
+        return <PaymentHistoryScreen navigation={navigation} route={{ params }} />;
+
       default:
-        return <RentalRequestScreen navigation={navigation} route={{ params }} />;
+        return <UtilityScreen navigation={navigation} route={{ params }} />;
     }
   };
 
@@ -54,7 +77,30 @@ export default function App() {
       
       {/* Top Navigation Bar / Quick Switcher for Demo & Testing */}
       <View style={styles.topTabBar}>
-        <ScrollViewHorizontal>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {/* Tabs Mạnh */}
+          <TabButton
+            title="⚡ Điện Nước"
+            active={currentScreen === 'Utility'}
+            onPress={() => setCurrentScreen('Utility')}
+          />
+          <TabButton
+            title="🧾 DS Hóa Đơn"
+            active={currentScreen === 'InvoiceList'}
+            onPress={() => setCurrentScreen('InvoiceList')}
+          />
+          <TabButton
+            title="💳 Thanh Toán"
+            active={currentScreen === 'Payment'}
+            onPress={() => setCurrentScreen('Payment')}
+          />
+          <TabButton
+            title="📜 Lịch Sử GD"
+            active={currentScreen === 'PaymentHistory'}
+            onPress={() => setCurrentScreen('PaymentHistory')}
+          />
+
+          {/* Tabs Đức */}
           <TabButton
             title="Thuê phòng"
             active={currentScreen === 'RentalRequest'}
@@ -80,21 +126,13 @@ export default function App() {
             active={currentScreen === 'ManageContract'}
             onPress={() => setCurrentScreen('ManageContract')}
           />
-        </ScrollViewHorizontal>
+        </ScrollView>
       </View>
 
       <View style={styles.screenContainer}>
         {renderScreen()}
       </View>
     </SafeAreaView>
-  );
-}
-
-function ScrollViewHorizontal({ children }) {
-  return (
-    <View style={styles.tabsRow}>
-      {children}
-    </View>
   );
 }
 
@@ -120,30 +158,26 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 8
   },
-  tabsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center'
-  },
   tabBtn: {
     paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 6
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    marginRight: 6,
+    backgroundColor: '#f1f5f9'
   },
   tabBtnActive: {
-    backgroundColor: '#eff6ff'
+    backgroundColor: '#2563eb'
   },
   tabText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#64748b'
+    color: '#475569'
   },
   tabTextActive: {
-    color: '#2563eb',
+    color: '#ffffff',
     fontWeight: 'bold'
   },
   screenContainer: {
     flex: 1
   }
 });
-

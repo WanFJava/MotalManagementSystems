@@ -24,6 +24,11 @@ const invoiceSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Contract'
   },
+  tenantId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
   tenantName: {
     type: String,
     required: [true, 'Tên khách thuê không được để trống']
@@ -36,10 +41,13 @@ const invoiceSchema = new mongoose.Schema({
     type: String, // Định dạng "YYYY-MM", ví dụ "2026-10"
     required: [true, 'Tháng hóa đơn không được để trống']
   },
-  // Các khoản mục chi phí
+  // Các khoản mục chi phí (Hỗ trợ cả alias: roomPrice, electricCost, waterCost)
   roomAmount: {
     type: Number,
-    required: [true, 'Tiền phòng không được để trống'],
+    min: [0, 'Tiền phòng không được âm']
+  },
+  roomPrice: {
+    type: Number,
     min: [0, 'Tiền phòng không được âm']
   },
   oldElec: {
@@ -62,6 +70,10 @@ const invoiceSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  electricCost: {
+    type: Number,
+    default: 0
+  },
   oldWater: {
     type: Number,
     default: 0
@@ -79,6 +91,10 @@ const invoiceSchema = new mongoose.Schema({
     default: 20000 // 20.000 đ/m3
   },
   waterAmount: {
+    type: Number,
+    default: 0
+  },
+  waterCost: {
     type: Number,
     default: 0
   },
@@ -110,7 +126,7 @@ const invoiceSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['NONE', 'CASH', 'VNPAY'],
+    enum: ['NONE', 'CASH', 'VNPAY', 'MOMO', 'BANKING'],
     default: 'NONE'
   },
   paidAt: {
@@ -126,22 +142,28 @@ const invoiceSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Đồng bộ roomId/room, contractId/contract và tự động tính toán tổng tiền
+// Đồng bộ roomId/room, contractId/contract, alias trường và tự động tính toán tổng tiền
 invoiceSchema.pre('validate', function(next) {
   if (this.roomId && !this.room) this.room = this.roomId;
   if (this.room && !this.roomId) this.roomId = this.room;
   if (this.contractId && !this.contract) this.contract = this.contractId;
   if (this.contract && !this.contractId) this.contractId = this.contract;
 
+  // Đồng bộ roomPrice <-> roomAmount
+  if (this.roomPrice !== undefined && this.roomAmount === undefined) this.roomAmount = this.roomPrice;
+  if (this.roomAmount !== undefined && this.roomPrice === undefined) this.roomPrice = this.roomAmount;
+
   // Tính tiền điện
   if (this.electricUsage !== undefined && this.electricPrice !== undefined) {
     this.electricAmount = Math.round(this.electricUsage * this.electricPrice);
   }
+  if (this.electricAmount !== undefined) this.electricCost = this.electricAmount;
 
   // Tính tiền nước
   if (this.waterUsage !== undefined && this.waterPrice !== undefined) {
     this.waterAmount = Math.round(this.waterUsage * this.waterPrice);
   }
+  if (this.waterAmount !== undefined) this.waterCost = this.waterAmount;
 
   // Tự động tính tổng tiền nếu chưa có hoặc cập nhật: SWR4.3
   const computedTotal = (this.roomAmount || 0) +
