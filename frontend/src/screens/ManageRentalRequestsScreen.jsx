@@ -259,14 +259,15 @@ export default function ManageRentalRequestsScreen({ onNotify, onNavigateToCreat
                                 tenantId: req.userId?._id || req.userId,
                                 tenantName: req.tenantName,
                                 tenantPhone: req.tenantPhone,
-                                tenantIdentityNumber: req.identityNumber,
-                                tenantCccd: req.identityNumber,
-                                tenantDob: req.dateOfBirth ? req.dateOfBirth.slice(0, 10) : '',
-                                tenantGender: req.gender,
-                                tenantHometown: req.hometown,
-                                tenantAddress: req.currentAddress || req.hometown,
-                                tenantIdentityIssuedDate: req.identityIssuedDate ? req.identityIssuedDate.slice(0, 10) : '',
-                                tenantIdentityIssuedPlace: req.identityIssuedPlace,
+                                tenantIdentityNumber: req.identityNumber || req.userId?.identityNumber || '',
+                                tenantCccd: req.identityNumber || req.userId?.identityNumber || '',
+                                tenantDob: req.dateOfBirth || req.userId?.dateOfBirth || '',
+                                tenantGender: req.gender || req.userId?.gender || 'MALE',
+                                tenantHometown: req.hometown || req.userId?.hometown || '',
+                                tenantAddress: req.hometown || req.address || req.userId?.address || req.userId?.hometown || '',
+                                tenantCurrentAddress: req.currentAddress || req.userId?.currentAddress || '',
+                                tenantIdentityIssuedDate: req.identityIssuedDate || req.userId?.identityIssuedDate || '',
+                                tenantIdentityIssuedPlace: req.identityIssuedPlace || req.userId?.identityIssuedPlace || '',
                                 rentalPrice: room.basePrice
                               });
                             }

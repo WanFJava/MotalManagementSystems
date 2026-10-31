@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/User');
 const Room = require('../models/Room');
 
@@ -98,6 +99,9 @@ class UserService {
    * 3. Lấy thông tin tài khoản theo ID
    */
   async getUserById(id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error('Mã ID không hợp lệ: ' + id);
+    }
     const user = await User.findById(id).populate('currentRoom');
     if (!user) {
       throw new Error('Không tìm thấy tài khoản người dùng!');
@@ -227,7 +231,9 @@ class UserService {
       dateOfBirth,
       gender,
       hometown,
+      address,
       currentAddress,
+      workplace,
       temporaryResidenceStatus,
       currentRoom
     } = profileData;
@@ -248,14 +254,35 @@ class UserService {
     }
 
     if (fullName) user.fullName = fullName.trim();
-    if (identityIssuedDate) user.identityIssuedDate = new Date(identityIssuedDate);
+    if (identityIssuedDate !== undefined) {
+      if (!identityIssuedDate || identityIssuedDate === '' || identityIssuedDate === 'null') {
+        user.identityIssuedDate = null;
+      } else {
+        const d = new Date(identityIssuedDate);
+        if (!isNaN(d.getTime())) user.identityIssuedDate = d;
+      }
+    }
     if (identityIssuedPlace) user.identityIssuedPlace = identityIssuedPlace.trim();
     if (identityCardFront !== undefined) user.identityCardFront = identityCardFront;
     if (identityCardBack !== undefined) user.identityCardBack = identityCardBack;
-    if (dateOfBirth) user.dateOfBirth = new Date(dateOfBirth);
-    if (gender) user.gender = gender;
+    if (dateOfBirth !== undefined) {
+      if (!dateOfBirth || dateOfBirth === '' || dateOfBirth === 'null') {
+        user.dateOfBirth = null;
+      } else {
+        const d = new Date(dateOfBirth);
+        if (!isNaN(d.getTime())) user.dateOfBirth = d;
+      }
+    }
+    if (gender !== undefined && gender !== '') {
+      const g = gender.toString().trim().toUpperCase();
+      if (g === 'NAM' || g === 'MALE') user.gender = 'MALE';
+      else if (g === 'NỮ' || g === 'NU' || g === 'FEMALE') user.gender = 'FEMALE';
+      else user.gender = 'OTHER';
+    }
     if (hometown !== undefined) user.hometown = hometown.trim();
+    if (address !== undefined) user.address = address.trim();
     if (currentAddress !== undefined) user.currentAddress = currentAddress.trim();
+    if (workplace !== undefined) user.workplace = workplace.trim();
     if (temporaryResidenceStatus) user.temporaryResidenceStatus = temporaryResidenceStatus;
 
     // Cập nhật phòng đang ở nếu có
@@ -368,6 +395,7 @@ class UserService {
       email,
       address,
       currentAddress,
+      workplace,
       identityNumber,
       identityIssuedDate,
       identityIssuedPlace,
@@ -419,19 +447,52 @@ class UserService {
     }
 
     if (fullName) user.fullName = fullName.trim();
-    const finalAddress = address !== undefined ? address : currentAddress;
-    if (finalAddress !== undefined) {
-      user.address = finalAddress.trim();
-      user.currentAddress = finalAddress.trim();
+    if (address !== undefined) user.address = address.trim();
+    if (currentAddress !== undefined) user.currentAddress = currentAddress.trim();
+    if (workplace !== undefined) user.workplace = workplace.trim();
+    if (identityIssuedDate !== undefined) {
+      if (!identityIssuedDate || identityIssuedDate === '' || identityIssuedDate === 'null') {
+        user.identityIssuedDate = null;
+      } else {
+        const d = new Date(identityIssuedDate);
+        if (!isNaN(d.getTime())) user.identityIssuedDate = d;
+      }
     }
-    if (identityIssuedDate) user.identityIssuedDate = new Date(identityIssuedDate);
     if (identityIssuedPlace !== undefined) user.identityIssuedPlace = identityIssuedPlace.trim();
     if (identityCardFront !== undefined) user.identityCardFront = identityCardFront;
     if (identityCardBack !== undefined) user.identityCardBack = identityCardBack;
-    if (dateOfBirth) user.dateOfBirth = new Date(dateOfBirth);
-    if (gender) user.gender = gender;
+    if (dateOfBirth !== undefined) {
+      if (!dateOfBirth || dateOfBirth === '' || dateOfBirth === 'null') {
+        user.dateOfBirth = null;
+      } else {
+        const d = new Date(dateOfBirth);
+        if (!isNaN(d.getTime())) user.dateOfBirth = d;
+      }
+    }
+    if (gender !== undefined && gender !== '') {
+      const g = gender.toString().trim().toUpperCase();
+      if (g === 'NAM' || g === 'MALE') user.gender = 'MALE';
+      else if (g === 'NỮ' || g === 'NU' || g === 'FEMALE') user.gender = 'FEMALE';
+      else user.gender = 'OTHER';
+    }
     if (hometown !== undefined) user.hometown = hometown.trim();
-    if (temporaryResidenceStatus) user.temporaryResidenceStatus = temporaryResidenceStatus;
+    if (temporaryResidenceStatus) {
+      user.temporaryResidenceStatus = temporaryResidenceStatus;
+    } else {
+      // Tự động nâng cấp trạng thái lưu trú / định danh pháp lý thông minh
+      if (user.role === 'STAFF' || user.role === 'MANAGER') {
+        if (user.identityNumber && user.identityNumber.length === 12) {
+          user.temporaryResidenceStatus = 'REGISTERED';
+        }
+      } else if (user.role === 'TENANT') {
+        const hasFullLegalDoc = user.identityNumber && user.identityNumber.length === 12 &&
+                                (user.address || user.hometown) &&
+                                user.currentAddress;
+        if (hasFullLegalDoc && (!user.temporaryResidenceStatus || user.temporaryResidenceStatus === 'NOT_REGISTERED')) {
+          user.temporaryResidenceStatus = 'PENDING';
+        }
+      }
+    }
     if (avatar) user.avatar = avatar;
 
     if (password && password.length >= 6) {

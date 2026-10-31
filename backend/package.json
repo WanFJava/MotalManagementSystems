@@ -10,7 +10,8 @@
     "test:room": "node tests/test_room_cases.js",
     "test:contract": "node tests/test_rental_contract_cases.js",
     "test:user": "node tests/test_user_cases.js",
-    "test:user-api": "node tests/test_user_api_server.js"
+    "test:user-api": "node tests/test_user_api_server.js",
+    "dev": "node --watch server.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

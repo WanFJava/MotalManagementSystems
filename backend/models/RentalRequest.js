@@ -50,6 +50,10 @@ const rentalRequestSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  workplace: {
+    type: String,
+    default: ''
+  },
   requestDate: {
     type: Date,
     default: Date.now

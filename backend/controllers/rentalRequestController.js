@@ -53,17 +53,19 @@ exports.createRentalRequest = async (req, res) => {
       });
     }
 
-    const finalHometown = hometown || user?.hometown;
+    // Quê quán / Địa chỉ thường trú ghi trên CCCD (Độc lập, không fallback sang nơi ở hiện tại)
+    const finalHometown = hometown || user?.address || user?.hometown;
     if (!finalHometown || !finalHometown.trim()) {
       return res.status(400).json({ 
-        message: 'Bắt buộc phải cập nhật thông tin Quê quán trong CCCD mới được gửi yêu cầu thuê phòng!' 
+        message: 'Bắt buộc phải cập nhật Quê quán / Địa chỉ thường trú (ghi trên CCCD) mới được gửi yêu cầu thuê phòng!' 
       });
     }
 
-    const finalCurrentAddress = currentAddress || user?.currentAddress || user?.address;
+    // Nơi ở hiện tại / Địa chỉ liên hệ (Độc lập, không fallback sang thường trú/quê quán)
+    const finalCurrentAddress = currentAddress || user?.currentAddress;
     if (!finalCurrentAddress || !finalCurrentAddress.trim()) {
       return res.status(400).json({
-        message: 'Bắt buộc phải cập nhật Địa chỉ thường trú theo CCCD mới được gửi yêu cầu thuê phòng!'
+        message: 'Bắt buộc phải cập nhật Nơi ở hiện tại / Địa chỉ liên hệ mới được gửi yêu cầu thuê phòng!'
       });
     }
 
@@ -166,7 +168,7 @@ exports.getAllRentalRequests = async (req, res) => {
 
     const requests = await RentalRequest.find(filter)
       .populate('roomId', 'roomNumber basePrice status maxOccupants images')
-      .populate('userId', 'fullName phone email identityNumber')
+      .populate('userId', 'fullName phone email identityNumber dateOfBirth hometown address currentAddress gender identityIssuedDate identityIssuedPlace')
       .sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, data: requests });
@@ -180,7 +182,7 @@ exports.getRentalRequestById = async (req, res) => {
   try {
     const request = await RentalRequest.findById(req.params.id)
       .populate('roomId', 'roomNumber basePrice status maxOccupants images')
-      .populate('userId', 'fullName phone email identityNumber');
+      .populate('userId', 'fullName phone email identityNumber dateOfBirth hometown address currentAddress gender identityIssuedDate identityIssuedPlace');
 
     if (!request) {
       return res.status(404).json({ success: false, message: 'Yêu cầu thuê phòng không tồn tại' });

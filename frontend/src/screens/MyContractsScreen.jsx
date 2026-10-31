@@ -53,7 +53,12 @@ export default function MyContractsScreen({ currentUser, setCurrentScreen, onNot
       {/* Modal hiển thị Văn bản Hợp đồng chính thức */}
       <ContractDocumentModal
         contract={viewingContractDoc}
+        currentUser={currentUser}
         onClose={() => setViewingContractDoc(null)}
+        onSignSuccess={() => {
+          fetchMyContracts();
+          if (onNotify) onNotify('Ký tên online thành công! Hợp đồng chính thức có hiệu lực và phòng đã kích hoạt.', 'success');
+        }}
         onOpenCccd={(c) => {
           setViewingContractDoc(null);
           setViewingCccd(c);
@@ -74,12 +79,12 @@ export default function MyContractsScreen({ currentUser, setCurrentScreen, onNot
             📄 Hợp Đồng Thuê Phòng Của Tôi
           </h2>
           <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>
-            Xem lại hợp đồng đã ký kết với ban quản lý, thời hạn hợp đồng, số tiền cọc và thông tin CCCD đăng ký
+            Xem lại hợp đồng đã lập, ký tên online để kích hoạt hiệu lực, kiểm tra thời hạn và thông tin CCCD
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
-          {['ALL', 'ACTIVE', 'TERMINATED'].map((st) => (
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {['ALL', 'WAITING_TENANT_SIGNATURE', 'ACTIVE', 'TERMINATED'].map((st) => (
             <button
               key={st}
               onClick={() => setFilterStatus(st)}
@@ -94,7 +99,7 @@ export default function MyContractsScreen({ currentUser, setCurrentScreen, onNot
                 cursor: 'pointer'
               }}
             >
-              {st === 'ALL' ? 'Tất cả' : st === 'ACTIVE' ? 'Đang hiệu lực' : 'Đã thanh lý'}
+              {st === 'ALL' ? 'Tất cả' : st === 'WAITING_TENANT_SIGNATURE' ? '✍️ Chờ bạn ký' : st === 'ACTIVE' ? 'Đang hiệu lực' : 'Đã thanh lý'}
             </button>
           ))}
           <button
@@ -172,6 +177,7 @@ export default function MyContractsScreen({ currentUser, setCurrentScreen, onNot
           {filteredContracts.map((c) => {
             const room = c.roomId || c.room || {};
             const isActive = c.status === 'ACTIVE';
+            const isWaitingSignature = c.status === 'WAITING_TENANT_SIGNATURE' || c.status === 'PENDING_SIGNATURE';
             const cccdNumber = c.tenantIdentityNumber || currentUser?.identityNumber || '---';
 
             return (
@@ -180,8 +186,8 @@ export default function MyContractsScreen({ currentUser, setCurrentScreen, onNot
                 style={{
                   backgroundColor: '#ffffff',
                   borderRadius: '16px',
-                  border: isActive ? '2px solid #86efac' : '1px solid #e2e8f0',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                  border: isWaitingSignature ? '2px solid #f59e0b' : isActive ? '2px solid #86efac' : '1px solid #e2e8f0',
+                  boxShadow: isWaitingSignature ? '0 6px 20px rgba(245, 158, 11, 0.15)' : '0 4px 12px rgba(0,0,0,0.05)',
                   overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column'
@@ -190,8 +196,8 @@ export default function MyContractsScreen({ currentUser, setCurrentScreen, onNot
                 {/* Header card hợp đồng */}
                 <div style={{
                   padding: '16px 20px',
-                  backgroundColor: isActive ? '#f0fdf4' : '#f8fafc',
-                  borderBottom: '1px solid #e2e8f0',
+                  backgroundColor: isWaitingSignature ? '#fffbeb' : isActive ? '#f0fdf4' : '#f8fafc',
+                  borderBottom: isWaitingSignature ? '1px solid #fef3c7' : '1px solid #e2e8f0',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center'
@@ -205,16 +211,34 @@ export default function MyContractsScreen({ currentUser, setCurrentScreen, onNot
                     </h3>
                   </div>
                   <span style={{
-                    backgroundColor: isActive ? '#dcfce7' : '#fee2e2',
-                    color: isActive ? '#166534' : '#991b1b',
+                    backgroundColor: isWaitingSignature ? '#fef3c7' : isActive ? '#dcfce7' : '#fee2e2',
+                    color: isWaitingSignature ? '#b45309' : isActive ? '#166534' : '#991b1b',
                     padding: '4px 12px',
                     borderRadius: '20px',
                     fontSize: '12px',
-                    fontWeight: '700'
+                    fontWeight: '700',
+                    border: isWaitingSignature ? '1px solid #fde68a' : 'none'
                   }}>
-                    {isActive ? 'ĐANG HIỆU LỰC' : c.status}
+                    {isWaitingSignature ? '✍️ CHỜ BẠN KÝ ONLINE' : isActive ? 'ĐANG HIỆU LỰC' : c.status}
                   </span>
                 </div>
+
+                {/* Banner nhắc nhở ký tên online nếu chưa ký */}
+                {isWaitingSignature && (
+                  <div style={{
+                    backgroundColor: '#fff7ed',
+                    borderBottom: '1px solid #ffedd5',
+                    padding: '12px 18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}>
+                    <span style={{ fontSize: '20px' }}>⚠️</span>
+                    <div style={{ fontSize: '12.5px', color: '#9a3412', lineHeight: '1.4' }}>
+                      <strong>Yêu cầu xác nhận:</strong> Chủ nhà đã lập hợp đồng. Bạn cần kiểm tra lại các điều khoản và bấm <strong>"Ký Tên Online"</strong> bên dưới để hợp đồng chính thức có hiệu lực và nhận phòng!
+                    </div>
+                  </div>
+                )}
 
                 {/* Nội dung card */}
                 <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -280,10 +304,10 @@ export default function MyContractsScreen({ currentUser, setCurrentScreen, onNot
                     onClick={() => setViewingContractDoc(c)}
                     style={{
                       flex: 1,
-                      backgroundColor: '#0f172a',
+                      backgroundColor: isWaitingSignature ? '#d97706' : '#0f172a',
                       color: '#ffffff',
                       border: 'none',
-                      padding: '8px 12px',
+                      padding: '10px 14px',
                       borderRadius: '8px',
                       fontSize: '13px',
                       fontWeight: '700',
@@ -291,10 +315,11 @@ export default function MyContractsScreen({ currentUser, setCurrentScreen, onNot
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '6px'
+                      gap: '6px',
+                      boxShadow: isWaitingSignature ? '0 2px 8px rgba(217, 119, 6, 0.35)' : 'none'
                     }}
                   >
-                    <span>📄</span> Xem Văn Bản HĐ
+                    <span>{isWaitingSignature ? '✍️' : '📄'}</span> {isWaitingSignature ? 'Xem & Ký Tên Online' : 'Xem Văn Bản HĐ'}
                   </button>
 
                   <button
@@ -303,7 +328,7 @@ export default function MyContractsScreen({ currentUser, setCurrentScreen, onNot
                       backgroundColor: '#eff6ff',
                       color: '#1d4ed8',
                       border: '1px solid #bfdbfe',
-                      padding: '8px 14px',
+                      padding: '10px 14px',
                       borderRadius: '8px',
                       fontSize: '13px',
                       fontWeight: '700',

@@ -141,13 +141,64 @@ async function runContractTests() {
       console.error('   👉 KẾT QUẢ: FAIL ❌ -', err.message, '\n');
     }
 
+    // ----------------------------------------------------
+    // TC_CTR_04: Quy trình Bên B (Khách thuê) Ký tên online xác nhận hợp đồng mới có hiệu lực
+    // ----------------------------------------------------
+    console.log('🧪 [TC_CTR_04] Quy trình Bên B xem và ký tên online để kích hoạt hợp đồng...');
+    try {
+      // 1. Bên A tạo form hợp đồng -> trạng thái ban đầu là WAITING_TENANT_SIGNATURE, phòng chưa RENTED
+      const pendingContract = await Contract.create({
+        roomId: testRoomAvailable._id,
+        room: testRoomAvailable._id,
+        tenantName: 'Test Tenant Duc',
+        tenantPhone: '0912345678',
+        startDate: new Date('2026-11-01'),
+        endDate: new Date('2027-05-01'),
+        depositAmount: 3000000,
+        rentalPrice: 3000000,
+        status: 'WAITING_TENANT_SIGNATURE',
+        landlordSignature: 'Chủ trọ Nguyễn Văn A',
+        landlordSignedAt: new Date()
+      });
+
+      if (pendingContract.status !== 'WAITING_TENANT_SIGNATURE') {
+        throw new Error('Hợp đồng ban đầu phải ở trạng thái WAITING_TENANT_SIGNATURE!');
+      }
+
+      // 2. Bên B (Khách thuê) vào xem và ký tên online
+      pendingContract.tenantSignature = 'Test Tenant Duc (Đã ký điện tử)';
+      pendingContract.tenantSignedAt = new Date();
+      pendingContract.status = 'ACTIVE';
+      await pendingContract.save();
+
+      testRoomAvailable.status = 'RENTED';
+      await testRoomAvailable.save();
+
+      const activatedContract = await Contract.findById(pendingContract._id);
+      const reloadedRoom = await Room.findById(testRoomAvailable._id);
+
+      if (
+        activatedContract.status === 'ACTIVE' &&
+        activatedContract.tenantSignature &&
+        reloadedRoom.status === 'RENTED'
+      ) {
+        console.log('   👉 KẾT QUẢ: PASS ✅ (Bên B ký tên online thành công, hợp đồng chính thức ACTIVE và phòng chuyển sang RENTED!)\n');
+      } else {
+        throw new Error('Hợp đồng hoặc phòng chưa kích hoạt sau khi ký online!');
+      }
+
+      await Contract.findByIdAndDelete(pendingContract._id);
+    } catch (err) {
+      console.error('   👉 KẾT QUẢ: FAIL ❌ -', err.message, '\n');
+    }
+
     // Dọn dẹp dữ liệu test
     await Room.deleteMany({ roomNumber: { $in: ['TEST-C101', 'TEST-C102'] } });
     await RentalRequest.deleteMany({ tenantName: 'Test Tenant Duc' });
     await Contract.deleteMany({ tenantName: 'Test Tenant Duc' });
 
     console.log('====================================================');
-    console.log('🎉 TẤT CẢ 5 TEST CASES CỦA ĐỨC ĐÃ CHẠY HOÀN TẤT THÀNH CÔNG!');
+    console.log('🎉 TẤT CẢ 6 TEST CASES CỦA ĐỨC ĐÃ CHẠY HOÀN TẤT THÀNH CÔNG!');
     console.log('====================================================');
 
   } catch (error) {

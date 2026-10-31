@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const userService = require('../services/userService');
 
 /**
@@ -111,6 +112,12 @@ exports.getStaff = async (req, res) => {
 // 7. [GET /api/users/:id] Xem chi tiết 1 người dùng theo ID
 exports.getUserById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: `Định danh người dùng '${req.params.id}' không hợp lệ!`
+      });
+    }
     const user = await userService.getUserById(req.params.id);
     return res.status(200).json({
       success: true,
@@ -144,6 +151,12 @@ exports.createStaff = async (req, res) => {
 // 9. [PUT /api/users/:id/tenant-profile] Cập nhật hồ sơ CCCD & lưu trú khách thuê (SWR2.3 / UC06 / TC_USER_03)
 exports.updateTenantProfile = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: `Định danh người dùng '${req.params.id}' không hợp lệ!`
+      });
+    }
     const updatedTenant = await userService.updateTenantProfile(req.params.id, req.body);
     return res.status(200).json({
       success: true,
@@ -161,6 +174,12 @@ exports.updateTenantProfile = async (req, res) => {
 // 10. [PUT /api/users/:id/status] Khóa / Mở khóa tài khoản (SWR2.4 / TC_USER_04)
 exports.toggleUserStatus = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: `Định danh người dùng '${req.params.id}' không hợp lệ!`
+      });
+    }
     const { isActive } = req.body;
     const result = await userService.toggleUserStatus(req.params.id, isActive);
     return res.status(200).json({
@@ -179,6 +198,12 @@ exports.toggleUserStatus = async (req, res) => {
 // 11. [PUT /api/users/:id] Cập nhật thông tin người dùng
 exports.updateUser = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: `Định danh người dùng '${req.params.id}' không hợp lệ!`
+      });
+    }
     const updated = await userService.updateUser(req.params.id, req.body);
     return res.status(200).json({
       success: true,
@@ -196,6 +221,12 @@ exports.updateUser = async (req, res) => {
 // 12. [DELETE /api/users/:id] Xóa người dùng
 exports.deleteUser = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: `Định danh người dùng '${req.params.id}' không hợp lệ!`
+      });
+    }
     const result = await userService.deleteUser(req.params.id);
     return res.status(200).json({
       success: true,
@@ -213,11 +244,11 @@ exports.deleteUser = async (req, res) => {
 // 13. [GET /api/users/profile] Lấy thông tin cá nhân của người dùng
 exports.getProfile = async (req, res) => {
   try {
-    const userId = req.user?._id || req.query?.userId || req.headers['x-user-id'];
-    if (!userId) {
-      return res.status(401).json({
+    const userId = req.query?.userId || req.headers['x-user-id'] || req.user?._id;
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
         success: false,
-        message: 'Vui lòng đăng nhập hoặc cung cấp định danh người dùng!'
+        message: 'Vui lòng cung cấp định danh người dùng hợp lệ!'
       });
     }
     const profile = await userService.getProfile(userId);
@@ -237,11 +268,11 @@ exports.getProfile = async (req, res) => {
 // 14. [PUT /api/users/profile] Cập nhật thông tin cá nhân của người dùng
 exports.updateProfile = async (req, res) => {
   try {
-    const userId = req.user?._id || req.body?.userId || req.query?.userId || req.headers['x-user-id'];
-    if (!userId) {
-      return res.status(401).json({
+    const userId = req.body?.userId || req.query?.userId || req.headers['x-user-id'] || req.user?._id;
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
         success: false,
-        message: 'Vui lòng đăng nhập hoặc cung cấp định danh người dùng!'
+        message: 'Vui lòng cung cấp định danh người dùng hợp lệ!'
       });
     }
     const updated = await userService.updateProfile(userId, req.body);

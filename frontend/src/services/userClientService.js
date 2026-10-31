@@ -51,7 +51,9 @@ export const userClientService = {
 
   // --- 1.1. Hồ sơ cá nhân (Profile - UC01 / UC06 / SWR2.3) ---
   getProfile: async (userId) => {
+    const params = userId ? { userId } : {};
     const res = await axios.get(`${API_BASE}/users/profile`, {
+      params,
       headers: { ...getAuthHeaders(), 'x-user-id': userId }
     });
     return res.data.data;

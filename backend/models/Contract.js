@@ -34,6 +34,10 @@ const contractSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  landlordCurrentAddress: {
+    type: String,
+    default: ''
+  },
   landlordPhone: {
     type: String,
     default: ''
@@ -81,6 +85,10 @@ const contractSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  tenantCurrentAddress: {
+    type: String,
+    default: ''
+  },
   tenantHometown: {
     type: String,
     default: ''
@@ -120,10 +128,28 @@ const contractSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  // Chữ ký điện tử & ngày ký của 2 bên
+  landlordSignature: {
+    type: String,
+    default: ''
+  },
+  landlordSignedAt: {
+    type: Date,
+    default: null
+  },
+  tenantSignature: {
+    type: String,
+    default: ''
+  },
+  tenantSignedAt: {
+    type: Date,
+    default: null
+  },
+
   status: {
     type: String,
-    enum: ['DRAFT', 'ACTIVE', 'EXPIRED', 'TERMINATED'],
-    default: 'ACTIVE' // Mặc định là ACTIVE khi lập hợp đồng
+    enum: ['DRAFT', 'WAITING_TENANT_SIGNATURE', 'PENDING_SIGNATURE', 'ACTIVE', 'EXPIRED', 'TERMINATED'],
+    default: 'WAITING_TENANT_SIGNATURE' // Mặc định là chờ khách thuê ký tên online
   }
 }, { 
   collection: 'contracts',

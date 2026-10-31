@@ -290,7 +290,8 @@ export default function MyRentalRequestsScreen({ currentUser, setCurrentScreen, 
                       <div>Họ tên: <strong>{req.tenantName}</strong></div>
                       <div>SĐT: <strong>{req.tenantPhone}</strong></div>
                       <div>Số CCCD: <strong style={{ color: '#1e3a8a' }}>{req.identityNumber || 'Chưa cập nhật'}</strong></div>
-                      <div>Quê quán: <strong>{req.hometown || 'Chưa cập nhật'}</strong></div>
+                      <div>Thường trú (CCCD): <strong>{req.address || req.hometown || 'Chưa cập nhật'}</strong></div>
+                      <div>Nơi ở hiện tại: <strong>{req.currentAddress || 'Chưa cập nhật'}</strong></div>
                     </div>
                   </div>
 

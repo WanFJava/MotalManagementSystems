@@ -4,8 +4,8 @@ import React from 'react';
  * Modal hiển thị Căn Cước Công Dân (CCCD) gắn chip chi tiết
  * Sử dụng được cho cả Khách thuê, Nhân viên và Quản lý
  */
-export default function CccdDetailModal({ person, request, onClose }) {
-  const target = person || request;
+export default function CccdDetailModal({ person, request, target: propTarget, onClose }) {
+  const target = propTarget || person || request;
   if (!target) return null;
 
   // Hỗ trợ cả object person từ User, RentalRequest, hoặc Contract
@@ -14,8 +14,9 @@ export default function CccdDetailModal({ person, request, onClose }) {
   const idNum = target.tenantIdentityNumber || target.identityNumber || target.cccd || 'Chưa cập nhật';
   const dob = target.tenantDateOfBirth || target.dateOfBirth;
   const gender = target.tenantGender || target.gender;
-  const hometown = target.tenantHometown || target.hometown || 'Chưa cập nhật';
-  const currentAddress = target.tenantAddress || target.currentAddress || target.address || 'Chưa cập nhật';
+  const hometown = target.tenantHometown || target.hometown || '';
+  const permanentAddress = target.tenantAddress || target.address || target.tenantHometown || target.hometown || 'Chưa cập nhật';
+  const currentAddress = target.tenantCurrentAddress || target.currentAddress || 'Chưa cập nhật';
   const issuedDate = target.tenantIdentityIssuedDate || target.identityIssuedDate;
   const issuedPlace = target.tenantIdentityIssuedPlace || target.identityIssuedPlace || 'Cục Cảnh sát QLHC về TTXH';
 
@@ -180,12 +181,12 @@ export default function CccdDetailModal({ person, request, onClose }) {
             </div>
 
             <div style={{ gridColumn: 'span 2' }}>
-              <span style={{ color: '#64748b', fontSize: '12px', display: 'block' }}>Quê quán / Place of origin:</span>
-              <strong style={{ color: '#0f172a' }}>{hometown}</strong>
+              <span style={{ color: '#64748b', fontSize: '12px', display: 'block' }}>Quê quán / Địa chỉ thường trú (ghi trên CCCD):</span>
+              <strong style={{ color: '#0f172a' }}>{permanentAddress}</strong>
             </div>
 
             <div style={{ gridColumn: 'span 2' }}>
-              <span style={{ color: '#64748b', fontSize: '12px', display: 'block' }}>Nơi thường trú / Place of residence:</span>
+              <span style={{ color: '#64748b', fontSize: '12px', display: 'block' }}>Nơi ở hiện tại / Địa chỉ liên hệ:</span>
               <strong style={{ color: '#0f172a' }}>{currentAddress}</strong>
             </div>
 

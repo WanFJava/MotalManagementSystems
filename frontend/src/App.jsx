@@ -329,6 +329,7 @@ if (currentScreen === 'auth') {
       return (
         <ManageContractsScreen
           currentUser={currentUser}
+          setCurrentUser={setCurrentUser}
           setCurrentScreen={setCurrentScreen}
           onNotify={(msg, type) => showToast(msg, type)}
           initialPrefill={contractPrefill}

@@ -93,6 +93,11 @@ const userSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
+  workplace: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   currentRoom: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Room',

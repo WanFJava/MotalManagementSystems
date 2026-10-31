@@ -31,5 +31,11 @@ export const contractClientService = {
   terminateContract: async (id) => {
     const res = await axios.put(`${API_BASE_URL}/${id}/terminate`);
     return res.data;
+  },
+
+  // Ký tên online xác nhận hợp đồng (Khách thuê Bên B)
+  signContract: async (id, signatureData) => {
+    const res = await axios.put(`${API_BASE_URL}/${id}/sign`, signatureData);
+    return res.data;
   }
 };

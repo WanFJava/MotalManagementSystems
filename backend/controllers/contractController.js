@@ -16,6 +16,7 @@ exports.createContract = async (req, res) => {
       landlordDob,
       landlordCccd,
       landlordAddress,
+      landlordCurrentAddress,
       landlordPhone,
       landlordWorkplace,
       // Bên thuê (Bên B)
@@ -26,6 +27,7 @@ exports.createContract = async (req, res) => {
       tenantCccd,
       tenantIdentityNumber,
       tenantAddress,
+      tenantCurrentAddress,
       tenantHometown,
       tenantPhone,
       tenantWorkplace,
@@ -77,6 +79,7 @@ exports.createContract = async (req, res) => {
     let finalCccd = tenantCccd || tenantIdentityNumber || '';
     let finalHometown = tenantHometown || '';
     let finalAddress = tenantAddress || '';
+    let finalCurrentAddress = tenantCurrentAddress || '';
     let finalDob = tenantDob || tenantDateOfBirth || null;
     let finalGender = tenantGender || 'OTHER';
     let finalIssuedDate = tenantIdentityIssuedDate || null;
@@ -89,28 +92,38 @@ exports.createContract = async (req, res) => {
         if (!finalPhone) finalPhone = user.phone || '';
         if (!finalCccd) finalCccd = user.identityNumber || '';
         if (!finalHometown) finalHometown = user.hometown || '';
-        if (!finalAddress) finalAddress = user.currentAddress || user.address || '';
+        // Quê quán / Thường trú ghi trên CCCD (Độc lập, không lấy từ nơi ở hiện tại)
+        if (!finalAddress) finalAddress = user.address || user.hometown || '';
+        // Nơi ở hiện tại / Địa chỉ liên hệ (Độc lập, không lấy từ thường trú/quê quán)
+        if (!finalCurrentAddress) finalCurrentAddress = user.currentAddress || '';
         if (!finalDob && user.dateOfBirth) finalDob = user.dateOfBirth;
+        if (!finalWorkplace && user.workplace) finalWorkplace = user.workplace;
         if ((!finalGender || finalGender === 'OTHER') && user.gender) finalGender = user.gender;
         if (!finalIssuedDate && user.identityIssuedDate) finalIssuedDate = user.identityIssuedDate;
         if (!finalIssuedPlace && user.identityIssuedPlace) finalIssuedPlace = user.identityIssuedPlace;
       }
     }
 
+    // Địa chỉ thường trú và địa chỉ liên hệ là 2 trường hoàn toàn riêng biệt không tham chiếu cho nhau
+    const finalLandlordAddress = (landlordAddress || '').trim();
+    const finalLandlordCurrentAddress = (landlordCurrentAddress || '').trim();
+
     // Kiểm tra tính đầy đủ của thông tin pháp lý CCCD cho cả 2 bên (Bên A & Bên B)
     const missingA = [];
     if (!landlordName || !landlordName.trim()) missingA.push('Họ và tên');
     if (!landlordPhone || !landlordPhone.trim()) missingA.push('Số điện thoại');
     if (!landlordCccd || !landlordCccd.trim()) missingA.push('Số CCCD');
-    if (!landlordDob) missingA.push('Ngày sinh');
-    if (!landlordAddress || !landlordAddress.trim()) missingA.push('Địa chỉ thường trú');
+    if (!landlordDob) missingA.push('Ngày sinh theo CCCD');
+    if (!landlordAddress || !landlordAddress.trim()) missingA.push('Quê quán / Địa chỉ thường trú (ghi trên CCCD)');
+    if (!finalLandlordCurrentAddress) missingA.push('Nơi ở hiện tại / Địa chỉ liên hệ');
 
     const missingB = [];
     if (!tenantName || !tenantName.trim()) missingB.push('Họ và tên khách thuê');
     if (!finalPhone || !finalPhone.trim()) missingB.push('Số điện thoại khách thuê');
     if (!finalCccd || !finalCccd.trim()) missingB.push('Số CCCD khách thuê');
-    if (!finalDob) missingB.push('Ngày sinh khách thuê');
-    if (!finalAddress?.trim() && !finalHometown?.trim()) missingB.push('Địa chỉ thường trú/Quê quán');
+    if (!finalDob) missingB.push('Ngày sinh theo CCCD');
+    if (!finalAddress?.trim() && !finalHometown?.trim()) missingB.push('Quê quán / Địa chỉ thường trú (ghi trên CCCD)');
+    if (!finalCurrentAddress?.trim()) missingB.push('Nơi ở hiện tại / Địa chỉ liên hệ');
 
     if (missingA.length > 0 || missingB.length > 0) {
       const reasons = [];
@@ -122,6 +135,9 @@ exports.createContract = async (req, res) => {
       });
     }
 
+    const initialStatus = status || 'WAITING_TENANT_SIGNATURE';
+    const isAlreadyActive = initialStatus === 'ACTIVE';
+
     const newContract = new Contract({
       room: targetRoomId,
       roomId: targetRoomId,
@@ -130,9 +146,12 @@ exports.createContract = async (req, res) => {
       landlordName: landlordName.trim(),
       landlordDob: new Date(landlordDob),
       landlordCccd: landlordCccd.trim(),
-      landlordAddress: landlordAddress.trim(),
+      landlordAddress: finalLandlordAddress,
+      landlordCurrentAddress: finalLandlordCurrentAddress,
       landlordPhone: landlordPhone.trim(),
       landlordWorkplace: landlordWorkplace?.trim() || '',
+      landlordSignature: landlordName.trim(), // Bên A ký xác nhận khi tạo
+      landlordSignedAt: new Date(),
       // Bên B
       tenantId: tenantId || null,
       tenantName: tenantName.trim(),
@@ -140,24 +159,27 @@ exports.createContract = async (req, res) => {
       tenantDateOfBirth: new Date(finalDob),
       tenantCccd: finalCccd.trim(),
       tenantIdentityNumber: finalCccd.trim(),
-      tenantAddress: (finalAddress || finalHometown).trim(),
-      tenantHometown: (finalHometown || finalAddress).trim(),
+      tenantAddress: (finalAddress || finalHometown || '').trim(),
+      tenantCurrentAddress: (finalCurrentAddress || '').trim(),
+      tenantHometown: (finalHometown || '').trim(),
       tenantPhone: finalPhone.trim(),
       tenantWorkplace: finalWorkplace?.trim() || '',
       tenantGender: finalGender,
       tenantIdentityIssuedDate: finalIssuedDate ? new Date(finalIssuedDate) : null,
       tenantIdentityIssuedPlace: finalIssuedPlace?.trim() || '',
+      tenantSignature: isAlreadyActive ? tenantName.trim() : '',
+      tenantSignedAt: isAlreadyActive ? new Date() : null,
       // HĐ & tài chính
       startDate,
       endDate,
       depositAmount: Number(depositAmount),
       rentalPrice: Number(rentalPrice),
-      status: status || 'ACTIVE'
+      status: initialStatus
     });
 
     await newContract.save();
 
-    // TC_CTR_01: Tạo thành công, phòng chuyển sang RENTED (nếu hợp đồng ACTIVE)
+    // TC_CTR_01: Chỉ khi hợp đồng ACTIVE thì phòng mới chuyển sang RENTED
     if (newContract.status === 'ACTIVE') {
       existingRoom.status = 'RENTED';
       await existingRoom.save();
@@ -168,9 +190,13 @@ exports.createContract = async (req, res) => {
       }
     }
 
+    const message = newContract.status === 'ACTIVE'
+      ? 'Tạo hợp đồng thành công! Phòng đã chuyển sang trạng thái RENTED.'
+      : `Lập form hợp đồng thành công! Hợp đồng đang ở trạng thái [CHỜ KHÁCH KÝ ONLINE]. Khách thuê "${newContract.tenantName}" cần đăng nhập kiểm tra và ký tên online để hợp đồng chính thức có hiệu lực (ACTIVE).`;
+
     res.status(201).json({ 
       success: true, 
-      message: 'Tạo hợp đồng thành công! Phòng đã chuyển sang trạng thái RENTED.', 
+      message, 
       data: newContract 
     });
   } catch (error) {
@@ -302,5 +328,60 @@ exports.terminateContract = async (req, res) => {
     res.status(200).json({ success: true, message: 'Thanh lý hợp đồng thành công', data: contract });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Lỗi khi thanh lý hợp đồng', error: error.message });
+  }
+};
+
+// Khách thuê (Bên B) xem và ký tên online để kích hoạt hợp đồng chính thức
+exports.signContract = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { signature, tenantName, userId } = req.body;
+
+    const contract = await Contract.findById(id).populate('roomId').populate('room');
+    if (!contract) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy hợp đồng!' });
+    }
+
+    if (contract.status === 'ACTIVE') {
+      return res.status(400).json({ success: false, message: 'Hợp đồng này đã được ký xác nhận và đang có hiệu lực!' });
+    }
+
+    if (contract.status === 'TERMINATED') {
+      return res.status(400).json({ success: false, message: 'Hợp đồng này đã bị thanh lý, không thể ký!' });
+    }
+
+    const finalSignature = signature?.trim() || tenantName?.trim() || contract.tenantName;
+    if (!finalSignature) {
+      return res.status(400).json({ success: false, message: 'Vui lòng cung cấp chữ ký hoặc họ tên xác nhận ký tên online!' });
+    }
+
+    // 1. Cập nhật chữ ký & chuyển trạng thái hợp đồng sang ACTIVE (Có hiệu lực chính thức)
+    contract.tenantSignature = finalSignature;
+    contract.tenantSignedAt = new Date();
+    contract.status = 'ACTIVE';
+    if (userId && !contract.tenantId) {
+      contract.tenantId = userId;
+    }
+    await contract.save();
+
+    // 2. Chuyển trạng thái phòng sang RENTED
+    const targetRoomId = contract.roomId?._id || contract.roomId || contract.room?._id || contract.room;
+    if (targetRoomId) {
+      await Room.findByIdAndUpdate(targetRoomId, { status: 'RENTED' });
+    }
+
+    // 3. Cập nhật phòng đang ở cho tài khoản khách thuê nếu có
+    const finalTenantUserId = userId || contract.tenantId;
+    if (finalTenantUserId && targetRoomId) {
+      await User.findByIdAndUpdate(finalTenantUserId, { currentRoom: targetRoomId });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Ký tên online xác nhận hợp đồng thành công! Hợp đồng chính thức có hiệu lực (ACTIVE) và phòng đã chuyển sang trạng thái RENTED.',
+      data: contract
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Lỗi khi ký tên hợp đồng online', error: error.message });
   }
 };

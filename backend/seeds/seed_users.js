@@ -35,8 +35,11 @@ const seedUsers = async () => {
         role: 'MANAGER',
         isActive: true,
         identityNumber: '001090001122',
+        dateOfBirth: new Date('1985-05-10'),
         hometown: 'Hà Nội',
+        address: 'Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội',
         currentAddress: 'Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội',
+        workplace: 'Công ty Quản lý Bất động sản Motel Management',
         temporaryResidenceStatus: 'REGISTERED'
       },
       // 2. Nhân viên quản lý (STAFF)
@@ -48,8 +51,11 @@ const seedUsers = async () => {
         role: 'STAFF',
         isActive: true,
         identityNumber: '001091002233',
+        dateOfBirth: new Date('1992-03-15'),
         hometown: 'Hải Phòng',
+        address: 'Số 10 Lê Hồng Phong, Ngô Quyền, Hải Phòng',
         currentAddress: 'Tòa nhà FPT, Cầu Giấy, Hà Nội',
+        workplace: 'Ban Quản Lý Nhà Trọ Motel Management',
         temporaryResidenceStatus: 'REGISTERED'
       },
       // 3. Nhân viên thu ngân (STAFF)
@@ -61,8 +67,11 @@ const seedUsers = async () => {
         role: 'STAFF',
         isActive: true,
         identityNumber: '001092003344',
+        dateOfBirth: new Date('1995-07-22'),
         hometown: 'Bắc Ninh',
+        address: 'Phường Suối Hoa, TP Bắc Ninh, Bắc Ninh',
         currentAddress: 'Cổ Nhuế, Bắc Từ Liêm, Hà Nội',
+        workplace: 'Ban Quản Lý Nhà Trọ Motel Management',
         temporaryResidenceStatus: 'REGISTERED'
       },
       // 4. Khách thuê 1: Phạm Văn Khánh (TENANT)
@@ -79,7 +88,9 @@ const seedUsers = async () => {
         dateOfBirth: new Date('2002-08-20'),
         gender: 'MALE',
         hometown: 'Nam Định',
+        address: 'Xã Hải Hưng, Huyện Hải Hậu, Nam Định',
         currentAddress: 'Phòng 101, Tòa nhà Trọ Xanh, Cầu Giấy, Hà Nội',
+        workplace: 'Công ty Cổ phần Viễn thông FPT',
         currentRoom: room101 ? room101._id : null,
         temporaryResidenceStatus: 'REGISTERED',
         identityCardFront: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=400&q=80',
@@ -99,7 +110,9 @@ const seedUsers = async () => {
         dateOfBirth: new Date('2001-11-12'),
         gender: 'MALE',
         hometown: 'Thái Bình',
+        address: 'Thị trấn Tiền Hải, Huyện Tiền Hải, Thái Bình',
         currentAddress: 'Phòng 102, Cầu Giấy, Hà Nội',
+        workplace: 'Trường Đại học Bách Khoa Hà Nội',
         currentRoom: room102 ? room102._id : null,
         temporaryResidenceStatus: 'PENDING',
         identityCardFront: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=400&q=80'
@@ -118,7 +131,9 @@ const seedUsers = async () => {
         dateOfBirth: new Date('2003-03-25'),
         gender: 'FEMALE',
         hometown: 'Ninh Bình',
+        address: 'Phường Đông Thành, TP Ninh Bình, Ninh Bình',
         currentAddress: 'Phòng 201, Cầu Giấy, Hà Nội',
+        workplace: 'Trường Đại học Thương Mại',
         currentRoom: room201 ? room201._id : null,
         temporaryResidenceStatus: 'REGISTERED'
       }

@@ -20,6 +20,7 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
     identityIssuedPlace: 'Cục Cảnh sát QLHC về TTXH',
     address: '',
     currentAddress: '',
+    workplace: '',
     dateOfBirth: '',
     gender: 'Nam',
     identityCardFront: '',
@@ -30,11 +31,15 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
   // Load thông tin hồ sơ chi tiết từ Backend
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!currentUser?._id) return;
+      const targetUserId = currentUser?._id || currentUser?.id;
+      if (!targetUserId) return;
       try {
         setLoading(true);
-        const data = await userClientService.getProfile(currentUser._id);
+        const data = await userClientService.getProfile(targetUserId);
         if (data) {
+          let g = data.gender || 'MALE';
+          if (g === 'Nam') g = 'MALE';
+          if (g === 'Nữ') g = 'FEMALE';
           setFormData({
             fullName: data.fullName || '',
             phone: data.phone || '',
@@ -42,10 +47,11 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
             identityNumber: data.identityNumber || '',
             identityIssuedDate: data.identityIssuedDate ? data.identityIssuedDate.substring(0, 10) : '',
             identityIssuedPlace: data.identityIssuedPlace || 'Cục Cảnh sát QLHC về TTXH',
-            address: data.address || '',
+            address: data.address || data.hometown || '',
             currentAddress: data.currentAddress || '',
+            workplace: data.workplace || currentUser?.workplace || '',
             dateOfBirth: data.dateOfBirth ? data.dateOfBirth.substring(0, 10) : '',
-            gender: data.gender || 'Nam',
+            gender: g,
             identityCardFront: data.identityCardFront || data.cccdFrontImage || '',
             identityCardBack: data.identityCardBack || data.cccdBackImage || '',
             temporaryResidenceStatus: data.temporaryResidenceStatus || 'NOT_REGISTERED'
@@ -60,7 +66,9 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
           phone: currentUser.phone || '',
           email: currentUser.email || '',
           identityNumber: currentUser.identityNumber || '',
-          address: currentUser.address || ''
+          address: currentUser.address || '',
+          currentAddress: currentUser.currentAddress || '',
+          workplace: currentUser.workplace || ''
         }));
       } finally {
         setLoading(false);
@@ -96,17 +104,44 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
       return;
     }
 
+    const targetUserId = currentUser?._id || currentUser?.id;
+    if (!targetUserId) {
+      onNotify('Không tìm thấy tài khoản người dùng đăng nhập!', 'error');
+      return;
+    }
+
+    const normalizedGender =
+      formData.gender === 'Nam' ? 'MALE' :
+      formData.gender === 'Nữ' ? 'FEMALE' :
+      (formData.gender || 'MALE');
+
     try {
       setSaving(true);
-      const res = await userClientService.updateProfile(currentUser._id, {
+      const payload = {
         ...formData,
+        gender: normalizedGender,
+        address: formData.address.trim(),
+        hometown: formData.address.trim(), // Đồng bộ quê quán thường trú
+        currentAddress: formData.currentAddress.trim(), // Hoàn toàn độc lập, không tham chiếu
+        dateOfBirth: formData.dateOfBirth || null,
+        identityIssuedDate: formData.identityIssuedDate || null,
         identityNumber: formData.identityNumber.trim(),
         identityCardFront: formData.identityCardFront.trim(),
         identityCardBack: formData.identityCardBack.trim()
-      });
+      };
+      if (formData.temporaryResidenceStatus === 'NOT_REGISTERED') {
+        delete payload.temporaryResidenceStatus;
+      }
 
-      if (res.success) {
+      const res = await userClientService.updateProfile(targetUserId, payload);
+
+      if (res.success && res.data) {
         setCurrentUser(res.data);
+        localStorage.setItem('motel_user', JSON.stringify(res.data));
+        setFormData((prev) => ({
+          ...prev,
+          temporaryResidenceStatus: res.data.temporaryResidenceStatus || prev.temporaryResidenceStatus
+        }));
         onNotify('🎉 Cập nhật hồ sơ cá nhân thành công!', 'success');
       }
     } catch (err) {
@@ -344,7 +379,7 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
               </label>
               <select
                 name="gender"
-                value={formData.gender}
+                value={formData.gender === 'Nam' ? 'MALE' : formData.gender === 'Nữ' ? 'FEMALE' : (formData.gender || 'MALE')}
                 onChange={handleChange}
                 style={{
                   width: '100%',
@@ -356,9 +391,9 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
                   backgroundColor: '#ffffff'
                 }}
               >
-                <option value="Nam">Nam</option>
-                <option value="Nữ">Nữ</option>
-                <option value="Khác">Khác</option>
+                <option value="MALE">Nam (Male)</option>
+                <option value="FEMALE">Nữ (Female)</option>
+                <option value="OTHER">Khác (Other)</option>
               </select>
             </div>
           </div>
@@ -373,20 +408,98 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
           boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
           marginBottom: '24px'
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
             <h3 style={{ margin: 0, fontSize: '17px', color: '#1e3a8a', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span>🪪</span> Hồ Sơ Định Danh Pháp Lý (CCCD / Tạm Trú)
             </h3>
-            <span style={{
-              backgroundColor: formData.temporaryResidenceStatus === 'REGISTERED' ? '#dcfce7' : '#fef3c7',
-              color: formData.temporaryResidenceStatus === 'REGISTERED' ? '#166534' : '#92400e',
-              fontSize: '12px',
-              fontWeight: '700',
-              padding: '4px 10px',
-              borderRadius: '6px'
-            }}>
-              {formData.temporaryResidenceStatus === 'REGISTERED' ? '🟢 Đã Khai Báo Tạm Trú' : '🟡 Chưa Khai Báo Tạm Trú'}
-            </span>
+            {currentUser?.role === 'STAFF' || currentUser?.role === 'MANAGER' ? (
+              formData.identityNumber && formData.identityNumber.length === 12 && formData.address && formData.currentAddress ? (
+                <span style={{
+                  backgroundColor: '#dcfce7',
+                  color: '#166534',
+                  border: '1px solid #bbf7d0',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  padding: '4px 10px',
+                  borderRadius: '6px'
+                }}>
+                  🟢 Đã Định Danh CCCD (Bên Cho Thuê Hợp Lệ)
+                </span>
+              ) : (
+                <span style={{
+                  backgroundColor: '#fef3c7',
+                  color: '#92400e',
+                  border: '1px solid #fde68a',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  padding: '4px 10px',
+                  borderRadius: '6px'
+                }}>
+                  🟡 Chưa Đủ Định Danh CCCD Bên A
+                </span>
+              )
+            ) : (
+              formData.temporaryResidenceStatus === 'REGISTERED' ? (
+                <span style={{
+                  backgroundColor: '#dcfce7',
+                  color: '#166534',
+                  border: '1px solid #bbf7d0',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  padding: '4px 10px',
+                  borderRadius: '6px'
+                }}>
+                  🟢 Đã Khai Báo Tạm Trú (Công An Đã Duyệt)
+                </span>
+              ) : formData.temporaryResidenceStatus === 'PENDING' ? (
+                <span style={{
+                  backgroundColor: '#ffedd5',
+                  color: '#c2410c',
+                  border: '1px solid #fed7aa',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  padding: '4px 10px',
+                  borderRadius: '6px'
+                }}>
+                  🟠 Đã Nộp Đủ Hồ Sơ (Chờ Chủ Trọ Nộp Công An Duyệt)
+                </span>
+              ) : (
+                <span style={{
+                  backgroundColor: '#fef3c7',
+                  color: '#92400e',
+                  border: '1px solid #fde68a',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  padding: '4px 10px',
+                  borderRadius: '6px'
+                }}>
+                  🟡 Chưa Khai Báo Tạm Trú (Cần Hoàn Thiện Hồ Sơ)
+                </span>
+              )
+            )}
+          </div>
+
+          {/* Hướng dẫn nghiệp vụ Khai Báo Tạm Trú & Định Danh */}
+          <div style={{
+            backgroundColor: '#f8fafc',
+            border: '1px solid #cbd5e1',
+            borderRadius: '8px',
+            padding: '12px 14px',
+            marginBottom: '16px',
+            fontSize: '12px',
+            color: '#334155',
+            lineHeight: '1.6'
+          }}>
+            <strong>📌 Quy định & Điều kiện Khai báo Tạm trú (Theo Luật Cư trú & UC06):</strong>
+            <ul style={{ margin: '4px 0 0 0', paddingLeft: '18px' }}>
+              <li><strong>Bước 1 - Khách thuê nộp hồ sơ:</strong> Điền chính xác số CCCD (12 chữ số), Quê quán/Thường trú, Nơi ở hiện tại và ảnh 2 mặt CCCD. Khi điền đủ thông tin, hệ thống tự động ghi nhận hồ sơ hợp lệ (<em>🟠 Chờ xác nhận</em>).</li>
+              <li><strong>Bước 2 - Chủ trọ nộp Công an & Phê duyệt:</strong> Theo Luật Cư trú, Chủ nhà trọ là bên có trách nhiệm pháp lý đăng ký tạm trú cho khách với Công an xã/phường. Sau khi nộp thành công trên Cổng dịch vụ công Cư trú, Chủ trọ sẽ duyệt trạng thái sang <strong>🟢 Đã Khai Báo Tạm Trú</strong> tại mục <em>Quản lý khách thuê</em>.</li>
+              {currentUser?.role !== 'TENANT' && (
+                <li style={{ color: '#0369a1', marginTop: '2px' }}>
+                  <strong>Với Ban Quản lý / Bên Cho Thuê (Bên A):</strong> Bạn chỉ cần hoàn thiện CCCD 12 số và 2 địa chỉ để đủ điều kiện lập hợp đồng cho thuê phòng.
+                </li>
+              )}
+            </ul>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '16px' }}>
@@ -478,6 +591,9 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
                   boxSizing: 'border-box'
                 }}
               />
+              <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                📌 Địa chỉ hộ khẩu thường trú ghi trên mặt sau thẻ CCCD (không tham chiếu nơi ở hiện tại).
+              </span>
             </div>
 
             <div>
@@ -499,6 +615,9 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
                   boxSizing: 'border-box'
                 }}
               />
+              <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                📌 Nơi đang ở hoặc địa chỉ liên lạc thực tế (hoàn toàn độc lập với quê quán thường trú).
+              </span>
             </div>
           </div>
         </div>
