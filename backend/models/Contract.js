@@ -10,6 +10,40 @@ const contractSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Room'
   },
+
+  // Ngày ký kết hợp đồng
+  signedDate: {
+    type: Date,
+    default: Date.now
+  },
+
+  // Thông tin Bên cho thuê (Bên A - Chủ nhà)
+  landlordName: {
+    type: String,
+    default: 'Chủ nhà'
+  },
+  landlordDob: {
+    type: Date,
+    default: null
+  },
+  landlordCccd: {
+    type: String,
+    default: ''
+  },
+  landlordAddress: {
+    type: String,
+    default: ''
+  },
+  landlordPhone: {
+    type: String,
+    default: ''
+  },
+  landlordWorkplace: {
+    type: String,
+    default: ''
+  },
+
+  // Thông tin Bên thuê (Bên B - Khách trọ)
   tenantId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -19,6 +53,28 @@ const contractSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  tenantDob: {
+    type: Date,
+    default: null
+  },
+  tenantCccd: {
+    type: String,
+    default: ''
+  },
+  tenantAddress: {
+    type: String,
+    default: ''
+  },
+  tenantPhone: {
+    type: String,
+    default: ''
+  },
+  tenantWorkplace: {
+    type: String,
+    default: ''
+  },
+
+  // Thời hạn & Tài chính
   startDate: {
     type: Date,
     required: true

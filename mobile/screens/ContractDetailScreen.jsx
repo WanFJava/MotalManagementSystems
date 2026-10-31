@@ -40,6 +40,12 @@ export default function ContractDetailScreen({ route, navigation }) {
     }
   };
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '---';
+    const d = new Date(dateStr);
+    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
+  };
+
   // UC05.1: Gia hạn hợp đồng
   const handleExtend = async () => {
     if (!newEndDate.trim()) {
@@ -124,43 +130,74 @@ export default function ContractDetailScreen({ route, navigation }) {
           </View>
         </View>
         <Text style={styles.contractCode}>Mã HĐ: {contract._id}</Text>
+        <Text style={styles.signDate}>Ngày ký hợp đồng: {formatDate(contract.signedDate || contract.createdAt)}</Text>
       </View>
 
-      {/* Thông tin khách thuê */}
+      {/* Thông tin Bên Cho Thuê (Bên A) */}
       <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>Thông tin khách thuê</Text>
+        <Text style={styles.sectionTitle}>I. BÊN CHO THUÊ (BÊN A - CHỦ NHÀ)</Text>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Họ và tên:</Text>
+          <Text style={styles.valBold}>{contract.landlordName || 'Nguyễn Ngọc Quang'}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Ngày sinh:</Text>
+          <Text style={styles.val}>{formatDate(contract.landlordDob) !== '---' ? formatDate(contract.landlordDob) : '01/01/1990'}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Số CCCD / CMND:</Text>
+          <Text style={styles.valBold}>{contract.landlordCccd || '001090012345'}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Số điện thoại:</Text>
+          <Text style={styles.valBold}>{contract.landlordPhone || '0987654321'}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Địa chỉ thường trú:</Text>
+          <Text style={styles.val}>{contract.landlordAddress || 'Số 123 Đường Cầu Giấy, Q. Cầu Giấy, Hà Nội'}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Nơi công tác:</Text>
+          <Text style={styles.val}>{contract.landlordWorkplace || 'Công ty Quản lý Tòa nhà Motel Management'}</Text>
+        </View>
+      </View>
+
+      {/* Thông tin Bên Thuê (Bên B) */}
+      <View style={styles.sectionCard}>
+        <Text style={styles.sectionTitle}>II. BÊN THUÊ (BÊN B - KHÁCH TRỌ)</Text>
         <View style={styles.infoRow}>
           <Text style={styles.label}>Họ và tên:</Text>
           <Text style={styles.valBold}>{contract.tenantName}</Text>
         </View>
-        {contract.tenantId && (
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Mã định danh:</Text>
-            <Text style={styles.val}>{contract.tenantId}</Text>
-          </View>
-        )}
-      </View>
-
-      {/* Thông tin phòng */}
-      <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>Thông tin phòng trọ</Text>
         <View style={styles.infoRow}>
-          <Text style={styles.label}>Số phòng:</Text>
-          <Text style={styles.valBold}>{room.roomNumber}</Text>
+          <Text style={styles.label}>Ngày sinh:</Text>
+          <Text style={styles.val}>{formatDate(contract.tenantDob)}</Text>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.label}>Trạng thái phòng:</Text>
-          <Text style={styles.val}>{room.status}</Text>
+          <Text style={styles.label}>Số CCCD / CMND:</Text>
+          <Text style={styles.valBold}>{contract.tenantCccd || '---'}</Text>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.label}>Sức chứa tối đa:</Text>
-          <Text style={styles.val}>{room.maxOccupants || 2} người</Text>
+          <Text style={styles.label}>Số điện thoại:</Text>
+          <Text style={styles.valBold}>{contract.tenantPhone || '---'}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Địa chỉ thường trú:</Text>
+          <Text style={styles.val}>{contract.tenantAddress || '---'}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Nơi công tác / Học tập:</Text>
+          <Text style={styles.val}>{contract.tenantWorkplace || '---'}</Text>
         </View>
       </View>
 
-      {/* Điều khoản & Tài chính */}
+      {/* Thông tin phòng & Điều khoản tài chính */}
       <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>Điều khoản & Tài chính</Text>
+        <Text style={styles.sectionTitle}>III. ĐIỀU KHOẢN PHÒNG & TÀI CHÍNH</Text>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Số phòng thuê:</Text>
+          <Text style={styles.valBold}>Phòng {room.roomNumber}</Text>
+        </View>
         <View style={styles.infoRow}>
           <Text style={styles.label}>Giá thuê hàng tháng:</Text>
           <Text style={styles.priceHighlight}>
@@ -168,28 +205,18 @@ export default function ContractDetailScreen({ route, navigation }) {
           </Text>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.label}>Tiền đặt cọc:</Text>
+          <Text style={styles.label}>Tiền đặt cọc bảo đảm:</Text>
           <Text style={styles.valBold}>
             {Number(contract.depositAmount).toLocaleString('vi-VN')} đ
           </Text>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.label}>Ngày bắt đầu:</Text>
-          <Text style={styles.val}>
-            {contract.startDate ? new Date(contract.startDate).toLocaleDateString('vi-VN') : '---'}
-          </Text>
+          <Text style={styles.label}>Thời hạn bắt đầu:</Text>
+          <Text style={styles.val}>{formatDate(contract.startDate)}</Text>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.label}>Ngày kết thúc:</Text>
-          <Text style={styles.valBold}>
-            {contract.endDate ? new Date(contract.endDate).toLocaleDateString('vi-VN') : '---'}
-          </Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Ngày tạo hợp đồng:</Text>
-          <Text style={styles.val}>
-            {contract.createdAt ? new Date(contract.createdAt).toLocaleDateString('vi-VN') : '---'}
-          </Text>
+          <Text style={styles.label}>Thời hạn kết thúc:</Text>
+          <Text style={styles.valBold}>{formatDate(contract.endDate)}</Text>
         </View>
       </View>
 
@@ -228,8 +255,7 @@ export default function ContractDetailScreen({ route, navigation }) {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Gia hạn hợp đồng</Text>
             <Text style={styles.modalSubtitle}>
-              Hợp đồng phòng {room.roomNumber} - Hiện hết hạn ngày:{' '}
-              {contract.endDate ? new Date(contract.endDate).toLocaleDateString('vi-VN') : ''}
+              Hợp đồng phòng {room.roomNumber} - Hiện hết hạn ngày: {formatDate(contract.endDate)}
             </Text>
 
             <Text style={styles.modalLabel}>Nhập ngày kết thúc mới (YYYY-MM-DD):</Text>
@@ -283,6 +309,7 @@ const styles = StyleSheet.create({
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   roomTitle: { fontSize: 22, fontWeight: 'bold', color: '#0f172a' },
   contractCode: { fontSize: 12, color: '#94a3b8', marginTop: 4 },
+  signDate: { fontSize: 13, color: '#475569', marginTop: 4, fontWeight: '500' },
   statusBadge: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 6 },
   statusText: { fontSize: 12, fontWeight: 'bold' },
   sectionCard: {
@@ -293,12 +320,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e2e8f0'
   },
-  sectionTitle: { fontSize: 16, fontWeight: 'bold', color: '#1e293b', marginBottom: 12, borderBottomWidth: 1, borderBottomColor: '#f1f5f9', paddingBottom: 6 },
-  infoRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  label: { fontSize: 14, color: '#64748b' },
-  val: { fontSize: 14, color: '#1e293b' },
-  valBold: { fontSize: 14, fontWeight: 'bold', color: '#0f172a' },
-  priceHighlight: { fontSize: 15, fontWeight: 'bold', color: '#2563eb' },
+  sectionTitle: { fontSize: 14, fontWeight: 'bold', color: '#1e3a8a', marginBottom: 12, borderBottomWidth: 1, borderBottomColor: '#f1f5f9', paddingBottom: 6 },
+  infoRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8, alignItems: 'flex-start' },
+  label: { fontSize: 13, color: '#64748b', flex: 1 },
+  val: { fontSize: 13, color: '#1e293b', flex: 1.5, textAlign: 'right' },
+  valBold: { fontSize: 13, fontWeight: 'bold', color: '#0f172a', flex: 1.5, textAlign: 'right' },
+  priceHighlight: { fontSize: 15, fontWeight: 'bold', color: '#2563eb', flex: 1.5, textAlign: 'right' },
   actionSection: { gap: 12, marginTop: 10 },
   extendBtn: { backgroundColor: '#2563eb', paddingVertical: 14, borderRadius: 8, alignItems: 'center' },
   terminateBtn: { backgroundColor: '#dc2626', paddingVertical: 14, borderRadius: 8, alignItems: 'center' },
@@ -315,4 +342,3 @@ const styles = StyleSheet.create({
   modalConfirmBtn: { backgroundColor: '#2563eb', paddingVertical: 10, paddingHorizontal: 16, borderRadius: 8 },
   modalConfirmText: { color: '#ffffff', fontWeight: 'bold' }
 });
-
