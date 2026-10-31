@@ -70,7 +70,28 @@ const requireRole = (...roles) => {
   };
 };
 
+/**
+ * Middleware tùy chọn xác thực Token (nếu có Bearer thì nạp user, nếu không thì tiếp tục)
+ */
+const optionalVerifyToken = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, JWT_SECRET);
+      const user = await User.findById(decoded.id).select('-password');
+      if (user && user.isActive) {
+        req.user = user;
+      }
+    }
+  } catch (error) {
+    // Không chặn nếu token lỗi, chỉ không gán req.user
+  }
+  next();
+};
+
 module.exports = {
   verifyToken,
-  requireRole
+  requireRole,
+  optionalVerifyToken
 };

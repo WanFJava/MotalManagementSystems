@@ -55,6 +55,28 @@ async function testUserApi() {
       const meData = await meRes.json();
       console.log('3. GET /api/auth/me -> Thành công, User:', meData.data.fullName);
 
+      // 3b. GET /api/users/profile
+      const getProfRes = await fetch('http://localhost:5098/api/users/profile', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const getProfData = await getProfRes.json();
+      console.log('3b. GET /api/users/profile -> Thành công, Email:', getProfData.data.email);
+
+      // 3c. PUT /api/users/profile
+      const updateProfRes = await fetch('http://localhost:5098/api/users/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          address: 'Số 123 Đường Cầu Giấy, Hà Nội',
+          identityNumber: '001202888999'
+        })
+      });
+      const updateProfData = await updateProfRes.json();
+      console.log('3c. PUT /api/users/profile -> Thành công, Address:', updateProfData.data.address);
+
       // 4. PUT /api/users/:id/tenant-profile (TC_USER_03)
       const profileRes = await fetch(`http://localhost:5098/api/users/${userId}/tenant-profile`, {
         method: 'PUT',

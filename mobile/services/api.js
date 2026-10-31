@@ -42,8 +42,38 @@ export const contractApi = {
   terminateContract: (id) => api.put(`/contracts/${id}/terminate`),
 };
 
-export const roomApi = {
-  getRooms: () => api.get('/rooms'),
+export const setAuthToken = (token) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+  }
+};
+
+export const authApi = {
+  // Đăng ký tài khoản (UC01 / TC_USER_01)
+  register: (data) => api.post('/auth/register', data),
+  // Đăng nhập hệ thống (UC01 / TC_USER_02)
+  login: (data) => api.post('/auth/login', data),
+  // Xem hồ sơ cá nhân (UC01 / UC06)
+  getProfile: () => api.get('/users/profile'),
+  // Cập nhật hồ sơ cá nhân (TC_USER_03)
+  updateProfile: (data) => api.put('/users/profile', data),
+};
+
+export const userApi = {
+  // Danh sách khách thuê (UC06)
+  getTenants: (params) => api.get('/users/tenants', { params }),
+  // Cập nhật hồ sơ CCCD khách thuê (UC06 / TC_USER_03)
+  updateTenantProfile: (id, data) => api.put(`/users/${id}/tenant-profile`, data),
+  // Danh sách nhân viên (UC15)
+  getStaff: (params) => api.get('/users/staff', { params }),
+  // Thêm nhân viên mới (UC15)
+  createStaff: (data) => api.post('/users/staff', data),
+  // Khóa / mở khóa tài khoản (TC_USER_04)
+  toggleStatus: (id, isActive) => api.put(`/users/${id}/status`, { isActive }),
+  // Chi tiết người dùng theo ID
+  getUserById: (id) => api.get(`/users/${id}`),
 };
 
 export default api;

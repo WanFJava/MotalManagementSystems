@@ -117,23 +117,25 @@ async function runUserTests() {
     }
 
     // -------------------------------------------------------------
-    // TEST CASE 3: TC_USER_03 - Cập nhật hồ sơ CCCD khách thuê (UC06)
+    // TEST CASE 3: TC_USER_03 - Cập nhật thông tin cá nhân & CCCD (UC06)
     // -------------------------------------------------------------
     console.log('-------------------------------------------------------------');
-    console.log('📌 [TC_USER_03] Cập nhật hồ sơ CCCD khách thuê & Chống trùng lặp');
+    console.log('📌 [TC_USER_03] Cập nhật thông tin cá nhân (Profile, CCCD, Địa chỉ) & Chống trùng lặp');
     try {
       const user = await User.findOne({ phone: '0999000111' });
 
+      // Cập nhật thông tin qua service updateProfile
       const profileUpdate = {
+        fullName: 'Nguyễn Văn Test (Đã cập nhật)',
+        address: 'Số 99 Đường Xuân Thủy, Cầu Giấy, Hà Nội',
         identityNumber: '001202999888',
         identityIssuedDate: '2022-06-15',
         identityIssuedPlace: 'Cục Cảnh sát QLHC về TTXH',
         hometown: 'Bắc Ninh',
-        currentAddress: 'Số 99 Đường Xuân Thủy, Cầu Giấy, Hà Nội',
         temporaryResidenceStatus: 'REGISTERED'
       };
 
-      const updated = await userService.updateTenantProfile(user._id, profileUpdate);
+      const updated = await userService.updateProfile(user._id, profileUpdate);
 
       // Thử tạo user thứ 2 và gán trùng số CCCD trên
       const user2 = await userService.registerUser({
@@ -145,35 +147,55 @@ async function runUserTests() {
 
       let duplicateCaught = false;
       try {
-        await userService.updateTenantProfile(user2.user._id, {
+        await userService.updateProfile(user2.user._id, {
           identityNumber: '001202999888' // Trùng với user 1
         });
       } catch (dupErr) {
-        if (dupErr.message.includes('đã tồn tại trong hồ sơ của khách thuê khác')) {
+        if (dupErr.message.includes('đã tồn tại trong hồ sơ của')) {
           duplicateCaught = true;
           console.log(`  ✅ Hệ thống chặn trùng CCCD chính xác: "${dupErr.message}"`);
         }
       }
 
-      if (updated.identityNumber === '001202999888' && duplicateCaught) {
-        console.log('  ✅ Cập nhật hồ sơ định danh CCCD và tình trạng tạm trú thành công.');
-        console.log(`     - CCCD: ${updated.identityNumber} | Quê quán: ${updated.hometown} | Tạm trú: ${updated.temporaryResidenceStatus}`);
+      if (updated.identityNumber === '001202999888' && updated.address === profileUpdate.address && duplicateCaught) {
+        console.log('  ✅ Cập nhật hồ sơ cá nhân (CCCD, địa chỉ, quê quán, tạm trú) thành công.');
+        console.log(`     - Họ tên: ${updated.fullName} | CCCD: ${updated.identityNumber}`);
+        console.log(`     - Địa chỉ: ${updated.address} | Tạm trú: ${updated.temporaryResidenceStatus}`);
         console.log('  👉 [TC_USER_03] -> PASS ✅\n');
         passCount++;
       } else {
-        throw new Error('Cập nhật CCCD thất bại hoặc không chặn được trùng lặp CCCD!');
+        throw new Error('Cập nhật thông tin cá nhân thất bại hoặc không chặn được trùng lặp CCCD!');
       }
     } catch (err) {
       console.error('  ❌ [TC_USER_03] FAILED:', err.message);
     }
 
     // -------------------------------------------------------------
-    // TEST CASE 4: TC_USER_04 - Khóa tài khoản nhân viên / khách thuê
+    // TEST CASE 4: TC_USER_04 - Kiểm tra phân quyền User & Trạng thái tài khoản
     // -------------------------------------------------------------
     console.log('-------------------------------------------------------------');
-    console.log('📌 [TC_USER_04] Khóa tài khoản nhân viên / khách thuê (isActive = false)');
+    console.log('📌 [TC_USER_04] Kiểm tra phân quyền User (RBAC: TENANT, STAFF, MANAGER) & Khóa tài khoản');
     try {
-      // 1. Tạo một tài khoản nhân viên
+      const { requireRole } = require('../middleware/authMiddleware');
+
+      // 1. Kiểm tra phân quyền: TENANT không có quyền truy cập endpoint của MANAGER
+      let tenantForbidden = false;
+      const fakeReqTenant = { user: { role: 'TENANT', fullName: 'Khách thuê test' } };
+      const fakeRes = {
+        status: (code) => ({
+          json: (data) => {
+            if (code === 403) tenantForbidden = true;
+          }
+        })
+      };
+      const checkManagerRole = requireRole('MANAGER');
+      checkManagerRole(fakeReqTenant, fakeRes, () => {});
+
+      if (tenantForbidden) {
+        console.log('  ✅ 1. Phân quyền chặt chẽ: User role "TENANT" bị từ chối (403 Forbidden) khi gọi chức năng MANAGER.');
+      }
+
+      // 2. Tạo một tài khoản nhân viên
       const staffUser = await userService.createStaff({
         fullName: 'Nhân Viên Bị Khóa Test',
         phone: '0999000333',
@@ -182,11 +204,11 @@ async function runUserTests() {
         role: 'STAFF'
       });
 
-      // 2. Quản lý thực hiện khóa tài khoản (isActive = false)
+      // 3. Quản lý thực hiện khóa tài khoản (isActive = false)
       const lockResult = await userService.toggleUserStatus(staffUser._id, false);
-      console.log(`  ✅ Đã thực hiện thao tác: ${lockResult.message} (isActive: false)`);
+      console.log(`  ✅ 2. Đã thực hiện thao tác: ${lockResult.message} (isActive: false)`);
 
-      // 3. Thử đăng nhập bằng tài khoản vừa bị khóa
+      // 4. Thử đăng nhập bằng tài khoản vừa bị khóa
       let blockLoginSuccess = false;
       try {
         await userService.loginUser({
@@ -196,23 +218,23 @@ async function runUserTests() {
       } catch (lockErr) {
         if (lockErr.message.includes('Tài khoản của bạn đã bị khóa')) {
           blockLoginSuccess = true;
-          console.log(`  ✅ Hệ thống chặn đăng nhập chuẩn xác: "${lockErr.message}"`);
+          console.log(`  ✅ 3. Hệ thống chặn đăng nhập chuẩn xác: "${lockErr.message}"`);
         }
       }
 
-      // 4. Mở khóa lại tài khoản (isActive = true)
+      // 5. Mở khóa lại tài khoản (isActive = true)
       await userService.toggleUserStatus(staffUser._id, true);
       const unlockLogin = await userService.loginUser({
         identifier: '0999000333',
         password: 'Password123@'
       });
 
-      if (blockLoginSuccess && unlockLogin.token) {
-        console.log('  ✅ Mở khóa tài khoản thành công, nhân viên đăng nhập lại bình thường!');
+      if (tenantForbidden && blockLoginSuccess && unlockLogin.token) {
+        console.log('  ✅ 4. Mở khóa tài khoản thành công, nhân viên đăng nhập lại bình thường!');
         console.log('  👉 [TC_USER_04] -> PASS ✅\n');
         passCount++;
       } else {
-        throw new Error('Chưa chặn được tài khoản bị khóa hoặc không mở khóa được!');
+        throw new Error('Chưa chặn được tài khoản bị khóa hoặc kiểm tra phân quyền thất bại!');
       }
     } catch (err) {
       console.error('  ❌ [TC_USER_04] FAILED:', err.message);

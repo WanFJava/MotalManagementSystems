@@ -19,7 +19,23 @@
 
 ---
 
-## 2. THIẾT KẾ CƠ SỞ DỮ LIỆU (DATABASE MODEL)
+## 2. Ý NGHĨA NGHIỆP VỤ THỰC TẾ
+
+Khách thuê bắt buộc phải có màn hình **`ProfileScreen`** để:
+
+1. **Hoàn thiện hồ sơ định danh pháp lý:**
+   - Cập nhật **Số CCCD (12 chữ số)**, ngày cấp, nơi cấp.
+   - Cập nhật **Quê quán / Địa chỉ thường trú**.
+   - Tải lên ảnh chụp 2 mặt của thẻ CCCD để chủ trọ khai báo tạm trú với Công an khu vực theo Luật Cư trú.
+2. **Quản lý thông tin liên lạc & tài khoản:**
+   - Cập nhật **Số điện thoại** hoặc **Email** để nhận thông báo tiền phòng, hóa đơn hàng tháng.
+   - **Đổi mật khẩu** tài khoản khi cần bảo mật.
+3. **Phục vụ tự động điền (Auto-fill):**
+   - Khi khách đã cập nhật đầy đủ CCCD trong Profile, khi sang phân hệ của Quang để bấm *"Gửi yêu cầu thuê phòng"*, hệ thống sẽ tự động lấy thông tin từ Profile sang, khách không cần gõ lại từ đầu.
+
+---
+
+## 3. THIẾT KẾ CƠ SỞ DỮ LIỆU (DATABASE MODEL)
 - **Collection:** `users`
 - **Tập tin:** `backend/models/User.js`
 
@@ -47,7 +63,7 @@
 
 ---
 
-## 3. DANH SÁCH RESTFUL API (BACKEND)
+## 4. DANH SÁCH RESTFUL API (BACKEND)
 Được đăng ký tại `backend/routes/userRoutes.js`, xử lý qua `backend/controllers/userController.js` và `backend/services/userService.js`:
 
 | Phương thức | Đường dẫn API | Chức năng nghiệp vụ | Use Case liên quan |
@@ -55,6 +71,8 @@
 | `POST` | `/api/auth/register` | Đăng ký tài khoản mới (Validate trùng SĐT, Email, mã hóa Bcrypt) | **UC01 / TC_USER_01** |
 | `POST` | `/api/auth/login` | Đăng nhập hệ thống (Sinh JWT Token, kiểm tra tài khoản bị khóa) | **UC01 / TC_USER_02** |
 | `GET` | `/api/auth/me` | Lấy thông tin tài khoản đang đăng nhập từ Bearer Token | **SWR2.2** |
+| `GET` | `/api/users/profile` | Lấy thông tin hồ sơ cá nhân của người dùng | **UC01 / UC06** |
+| `PUT` | `/api/users/profile` | Cập nhật hồ sơ cá nhân (CCCD, địa chỉ, ảnh 2 mặt) | **UC06 / TC_USER_03** |
 | `GET` | `/api/users/tenants` | Lấy danh sách khách thuê (Lọc theo từ khóa, phòng ở, tạm trú) | **UC06** |
 | `PUT` | `/api/users/:id/tenant-profile` | Cập nhật hồ sơ định danh CCCD & tình trạng tạm trú (Chặn trùng CCCD) | **UC06 / TC_USER_03** |
 | `GET` | `/api/users/staff` | Lấy danh sách nhân viên & quản lý | **UC15** |
@@ -67,7 +85,7 @@
 
 ---
 
-## 4. CÁC MÀN HÌNH GIAO DIỆN FRONTEND (REACTJS)
+## 5. CÁC MÀN HÌNH GIAO DIỆN FRONTEND (REACTJS)
 Toàn bộ giao diện phân hệ của Khánh đã được triển khai hoàn chỉnh tại thư mục `frontend/src/screens/` và kết nối Client Service tại `frontend/src/services/userClientService.js`:
 
 1. **`AuthScreen.jsx` (Đăng ký & Đăng nhập - UC01 / SWR2.1, SWR2.2):**
@@ -100,7 +118,41 @@ Toàn bộ giao diện phân hệ của Khánh đã được triển khai hoàn 
 
 ---
 
-## 5. KẾT QUẢ KIỂM THỬ TEST CASES (SWT - 100% PASS)
+## 6. CÁC MÀN HÌNH MOBILE APP (REACT NATIVE)
+Triển khai đầy đủ 5 màn hình React Native tại thư mục `mobile/screens/` và kết nối API tại `mobile/services/api.js`:
+
+1. **`LoginScreen.jsx` (Đăng nhập - UC01 / TC_USER_02):**
+   - Đăng nhập bằng Số điện thoại hoặc Email + Mật khẩu.
+   - Nút điền nhanh tài khoản kiểm thử 1 chạm cho Chủ trọ, Nhân viên, Khách thuê.
+   - Tự động lưu Token và điều hướng tương ứng với vai trò.
+2. **`RegisterScreen.jsx` (Đăng ký tài khoản - UC01 / TC_USER_01):**
+   - Form đăng ký: Họ tên, Số điện thoại, Email, Mật khẩu, Xác nhận mật khẩu, Lựa chọn vai trò (`TENANT` / `MANAGER`).
+   - Kiểm tra định dạng Regex SĐT (9-11 số), Email, độ dài mật khẩu >= 6 ký tự.
+3. **`ProfileScreen.jsx` (Xem & Cập nhật Hồ sơ cá nhân - UC01, UC06 / TC_USER_03):**
+   - Chế độ xem: Thông tin tài khoản, CCCD, Nơi cấp, Quê quán, Địa chỉ thường trú, Tình trạng tạm trú, Phòng đang ở, hiển thị ảnh chụp 2 mặt CCCD.
+   - Chế độ sửa: Cập nhật thông tin qua `PUT /api/users/profile`.
+   - Nút Đăng xuất an toàn.
+4. **`TenantManagementScreen.jsx` (Quản lý Khách thuê - UC06 / SWR2.3):**
+   - Thanh tìm kiếm tức thì theo Tên, SĐT, CCCD; Lọc theo trạng thái tạm trú (`Đã ĐK`, `Chờ duyệt`, `Chưa ĐK`).
+   - Danh sách khách thuê kèm huy hiệu phòng trọ, trạng thái tạm trú.
+   - Modal cập nhật chi tiết CCCD, quê quán, địa chỉ và tình trạng tạm trú Công an.
+5. **`StaffManagementScreen.jsx` (Quản lý Nhân viên - UC15 / SWR2.4 / TC_USER_04):**
+   - Danh sách nhân viên & quản lý với nhãn phân quyền và trạng thái hoạt động.
+   - Modal thêm nhân viên mới (`POST /api/users/staff`).
+   - Nút Khóa / Mở khóa tài khoản nhân viên tức thì (`PUT /api/users/:id/status`).
+
+---
+
+## 7. TÀI LIỆU UML & ĐẶC TẢ HỆ THỐNG
+Tài liệu sơ đồ kiến trúc hoàn chỉnh đã được tạo tại [`docs/UML_USER_TENANT.md`](file:///d:/LuyenReactJS/MotalManagementSystems/docs/UML_USER_TENANT.md):
+- **Use Case Diagram (Mermaid):** Đặc tả các Use Case UC01, UC06, UC15 với các Actor Guest, Tenant, Staff, Manager.
+- **Class Diagram (Mermaid):** Mô hình hóa cấu trúc lớp User, Enums, UserService, UserController, AuthMiddleware.
+- **Sequence Diagram (Mermaid):** Luồng xử lý Đăng ký / Đăng nhập (UC01), Cập nhật CCCD & Tạm trú (UC06), Khóa tài khoản nhân viên (UC15).
+- **Data Dictionary:** Bảng từ điển dữ liệu chi tiết cho collection `users`.
+
+---
+
+## 8. KẾT QUẢ KIỂM THỬ TEST CASES (SWT - 100% PASS)
 
 Chạy kiểm thử tự động bằng lệnh:
 ```bash
@@ -113,12 +165,12 @@ npm run test:user
 | :--- | :--- | :--- | :--- | :--- | :---: |
 | **TC_USER_01** | Đăng ký tài khoản mới hợp lệ & Mã hóa Bcrypt | `phone: "0999000111"`, `password: "Password123@"`, `fullName: "Nguyễn Văn Test"`, `role: "TENANT"` | Đăng ký thành công (Status 201), mật khẩu trong DB được hash bằng Bcrypt (không lưu plain text), sinh JWT Token. | Mật khẩu lưu dưới dạng `$2b$10$...`, tạo thành công tài khoản và sinh Token JWT hợp lệ. | **PASS ✅** |
 | **TC_USER_02** | Đăng nhập hệ thống (Sai mật khẩu vs Đúng mật khẩu) | • Nhập sai mật khẩu: `"SaiMatKhau123"`<br>• Nhập đúng mật khẩu: `"Password123@"` | • Sai: Báo lỗi "Sai tài khoản hoặc mật khẩu!" (Status 401).<br>• Đúng: Đăng nhập thành công, trả về JWT Token và thông tin user. | Hệ thống từ chối truy cập khi sai pass và cấp phát Token khi đúng thông tin. | **PASS ✅** |
-| **TC_USER_03** | Cập nhật hồ sơ CCCD khách thuê & Chống trùng lặp | • Nhập CCCD: `"001202999888"`, quê quán `"Bắc Ninh"`<br>• Thử gán trùng CCCD trên cho khách thứ 2 | • Hồ sơ được cập nhật thành công, trạng thái tạm trú đổi sang `REGISTERED`.<br>• Chặn trùng CCCD, báo lỗi rõ ràng. | Cập nhật hồ sơ thành công; hệ thống chặn trùng CCCD: "Số CCCD '001202999888' đã tồn tại trong hồ sơ của khách thuê khác!". | **PASS ✅** |
-| **TC_USER_04** | Khóa & Mở khóa tài khoản nhân viên (`isActive = false`) | • Quản lý đổi `isActive = false`<br>• Nhân viên đăng nhập<br>• Quản lý mở lại `isActive = true` | • Khi bị khóa: Chặn đăng nhập, báo lỗi tài khoản bị khóa.<br>• Khi mở lại: Đăng nhập bình thường. | Báo lỗi chuẩn xác: "Tài khoản của bạn đã bị khóa! Vui lòng liên hệ quản lý để được hỗ trợ."; sau khi mở khóa đăng nhập thành công. | **PASS ✅** |
+| **TC_USER_03** | Cập nhật hồ sơ cá nhân, CCCD & Chống trùng lặp | • Nhập CCCD: `"001202999888"`, quê quán `"Bắc Ninh"`, địa chỉ `"Số 99 Đường Xuân Thủy, Cầu Giấy, Hà Nội"`<br>• Thử gán trùng CCCD trên cho khách thứ 2 | • Hồ sơ được cập nhật thành công qua `updateProfile`, trạng thái tạm trú đổi sang `REGISTERED`.<br>• Chặn trùng CCCD, báo lỗi rõ ràng. | Cập nhật hồ sơ thành công; hệ thống chặn trùng CCCD: "Số CCCD '001202999888' đã tồn tại trong hồ sơ của khách thuê khác!". | **PASS ✅** |
+| **TC_USER_04** | Kiểm tra phân quyền User & Khóa tài khoản | • User role `TENANT` truy cập chức năng `MANAGER`<br>• Quản lý đổi `isActive = false`<br>• Nhân viên đăng nhập<br>• Quản lý mở lại `isActive = true` | • Phân quyền chặt chẽ (403 Forbidden).<br>• Khi bị khóa: Chặn đăng nhập.<br>• Khi mở lại: Đăng nhập bình thường. | Chặn 403 Forbidden chính xác; Báo lỗi tài khoản bị khóa chuẩn xác; sau khi mở khóa đăng nhập thành công. | **PASS ✅** |
 
 ---
 
-## 6. HƯỚNG DẪN CHẠY VÀ NGHIỆM THU
+## 9. HƯỚNG DẪN CHẠY VÀ NGHIỆM THU
 
 ### 1. Chạy Backend Server:
 ```bash
@@ -131,7 +183,7 @@ npm run start
 ```bash
 cd backend
 npm run test:user         # Kiểm thử toàn bộ 4 Test Cases nghiệp vụ (100% Pass)
-npm run test:user-api     # Kiểm thử toàn bộ các Endpoint HTTP RESTful API
+npm run test:user-api     # Kiểm thử toàn bộ các Endpoint HTTP RESTful API (100% Pass)
 ```
 
 ### 3. Nạp dữ liệu mẫu người dùng & khách thuê:
@@ -140,9 +192,16 @@ cd backend
 npm run seed:user
 ```
 
-### 4. Khởi chạy giao diện Frontend:
+### 4. Khởi chạy giao diện Frontend Web:
 ```bash
 cd frontend
 npm run dev
 ```
 *Truy cập ứng dụng tại `http://localhost:5173`*
+
+### 5. Khởi chạy giao diện Mobile (React Native / Expo):
+```bash
+cd mobile
+npm start
+```
+

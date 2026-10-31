@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { verifyToken, requireRole } = require('../middleware/authMiddleware');
+const { verifyToken, requireRole, optionalVerifyToken } = require('../middleware/authMiddleware');
 
 /**
  * Danh sách Endpoint RESTful API phân hệ Quản lý Tài khoản & Khách thuê
@@ -13,11 +13,15 @@ router.post('/auth/register', userController.register);
 router.post('/auth/login', userController.login);
 router.get('/auth/me', verifyToken, userController.getMe);
 
-// --- 2. Nhóm Quản lý Khách thuê (Tenant Profile - UC06) ---
+// --- 2. Nhóm Hồ sơ cá nhân (Profile - UC01/UC06) ---
+router.get('/users/profile', optionalVerifyToken, userController.getProfile);
+router.put('/users/profile', optionalVerifyToken, userController.updateProfile);
+
+// --- 3. Nhóm Quản lý Khách thuê (Tenant Profile - UC06) ---
 router.get('/users/tenants', userController.getTenants);
 router.put('/users/:id/tenant-profile', userController.updateTenantProfile);
 
-// --- 3. Nhóm Quản lý Nhân viên (Staff Management - UC15) ---
+// --- 4. Nhóm Quản lý Nhân viên (Staff Management - UC15) ---
 router.get('/users/staff', userController.getStaff);
 router.post('/users/staff', userController.createStaff);
 router.put('/users/:id/status', userController.toggleUserStatus);

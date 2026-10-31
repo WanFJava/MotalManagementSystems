@@ -4,7 +4,7 @@ import React from 'react';
  * Thanh điều hướng ứng dụng (Navbar)
  * Tích hợp Phân quyền người dùng (Role-Based Access Control - RBAC)
  * - Guest (Chưa đăng nhập): Chỉ xem Trang chủ, Danh sách phòng, Tìm phòng, Đăng nhập.
- * - Tenant (Khách thuê): Xem Trang chủ, Danh sách phòng, Tìm phòng, Hồ sơ cá nhân.
+ * - Tenant (Khách thuê): Trang chủ, Phòng trọ, Tìm phòng, Yêu cầu của tôi, Hợp đồng của tôi, Hồ sơ cá nhân.
  * - Staff (Nhân viên): Quản lý phòng, Yêu cầu thuê, Hợp đồng, Quản lý khách thuê & CCCD.
  * - Manager (Chủ trọ): Kế thừa Staff + Quản trị nhân viên (UC15).
  */
@@ -27,7 +27,8 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
         { key: 'rooms', label: '🛏️ Phòng trọ', desc: 'Danh sách phòng' },
         { key: 'search', label: '🔍 Tìm phòng', desc: 'Tìm kiếm & lọc' },
         { key: 'my-requests', label: '📋 Yêu cầu của tôi', desc: 'Xem lại trạng thái gửi yêu cầu thuê' },
-        { key: 'my-contracts', label: '📄 Hợp đồng của tôi', desc: 'Xem lại hợp đồng thuê phòng đã ký kết' }
+        { key: 'my-contracts', label: '📄 Hợp đồng của tôi', desc: 'Xem lại hợp đồng thuê phòng đã ký kết' },
+        { key: 'profile', label: '👤 Hồ sơ của tôi', desc: 'Xem & cập nhật hồ sơ cá nhân' }
       ];
     }
 
@@ -40,7 +41,8 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
         { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Quản lý phòng trọ (UC04)' },
         { key: 'requests', label: '📋 Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê (UC03)' },
         { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng (UC05)' },
-        { key: 'tenants', label: '👥 Khách thuê', desc: 'Quản lý CCCD & Tạm trú (UC06)' }
+        { key: 'tenants', label: '👥 Khách thuê', desc: 'Quản lý CCCD & Tạm trú (UC06)' },
+        { key: 'profile', label: '👤 Hồ sơ', desc: 'Hồ sơ cá nhân' }
       ];
     }
 
@@ -53,7 +55,8 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
       { key: 'requests', label: '📋 Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê (UC03)' },
       { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng (UC05)' },
       { key: 'tenants', label: '👥 Khách thuê', desc: 'Quản lý CCCD & Tạm trú (UC06)' },
-      { key: 'staff', label: '🛡️ Nhân viên', desc: 'Quản lý nhân viên (UC15)' }
+      { key: 'staff', label: '🛡️ Nhân viên', desc: 'Quản lý nhân viên (UC15)' },
+      { key: 'profile', label: '👤 Hồ sơ', desc: 'Hồ sơ cá nhân' }
     ];
   };
 
@@ -136,15 +139,15 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
             );
           })}
 
-          {/* User Auth Tab */}
+          {/* User Auth / Profile Button */}
           {currentUser ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '6px' }}>
               <button
-                onClick={() => setCurrentScreen('auth')}
-                title="Xem thông tin tài khoản"
+                onClick={() => setCurrentScreen('profile')}
+                title="Bấm để xem và cập nhật hồ sơ cá nhân"
                 style={{
-                  backgroundColor: currentScreen === 'auth' ? '#ffffff' : '#3b82f6',
-                  color: currentScreen === 'auth' ? '#1e3a8a' : '#ffffff',
+                  backgroundColor: currentScreen === 'profile' ? '#ffffff' : '#3b82f6',
+                  color: currentScreen === 'profile' ? '#1e3a8a' : '#ffffff',
                   border: 'none',
                   borderRadius: '8px',
                   padding: '7px 12px',
@@ -153,7 +156,8 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  boxShadow: currentScreen === 'profile' ? '0 2px 8px rgba(0,0,0,0.2)' : 'none'
                 }}
               >
                 <span>👤</span>

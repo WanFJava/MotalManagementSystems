@@ -49,6 +49,26 @@ export const userClientService = {
     return res.data.data;
   },
 
+  // --- 1.1. Hồ sơ cá nhân (Profile - UC01 / UC06 / SWR2.3) ---
+  getProfile: async (userId) => {
+    const res = await axios.get(`${API_BASE}/users/profile`, {
+      headers: { ...getAuthHeaders(), 'x-user-id': userId }
+    });
+    return res.data.data;
+  },
+
+  updateProfile: async (userId, profileData) => {
+    const res = await axios.put(`${API_BASE}/users/profile`, { ...profileData, userId }, {
+      headers: { ...getAuthHeaders(), 'x-user-id': userId }
+    });
+    // Đồng bộ lại thông tin vào LocalStorage nếu cập nhật thành công
+    if (res.data?.data) {
+      const user = res.data.data;
+      localStorage.setItem('motel_user', JSON.stringify(user));
+    }
+    return res.data;
+  },
+
   // --- 2. Quản lý Khách thuê (Tenant Profile - UC06 / SWR2.3) ---
   getTenants: async (filters = {}) => {
     const params = new URLSearchParams();

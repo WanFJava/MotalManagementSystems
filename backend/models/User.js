@@ -83,6 +83,11 @@ const userSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
+  address: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   currentAddress: {
     type: String,
     trim: true,

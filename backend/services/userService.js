@@ -343,16 +343,103 @@ class UserService {
   }
 
   /**
-   * 11. Xóa người dùng khỏi hệ thống
+   * 12. Lấy thông tin cá nhân (Profile)
    */
-  async deleteUser(id) {
-    const user = await User.findById(id);
+  async getProfile(userId) {
+    const user = await User.findById(userId).populate('currentRoom');
     if (!user) {
-      throw new Error('Không tìm thấy người dùng cần xóa!');
+      throw new Error('Không tìm thấy tài khoản người dùng!');
+    }
+    return user;
+  }
+
+  /**
+   * 13. Cập nhật hồ sơ cá nhân (Profile)
+   */
+  async updateProfile(userId, profileData) {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('Không tìm thấy tài khoản người dùng!');
     }
 
-    await User.findByIdAndDelete(id);
-    return { id, message: 'Đã xóa người dùng thành công!' };
+    const {
+      fullName,
+      phone,
+      email,
+      address,
+      currentAddress,
+      identityNumber,
+      identityIssuedDate,
+      identityIssuedPlace,
+      identityCardFront,
+      identityCardBack,
+      dateOfBirth,
+      gender,
+      hometown,
+      temporaryResidenceStatus,
+      avatar,
+      password
+    } = profileData;
+
+    // Kiểm tra trùng SĐT nếu thay đổi
+    if (phone && phone.trim() !== user.phone) {
+      const existingPhone = await User.findOne({
+        phone: phone.trim(),
+        _id: { $ne: userId }
+      });
+      if (existingPhone) {
+        throw new Error(`Số điện thoại '${phone}' đã được đăng ký!`);
+      }
+      user.phone = phone.trim();
+    }
+
+    // Kiểm tra trùng Email nếu thay đổi
+    if (email && email.trim().toLowerCase() !== user.email) {
+      const existingEmail = await User.findOne({
+        email: email.trim().toLowerCase(),
+        _id: { $ne: userId }
+      });
+      if (existingEmail) {
+        throw new Error(`Email '${email}' đã được đăng ký!`);
+      }
+      user.email = email.trim().toLowerCase();
+    }
+
+    // Kiểm tra CCCD trùng lặp
+    if (identityNumber && identityNumber.trim() !== (user.identityNumber || '')) {
+      const cleanIdentity = identityNumber.trim();
+      const existingIdentity = await User.findOne({
+        identityNumber: cleanIdentity,
+        _id: { $ne: userId }
+      });
+      if (existingIdentity) {
+        throw new Error(`Số CCCD '${cleanIdentity}' đã tồn tại trong hồ sơ của khách thuê khác!`);
+      }
+      user.identityNumber = cleanIdentity;
+    }
+
+    if (fullName) user.fullName = fullName.trim();
+    const finalAddress = address !== undefined ? address : currentAddress;
+    if (finalAddress !== undefined) {
+      user.address = finalAddress.trim();
+      user.currentAddress = finalAddress.trim();
+    }
+    if (identityIssuedDate) user.identityIssuedDate = new Date(identityIssuedDate);
+    if (identityIssuedPlace !== undefined) user.identityIssuedPlace = identityIssuedPlace.trim();
+    if (identityCardFront !== undefined) user.identityCardFront = identityCardFront;
+    if (identityCardBack !== undefined) user.identityCardBack = identityCardBack;
+    if (dateOfBirth) user.dateOfBirth = new Date(dateOfBirth);
+    if (gender) user.gender = gender;
+    if (hometown !== undefined) user.hometown = hometown.trim();
+    if (temporaryResidenceStatus) user.temporaryResidenceStatus = temporaryResidenceStatus;
+    if (avatar) user.avatar = avatar;
+
+    if (password && password.length >= 6) {
+      user.password = password;
+    }
+
+    await user.save();
+    return await User.findById(userId).populate('currentRoom');
   }
 }
 

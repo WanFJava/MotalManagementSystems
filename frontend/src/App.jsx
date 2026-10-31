@@ -12,6 +12,7 @@ import ManageContractsScreen from './screens/ManageContractsScreen';
 import ManageTenantScreen from './screens/ManageTenantScreen';
 import ManageStaffScreen from './screens/ManageStaffScreen';
 import AuthScreen from './screens/AuthScreen';
+import ProfileScreen from './screens/ProfileScreen';
 import { roomClientService } from './services/roomClientService';
 import { userClientService } from './services/userClientService';
 
@@ -168,7 +169,30 @@ export default function App() {
       );
     }
 
-    if (currentScreen === 'auth') {
+        if (currentScreen === 'profile') {
+      if (!currentUser) {
+        return (
+          <AccessDeniedCard
+            icon="🔒"
+            title="Yêu Cầu Đăng Nhập"
+            message="Vui lòng đăng nhập để xem và cập nhật thông tin hồ sơ cá nhân của bạn."
+            onAction={() => setCurrentScreen('auth')}
+            actionText="Đăng nhập ngay"
+          />
+        );
+      }
+
+      return (
+        <ProfileScreen
+          currentUser={currentUser}
+          setCurrentUser={setCurrentUser}
+          onNotify={(msg, type) => showToast(msg, type)}
+          setCurrentScreen={setCurrentScreen}
+        />
+      );
+    }
+
+if (currentScreen === 'auth') {
       return (
         <AuthScreen
           currentUser={currentUser}

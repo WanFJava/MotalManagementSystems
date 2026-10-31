@@ -209,3 +209,51 @@ exports.deleteUser = async (req, res) => {
     });
   }
 };
+
+// 13. [GET /api/users/profile] Lấy thông tin cá nhân của người dùng
+exports.getProfile = async (req, res) => {
+  try {
+    const userId = req.user?._id || req.query?.userId || req.headers['x-user-id'];
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Vui lòng đăng nhập hoặc cung cấp định danh người dùng!'
+      });
+    }
+    const profile = await userService.getProfile(userId);
+    return res.status(200).json({
+      success: true,
+      message: 'Lấy thông tin cá nhân thành công!',
+      data: profile
+    });
+  } catch (error) {
+    return res.status(404).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// 14. [PUT /api/users/profile] Cập nhật thông tin cá nhân của người dùng
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.user?._id || req.body?.userId || req.query?.userId || req.headers['x-user-id'];
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Vui lòng đăng nhập hoặc cung cấp định danh người dùng!'
+      });
+    }
+    const updated = await userService.updateProfile(userId, req.body);
+    return res.status(200).json({
+      success: true,
+      message: 'Cập nhật thông tin cá nhân thành công!',
+      data: updated
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
