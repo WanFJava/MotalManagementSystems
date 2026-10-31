@@ -6,7 +6,33 @@ const Room = require('../models/Room');
 // TC_CTR_02: Cố tình tạo hợp đồng cho phòng đã có người -> Báo lỗi 400
 exports.createContract = async (req, res) => {
   try {
-    const { room, roomId, tenantId, tenantName, startDate, endDate, depositAmount, rentalPrice, status } = req.body;
+    const {
+      room,
+      roomId,
+      signedDate,
+      // Bên cho thuê (Bên A)
+      landlordName,
+      landlordDob,
+      landlordCccd,
+      landlordAddress,
+      landlordPhone,
+      landlordWorkplace,
+      // Bên thuê (Bên B)
+      tenantId,
+      tenantName,
+      tenantDob,
+      tenantCccd,
+      tenantAddress,
+      tenantPhone,
+      tenantWorkplace,
+      // Thời hạn & Tài chính
+      startDate,
+      endDate,
+      depositAmount,
+      rentalPrice,
+      status
+    } = req.body;
+
     const targetRoomId = roomId || room;
 
     if (!targetRoomId) {
@@ -52,8 +78,23 @@ exports.createContract = async (req, res) => {
     const newContract = new Contract({
       room: targetRoomId,
       roomId: targetRoomId,
+      signedDate: signedDate ? new Date(signedDate) : new Date(),
+      // Bên A
+      landlordName: landlordName || 'Chủ nhà',
+      landlordDob: landlordDob ? new Date(landlordDob) : null,
+      landlordCccd: landlordCccd || '',
+      landlordAddress: landlordAddress || '',
+      landlordPhone: landlordPhone || '',
+      landlordWorkplace: landlordWorkplace || '',
+      // Bên B
       tenantId: tenantId || null,
       tenantName: tenantName || 'Khách thuê',
+      tenantDob: tenantDob ? new Date(tenantDob) : null,
+      tenantCccd: tenantCccd || '',
+      tenantAddress: tenantAddress || '',
+      tenantPhone: tenantPhone || '',
+      tenantWorkplace: tenantWorkplace || '',
+      // HĐ & tài chính
       startDate,
       endDate,
       depositAmount,
@@ -79,8 +120,8 @@ exports.createContract = async (req, res) => {
 exports.getAllContracts = async (req, res) => {
   try {
     const contracts = await Contract.find()
-      .populate('room', 'roomNumber basePrice status')
-      .populate('roomId', 'roomNumber basePrice status')
+      .populate('room', 'roomNumber basePrice status address area')
+      .populate('roomId', 'roomNumber basePrice status address area')
       .sort({ createdAt: -1 });
     res.status(200).json({ data: contracts });
   } catch (error) {
@@ -92,8 +133,8 @@ exports.getAllContracts = async (req, res) => {
 exports.getContractById = async (req, res) => {
   try {
     const contract = await Contract.findById(req.params.id)
-      .populate('room', 'roomNumber basePrice status maxOccupants')
-      .populate('roomId', 'roomNumber basePrice status maxOccupants');
+      .populate('room', 'roomNumber basePrice status maxOccupants address area')
+      .populate('roomId', 'roomNumber basePrice status maxOccupants address area');
     if (!contract) {
       return res.status(404).json({ message: 'Hợp đồng không tồn tại' });
     }
