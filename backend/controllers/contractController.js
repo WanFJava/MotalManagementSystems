@@ -2,21 +2,41 @@ const Contract = require('../models/Contract');
 const Room = require('../models/Room');
 
 // UC05: Lập hợp đồng mới
+// TC_CTR_01: Tạo thành công, phòng chuyển sang RENTED
+// TC_CTR_02: Cố tình tạo hợp đồng cho phòng đã có người -> Báo lỗi 400
 exports.createContract = async (req, res) => {
   try {
-    const { room, tenantName, startDate, endDate, depositAmount, rentalPrice, status } = req.body;
+    const { room, roomId, tenantId, tenantName, startDate, endDate, depositAmount, rentalPrice, status } = req.body;
+    const targetRoomId = roomId || room;
+
+    if (!targetRoomId) {
+      return res.status(400).json({ message: 'Vui lòng cung cấp mã phòng (roomId)' });
+    }
 
     // Kiểm tra xem phòng có tồn tại không
-    const existingRoom = await Room.findById(room);
+    const existingRoom = await Room.findById(targetRoomId);
     if (!existingRoom) {
       return res.status(404).json({ message: 'Phòng không tồn tại' });
     }
 
     // TC_CTR_02: Cố tình tạo hợp đồng cho phòng đã có người
     // Kiểm tra xem phòng có đang được thuê hoặc có hợp đồng ACTIVE không
-    const activeContract = await Contract.findOne({ room: room, status: 'ACTIVE' });
+    const activeContract = await Contract.findOne({ 
+      $or: [{ room: targetRoomId }, { roomId: targetRoomId }], 
+      status: 'ACTIVE' 
+    });
     if (existingRoom.status === 'RENTED' || activeContract) {
-      return res.status(400).json({ message: 'Phòng đang có hợp đồng hoạt động' });
+      return res.status(400).json({ message: 'Phòng đang có hợp đồng hoạt động hoặc đã được thuê' });
+    }
+
+    // Kiểm tra nếu phòng đang bảo trì
+    if (existingRoom.status === 'MAINTENANCE') {
+      return res.status(400).json({ message: 'Phòng đang trong trạng thái bảo trì, không thể lập hợp đồng' });
+    }
+
+    // Kiểm tra logic thời gian hợp đồng
+    if (startDate && endDate && new Date(startDate) >= new Date(endDate)) {
+      return res.status(400).json({ message: 'Ngày kết thúc hợp đồng phải sau ngày bắt đầu' });
     }
 
     // Kiểm tra nếu phòng đang bảo trì
@@ -30,8 +50,10 @@ exports.createContract = async (req, res) => {
     }
 
     const newContract = new Contract({
-      room,
-      tenantName,
+      room: targetRoomId,
+      roomId: targetRoomId,
+      tenantId: tenantId || null,
+      tenantName: tenantName || 'Khách thuê',
       startDate,
       endDate,
       depositAmount,
@@ -56,7 +78,10 @@ exports.createContract = async (req, res) => {
 // Xem danh sách hợp đồng
 exports.getAllContracts = async (req, res) => {
   try {
-    const contracts = await Contract.find().populate('room', 'roomNumber basePrice');
+    const contracts = await Contract.find()
+      .populate('room', 'roomNumber basePrice status')
+      .populate('roomId', 'roomNumber basePrice status')
+      .sort({ createdAt: -1 });
     res.status(200).json({ data: contracts });
   } catch (error) {
     res.status(500).json({ message: 'Lỗi khi lấy danh sách hợp đồng', error: error.message });
@@ -66,7 +91,9 @@ exports.getAllContracts = async (req, res) => {
 // Xem chi tiết hợp đồng
 exports.getContractById = async (req, res) => {
   try {
-    const contract = await Contract.findById(req.params.id).populate('room', 'roomNumber basePrice');
+    const contract = await Contract.findById(req.params.id)
+      .populate('room', 'roomNumber basePrice status maxOccupants')
+      .populate('roomId', 'roomNumber basePrice status maxOccupants');
     if (!contract) {
       return res.status(404).json({ message: 'Hợp đồng không tồn tại' });
     }
@@ -93,7 +120,7 @@ exports.extendContract = async (req, res) => {
       return res.status(400).json({ message: 'Chỉ có thể gia hạn hợp đồng đang hoạt động (ACTIVE)' });
     }
 
-    contract.endDate = endDate;
+    contract.endDate = new Date(endDate);
     await contract.save();
 
     res.status(200).json({ message: 'Gia hạn hợp đồng thành công', data: contract });
@@ -120,10 +147,13 @@ exports.terminateContract = async (req, res) => {
     await contract.save();
 
     // Chuyển trạng thái phòng về AVAILABLE
-    const room = await Room.findById(contract.room);
-    if (room) {
-      room.status = 'AVAILABLE';
-      await room.save();
+    const targetRoomId = contract.roomId || contract.room;
+    if (targetRoomId) {
+      const room = await Room.findById(targetRoomId);
+      if (room) {
+        room.status = 'AVAILABLE';
+        await room.save();
+      }
     }
 
     res.status(200).json({ message: 'Thanh lý hợp đồng thành công', data: contract });

@@ -1,5 +1,6 @@
 const Room = require('../models/Room');
 const Contract = require('../models/Contract');
+const RentalRequest = require('../models/RentalRequest');
 
 /**
  * «application logic» / «business logic»
@@ -149,7 +150,10 @@ class RoomService {
 
     // Nếu cố đổi trạng thái sang AVAILABLE nhưng đang có hợp đồng ACTIVE
     if (updateData.status === 'AVAILABLE') {
-      const activeContract = await Contract.findOne({ room: id, status: 'ACTIVE' });
+      const activeContract = await Contract.findOne({ 
+        $or: [{ room: id }, { roomId: id }], 
+        status: 'ACTIVE' 
+      });
       if (activeContract) {
         throw new Error('Không thể đổi trạng thái sang "Còn trống" vì phòng đang có hợp đồng thuê hoạt động (ACTIVE)!');
       }
@@ -183,7 +187,10 @@ class RoomService {
     }
 
     // Kiểm tra xem phòng có hợp đồng ACTIVE nào không
-    const activeContract = await Contract.findOne({ room: id, status: 'ACTIVE' });
+    const activeContract = await Contract.findOne({ 
+      $or: [{ room: id }, { roomId: id }], 
+      status: 'ACTIVE' 
+    });
     if (activeContract) {
       throw new Error('Không thể xóa phòng đang có hợp đồng thuê có hiệu lực (ACTIVE)!');
     }
@@ -193,7 +200,7 @@ class RoomService {
   }
 
   /**
-   * UC03 / SWR1.4: Tiếp nhận yêu cầu thuê/giữ phòng từ khách thuê
+   * UC03 / SWR1.4: Tiếp nhận yêu cầu thuê/giữ phòng từ khách thuê và lưu vào MongoDB
    */
   async submitRentalRequest(roomId, requestData) {
     const room = await Room.findById(roomId);
@@ -204,19 +211,33 @@ class RoomService {
       throw new Error(`Phòng ${room.roomNumber} hiện không còn trống để gửi yêu cầu thuê!`);
     }
 
-    const { fullName, phone, email, moveInDate, note } = requestData;
-    if (!fullName || !phone) {
+    const { fullName, phone, email, moveInDate, note, tenantName, tenantPhone } = requestData;
+    const finalTenantName = fullName || tenantName;
+    const finalPhone = phone || tenantPhone;
+
+    if (!finalTenantName || !finalPhone) {
       throw new Error('Vui lòng cung cấp đầy đủ Họ tên và Số điện thoại liên hệ!');
     }
 
+    // Lưu thực tế vào collection RentalRequest
+    const newRequest = new RentalRequest({
+      roomId: room._id,
+      tenantName: finalTenantName,
+      tenantPhone: finalPhone,
+      expectedMoveInDate: moveInDate ? new Date(moveInDate) : null,
+      note: note || (email ? `Email: ${email}` : ''),
+      status: 'PENDING'
+    });
+    await newRequest.save();
+
     return {
-      requestId: 'REQ-' + Date.now().toString().slice(-6),
+      requestId: newRequest._id,
       room: {
         id: room._id,
         roomNumber: room.roomNumber,
         basePrice: room.basePrice
       },
-      tenant: { fullName, phone, email, moveInDate, note },
+      tenant: { fullName: finalTenantName, phone: finalPhone, email, moveInDate, note },
       status: 'PENDING',
       message: `Đã tiếp nhận yêu cầu thuê phòng ${room.roomNumber}. Quản lý sẽ sớm liên hệ xác nhận!`
     };

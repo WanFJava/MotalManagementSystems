@@ -5,7 +5,16 @@ import RoomListScreen from './screens/RoomListScreen';
 import RoomSearchScreen from './screens/RoomSearchScreen';
 import RoomDetailScreen from './screens/RoomDetailScreen';
 import ManageRoomScreen from './screens/ManageRoomScreen';
+import ManageRentalRequestsScreen from './screens/ManageRentalRequestsScreen';
+import ManageContractsScreen from './screens/ManageContractsScreen';
+import ManageUtilitiesScreen from './screens/ManageUtilitiesScreen';
+import ManageInvoicesScreen from './screens/ManageInvoicesScreen';
+import ManageTenantScreen from './screens/ManageTenantScreen';
+import ManageStaffScreen from './screens/ManageStaffScreen';
+import AuthScreen from './screens/AuthScreen';
 import { roomClientService } from './services/roomClientService';
+import { invoiceClientService } from './services/invoiceClientService';
+import { userClientService } from './services/userClientService';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
@@ -13,6 +22,15 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [toast, setToast] = useState(null);
+
+  // User state từ Thành viên 2 (Khánh)
+  const [currentUser, setCurrentUser] = useState(() => userClientService.getCurrentUser());
+
+  // State prefill khi duyệt yêu cầu thuê -> chuyển sang tạo hợp đồng (Đức)
+  const [contractPrefill, setContractPrefill] = useState(null);
+
+  // State prefill khi từ chỉ số điện nước -> chuyển sang lập hóa đơn (Mạnh)
+  const [invoicePrefill, setInvoicePrefill] = useState(null);
 
   // Hiển thị Toast thông báo tự động biến mất sau 3.5s
   const showToast = (message, type = 'info') => {
@@ -30,14 +48,33 @@ export default function App() {
       setRooms(data);
     } catch (err) {
       console.error('Lỗi kết nối API Rooms:', err);
-      showToast('Không thể kết nối đến máy chủ Backend (Port 5000)!', 'error');
     } finally {
       setLoading(false);
     }
   };
 
+  // Kiểm tra callback VNPay Return URL trên trang chủ nếu có query parameters
   useEffect(() => {
     fetchRooms();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('vnp_ResponseCode') || urlParams.get('vnpay') === 'return') {
+      setCurrentScreen('invoices');
+      const paramsObj = {};
+      urlParams.forEach((val, key) => { paramsObj[key] = val; });
+
+      invoiceClientService.confirmVNPayReturn(paramsObj)
+        .then((res) => {
+          if (res.success) {
+            showToast('🎉 Thanh toán VNPay thành công! Hóa đơn đã chuyển sang trạng thái ĐÃ THANH TOÁN.', 'success');
+          } else {
+            showToast(res.message || 'Thanh toán VNPay không thành công hoặc đã bị hủy.', 'error');
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
   }, []);
 
   // Xử lý khi chọn xem chi tiết phòng
@@ -51,6 +88,28 @@ export default function App() {
   const handleBackToRooms = () => {
     setCurrentScreen('rooms');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Chuyển từ duyệt yêu cầu sang lập hợp đồng
+  const handleNavigateToCreateContract = (prefillData) => {
+    setContractPrefill(prefillData);
+    setCurrentScreen('contracts');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Chuyển từ quản lý điện nước sang lập hóa đơn
+  const handleNavigateToInvoice = (prefillData) => {
+    setInvoicePrefill(prefillData);
+    setCurrentScreen('invoices');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Đăng xuất người dùng
+  const handleLogout = () => {
+    userClientService.logout();
+    setCurrentUser(null);
+    showToast('Đã đăng xuất tài khoản thành công!', 'info');
+    setCurrentScreen('auth');
   };
 
   return (
@@ -79,10 +138,16 @@ export default function App() {
       )}
 
       {/* Header Navigation */}
-      <Navbar currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
+      <Navbar
+        currentScreen={currentScreen}
+        setCurrentScreen={setCurrentScreen}
+        currentUser={currentUser}
+        onLogout={handleLogout}
+      />
 
       {/* Main Content Area */}
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px 60px 20px' }}>
+      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 20px 60px 20px' }}>
+        {/* Phân hệ 1: Quang - Phòng & Tìm kiếm phòng */}
         {currentScreen === 'home' && (
           <HomeScreen
             rooms={rooms}
@@ -123,6 +188,61 @@ export default function App() {
             onNotify={(msg, type) => showToast(msg, type)}
           />
         )}
+
+        {/* Phân hệ 3: Đức - Yêu cầu thuê & Hợp đồng */}
+        {currentScreen === 'requests' && (
+          <ManageRentalRequestsScreen
+            onNotify={(msg, type) => showToast(msg, type)}
+            onNavigateToCreateContract={handleNavigateToCreateContract}
+          />
+        )}
+
+        {currentScreen === 'contracts' && (
+          <ManageContractsScreen
+            onNotify={(msg, type) => showToast(msg, type)}
+            initialPrefill={contractPrefill}
+            onClearPrefill={() => setContractPrefill(null)}
+          />
+        )}
+
+        {/* Phân hệ 4: Mạnh - Điện nước, Hóa đơn & VNPay */}
+        {currentScreen === 'utilities' && (
+          <ManageUtilitiesScreen
+            onNotify={(msg, type) => showToast(msg, type)}
+            onNavigateToInvoice={handleNavigateToInvoice}
+          />
+        )}
+
+        {currentScreen === 'invoices' && (
+          <ManageInvoicesScreen
+            onNotify={(msg, type) => showToast(msg, type)}
+            initialPrefill={invoicePrefill}
+            onClearPrefill={() => setInvoicePrefill(null)}
+          />
+        )}
+
+        {/* Phân hệ 2: Khánh - Tài khoản, Khách thuê & Nhân viên */}
+        {currentScreen === 'tenants' && (
+          <ManageTenantScreen
+            onNotify={(msg, type) => showToast(msg, type)}
+          />
+        )}
+
+        {currentScreen === 'staff' && (
+          <ManageStaffScreen
+            currentUser={currentUser}
+            onNotify={(msg, type) => showToast(msg, type)}
+          />
+        )}
+
+        {currentScreen === 'auth' && (
+          <AuthScreen
+            currentUser={currentUser}
+            setCurrentUser={setCurrentUser}
+            onNotify={(msg, type) => showToast(msg, type)}
+            setCurrentScreen={setCurrentScreen}
+          />
+        )}
       </main>
 
       {/* Footer */}
@@ -134,8 +254,8 @@ export default function App() {
         fontSize: '13px',
         color: '#64748b'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <strong>Motel Management System</strong> • Hệ thống Quản lý Nhà trọ & Căn hộ Dịch vụ
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          <strong>Motel Management System</strong> • Hệ thống Quản lý Nhà trọ & Căn hộ Dịch vụ (SWD392)
         </div>
       </footer>
     </div>
