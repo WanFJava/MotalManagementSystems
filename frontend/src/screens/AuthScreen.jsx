@@ -16,14 +16,13 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
     password: ''
   });
 
-  // Form Đăng ký
+  // Form Đăng ký (Mặc định tài khoản đăng ký là Khách thuê - TENANT)
   const [regForm, setRegForm] = useState({
     fullName: '',
     phone: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    role: 'TENANT'
+    confirmPassword: ''
   });
 
   // Xử lý Đăng nhập (TC_USER_02)
@@ -43,7 +42,7 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
         if (res.data.user.role === 'TENANT') {
           setCurrentScreen('rooms');
         } else {
-          setCurrentScreen('tenants');
+          setCurrentScreen('manage');
         }
       }
     } catch (err) {
@@ -79,7 +78,7 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
         phone: regForm.phone,
         email: regForm.email,
         password: regForm.password,
-        role: regForm.role
+        role: 'TENANT' // Tài khoản đăng ký qua cổng khách hàng luôn là Khách thuê
       });
 
       if (res.success) {
@@ -98,17 +97,6 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
     }
   };
 
-  // Chọn nhanh tài khoản demo để chấm bài nhanh
-  const handleQuickLogin = (roleType) => {
-    if (roleType === 'MANAGER') {
-      setLoginForm({ identifier: '0901234567', password: 'Password123@' });
-    } else if (roleType === 'STAFF') {
-      setLoginForm({ identifier: '0902345678', password: 'Password123@' });
-    } else {
-      setLoginForm({ identifier: '0912345678', password: 'Password123@' });
-    }
-  };
-
   // Đăng xuất
   const handleLogout = () => {
     userClientService.logout();
@@ -117,7 +105,7 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
   };
 
   return (
-    <div style={{ padding: '30px 0', maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ padding: '30px 0', maxWidth: '720px', margin: '0 auto' }}>
       {/* Thẻ hiển thị khi đã đăng nhập */}
       {currentUser ? (
         <div style={{
@@ -173,35 +161,133 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
             </div>
           </div>
 
+          {/* Phân quyền nút thao tác theo từng vai trò */}
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => setCurrentScreen('tenants')}
-              style={{
-                backgroundColor: '#2563eb',
-                color: '#ffffff',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: '8px',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
-            >
-              👥 Quản lý Khách thuê
-            </button>
-            <button
-              onClick={() => setCurrentScreen('staff')}
-              style={{
-                backgroundColor: '#0284c7',
-                color: '#ffffff',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: '8px',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
-            >
-              🛡️ Quản lý Nhân viên
-            </button>
+            {currentUser.role === 'TENANT' && (
+              <>
+                <button
+                  onClick={() => setCurrentScreen('rooms')}
+                  style={{
+                    backgroundColor: '#2563eb',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  🛏️ Xem danh sách phòng
+                </button>
+                <button
+                  onClick={() => setCurrentScreen('search')}
+                  style={{
+                    backgroundColor: '#0284c7',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  🔍 Tìm phòng trống
+                </button>
+                <button
+                  onClick={() => setCurrentScreen('my-requests')}
+                  style={{
+                    backgroundColor: '#8b5cf6',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  📋 Yêu cầu thuê của tôi
+                </button>
+              </>
+            )}
+
+            {(currentUser.role === 'STAFF' || currentUser.role === 'MANAGER') && (
+              <>
+                <button
+                  onClick={() => setCurrentScreen('manage')}
+                  style={{
+                    backgroundColor: '#10b981',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  ⚙️ Quản lý phòng
+                </button>
+                <button
+                  onClick={() => setCurrentScreen('requests')}
+                  style={{
+                    backgroundColor: '#f59e0b',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  📋 Yêu cầu thuê
+                </button>
+                <button
+                  onClick={() => setCurrentScreen('contracts')}
+                  style={{
+                    backgroundColor: '#8b5cf6',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  📄 Quản lý hợp đồng
+                </button>
+                <button
+                  onClick={() => setCurrentScreen('tenants')}
+                  style={{
+                    backgroundColor: '#2563eb',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  👥 Quản lý Khách thuê
+                </button>
+              </>
+            )}
+
+            {currentUser.role === 'MANAGER' && (
+              <button
+                onClick={() => setCurrentScreen('staff')}
+                style={{
+                  backgroundColor: '#dc2626',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                🛡️ Quản lý Nhân viên
+              </button>
+            )}
+
             <button
               onClick={handleLogout}
               style={{
@@ -259,76 +345,11 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
                 borderBottom: !isLoginMode ? '3px solid #2563eb' : 'none'
               }}
             >
-              📝 Đăng Ký Tài Khoản Mới
+              📝 Đăng Ký Tài Khoản Khách Thuê
             </button>
           </div>
 
           <div style={{ padding: '32px' }}>
-            {/* Quick Demo Login Bar */}
-            {isLoginMode && (
-              <div style={{
-                backgroundColor: '#eff6ff',
-                border: '1px dashed #bfdbfe',
-                borderRadius: '12px',
-                padding: '14px 18px',
-                marginBottom: '24px'
-              }}>
-                <div style={{ fontSize: '13px', fontWeight: '600', color: '#1e40af', marginBottom: '8px' }}>
-                  ⚡ Chọn nhanh tài khoản kiểm thử & chấm bài (Demo):
-                </div>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('MANAGER')}
-                    style={{
-                      padding: '6px 12px',
-                      backgroundColor: '#dc2626',
-                      color: '#ffffff',
-                      border: 'none',
-                      borderRadius: '6px',
-                      fontSize: '12px',
-                      cursor: 'pointer',
-                      fontWeight: '600'
-                    }}
-                  >
-                    👑 Quản lý (Manager)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('STAFF')}
-                    style={{
-                      padding: '6px 12px',
-                      backgroundColor: '#d97706',
-                      color: '#ffffff',
-                      border: 'none',
-                      borderRadius: '6px',
-                      fontSize: '12px',
-                      cursor: 'pointer',
-                      fontWeight: '600'
-                    }}
-                  >
-                    🛡️ Nhân viên (Staff)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickLogin('TENANT')}
-                    style={{
-                      padding: '6px 12px',
-                      backgroundColor: '#2563eb',
-                      color: '#ffffff',
-                      border: 'none',
-                      borderRadius: '6px',
-                      fontSize: '12px',
-                      cursor: 'pointer',
-                      fontWeight: '600'
-                    }}
-                  >
-                    🙋 Khách thuê (Tenant)
-                  </button>
-                </div>
-              </div>
-            )}
-
             {isLoginMode ? (
               /* FORM ĐĂNG NHẬP */
               <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
@@ -338,7 +359,7 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
                   </label>
                   <input
                     type="text"
-                    placeholder="VD: 0912345678 hoặc khanh@gmail.com"
+                    placeholder="Nhập số điện thoại hoặc email đã đăng ký..."
                     value={loginForm.identifier}
                     onChange={(e) => setLoginForm({ ...loginForm, identifier: e.target.value })}
                     required
@@ -402,7 +423,7 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
                   </label>
                   <input
                     type="text"
-                    placeholder="VD: Phạm Văn Khánh"
+                    placeholder="VD: Nguyễn Văn An"
                     value={regForm.fullName}
                     onChange={(e) => setRegForm({ ...regForm, fullName: e.target.value })}
                     required
@@ -444,7 +465,7 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
                     </label>
                     <input
                       type="email"
-                      placeholder="VD: khanh@gmail.com"
+                      placeholder="VD: an.nguyen@gmail.com"
                       value={regForm.email}
                       onChange={(e) => setRegForm({ ...regForm, email: e.target.value })}
                       required
@@ -503,33 +524,21 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
                   </div>
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#334155', marginBottom: '6px' }}>
-                    Đăng ký với vai trò:
-                  </label>
-                  <select
-                    value={regForm.role}
-                    onChange={(e) => setRegForm({ ...regForm, role: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      fontSize: '14px',
-                      boxSizing: 'border-box'
-                    }}
-                  >
-                    <option value="TENANT">🙋 Khách thuê phòng (Tenant)</option>
-                    <option value="STAFF">🛡️ Nhân viên quản lý (Staff)</option>
-                    <option value="MANAGER">👑 Chủ nhà trọ (Manager)</option>
-                  </select>
+                <div style={{
+                  backgroundColor: '#f1f5f9',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  color: '#64748b'
+                }}>
+                  ℹ️ Tài khoản đăng ký tại đây sẽ có vai trò là <strong>Khách thuê (Tenant)</strong>. Nếu bạn là nhân viên vận hành, vui lòng liên hệ Chủ trọ (Manager) để được cấp tài khoản.
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
                   style={{
-                    backgroundColor: '#16a34a',
+                    backgroundColor: '#10b981',
                     color: '#ffffff',
                     border: 'none',
                     padding: '14px',
@@ -541,7 +550,7 @@ export default function AuthScreen({ currentUser, setCurrentUser, onNotify, setC
                     marginTop: '8px'
                   }}
                 >
-                  {loading ? 'Đang tạo tài khoản...' : '📝 Đăng Ký Tài Khoản'}
+                  {loading ? 'Đang đăng ký...' : '📝 Hoàn Tất Đăng Ký'}
                 </button>
               </form>
             )}

@@ -1,14 +1,63 @@
 import React from 'react';
 
+/**
+ * Thanh điều hướng ứng dụng (Navbar)
+ * Tích hợp Phân quyền người dùng (Role-Based Access Control - RBAC)
+ * - Guest (Chưa đăng nhập): Chỉ xem Trang chủ, Danh sách phòng, Tìm phòng, Đăng nhập.
+ * - Tenant (Khách thuê): Xem Trang chủ, Danh sách phòng, Tìm phòng, Hồ sơ cá nhân.
+ * - Staff (Nhân viên): Quản lý phòng, Yêu cầu thuê, Hợp đồng, Quản lý khách thuê & CCCD.
+ * - Manager (Chủ trọ): Kế thừa Staff + Quản trị nhân viên (UC15).
+ */
 export default function Navbar({ currentScreen, setCurrentScreen, currentUser, onLogout }) {
-  const navItems = [
-    { key: 'home', label: '🏠 Trang chủ', desc: 'Tổng quan hệ thống' },
-    { key: 'rooms', label: '🛏️ Phòng trọ', desc: 'Danh sách phòng' },
-    { key: 'search', label: '🔍 Tìm phòng', desc: 'Tìm kiếm & lọc' },
-    { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Dành cho quản trị' },
-    { key: 'tenants', label: '👥 Khách thuê', desc: 'Quản lý CCCD & Tạm trú (UC06)' },
-    { key: 'staff', label: '🛡️ Nhân viên', desc: 'Quản lý nhân viên (UC15)' }
-  ];
+  // Bộ lọc menu điều hướng theo quyền hạn
+  const getNavItems = () => {
+    // 1. Khách vãng lai (Chưa đăng nhập)
+    if (!currentUser) {
+      return [
+        { key: 'home', label: '🏠 Trang chủ', desc: 'Giới thiệu & Tổng quan' },
+        { key: 'rooms', label: '🛏️ Phòng trọ', desc: 'Danh sách phòng' },
+        { key: 'search', label: '🔍 Tìm phòng', desc: 'Tìm kiếm & lọc phòng trống' }
+      ];
+    }
+
+    // 2. Khách thuê (Tenant)
+    if (currentUser.role === 'TENANT') {
+      return [
+        { key: 'home', label: '🏠 Trang chủ', desc: 'Trang chủ khách thuê' },
+        { key: 'rooms', label: '🛏️ Phòng trọ', desc: 'Danh sách phòng' },
+        { key: 'search', label: '🔍 Tìm phòng', desc: 'Tìm kiếm & lọc' },
+        { key: 'my-requests', label: '📋 Yêu cầu của tôi', desc: 'Xem lại trạng thái gửi yêu cầu thuê' },
+        { key: 'my-contracts', label: '📄 Hợp đồng của tôi', desc: 'Xem lại hợp đồng thuê phòng đã ký kết' }
+      ];
+    }
+
+    // 3. Nhân viên quản lý (Staff)
+    if (currentUser.role === 'STAFF') {
+      return [
+        { key: 'home', label: '🏠 Trang chủ', desc: 'Bảng điều khiển nhân viên' },
+        { key: 'rooms', label: '🛏️ Phòng trọ', desc: 'Danh sách phòng' },
+        { key: 'search', label: '🔍 Tìm phòng', desc: 'Tìm kiếm & lọc' },
+        { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Quản lý phòng trọ (UC04)' },
+        { key: 'requests', label: '📋 Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê (UC03)' },
+        { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng (UC05)' },
+        { key: 'tenants', label: '👥 Khách thuê', desc: 'Quản lý CCCD & Tạm trú (UC06)' }
+      ];
+    }
+
+    // 4. Chủ trọ / Quản lý cấp cao (Manager) - Có thêm UC15 Quản lý nhân viên
+    return [
+      { key: 'home', label: '🏠 Trang chủ', desc: 'Bảng điều khiển quản trị' },
+      { key: 'rooms', label: '🛏️ Phòng trọ', desc: 'Danh sách phòng' },
+      { key: 'search', label: '🔍 Tìm phòng', desc: 'Tìm kiếm & lọc' },
+      { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Quản lý phòng trọ (UC04)' },
+      { key: 'requests', label: '📋 Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê (UC03)' },
+      { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng (UC05)' },
+      { key: 'tenants', label: '👥 Khách thuê', desc: 'Quản lý CCCD & Tạm trú (UC06)' },
+      { key: 'staff', label: '🛡️ Nhân viên', desc: 'Quản lý nhân viên (UC15)' }
+    ];
+  };
+
+  const navItems = getNavItems();
 
   return (
     <header style={{
@@ -53,7 +102,7 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
               Motel Management System
             </div>
             <div style={{ fontSize: '11px', color: '#93c5fd' }}>
-              SWD392 • Nhóm 4 Thành Viên
+              SWD392 • Hệ thống Quản lý Nhà trọ & Căn hộ
             </div>
           </div>
         </div>
@@ -92,6 +141,7 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '6px' }}>
               <button
                 onClick={() => setCurrentScreen('auth')}
+                title="Xem thông tin tài khoản"
                 style={{
                   backgroundColor: currentScreen === 'auth' ? '#ffffff' : '#3b82f6',
                   color: currentScreen === 'auth' ? '#1e3a8a' : '#ffffff',
@@ -110,16 +160,18 @@ export default function Navbar({ currentScreen, setCurrentScreen, currentUser, o
                 <span>{currentUser.fullName?.split(' ').pop() || 'User'}</span>
                 <span style={{
                   fontSize: '10px',
-                  backgroundColor: 'rgba(0,0,0,0.2)',
+                  backgroundColor: currentUser.role === 'MANAGER' ? '#dc2626' : currentUser.role === 'STAFF' ? '#d97706' : '#1d4ed8',
+                  color: '#ffffff',
                   padding: '2px 6px',
-                  borderRadius: '4px'
+                  borderRadius: '4px',
+                  fontWeight: '700'
                 }}>
-                  {currentUser.role}
+                  {currentUser.role === 'MANAGER' ? 'Chủ Trọ' : currentUser.role === 'STAFF' ? 'Nhân Viên' : 'Khách Thuê'}
                 </span>
               </button>
               <button
                 onClick={onLogout}
-                title="Đăng xuất"
+                title="Đăng xuất khỏi hệ thống"
                 style={{
                   backgroundColor: '#ef4444',
                   color: '#ffffff',

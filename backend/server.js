@@ -4,6 +4,7 @@ const cors = require('cors');
 const roomRoutes = require('./routes/roomRoutes');
 const contractRoutes = require('./routes/contractRoutes');
 const userRoutes = require('./routes/userRoutes');
+const rentalRequestRoutes = require('./routes/rentalRequestRoutes');
 const { seedAll } = require('./seeds/seed_helper');
 
 const app = express();
@@ -34,6 +35,7 @@ async function startServer() {
   // Đăng ký Router
   app.use('/api', roomRoutes);
   app.use('/api', contractRoutes);
+  app.use('/api', rentalRequestRoutes);
   app.use('/api', userRoutes);
 
   // Route mặc định kiểm tra server
@@ -45,6 +47,8 @@ async function startServer() {
   app.listen(PORT, () => {
     console.log(`🚀 Backend Server đang chạy tại: http://localhost:${PORT}`);
     console.log(`📌 Test API Rooms tại: http://localhost:${PORT}/api/rooms`);
+    console.log(`📌 Test API Contracts tại: http://localhost:${PORT}/api/contracts`);
+    console.log(`📌 Test API Rental Requests tại: http://localhost:${PORT}/api/rental-requests`);
     console.log(`📌 Test API Users & Auth tại: http://localhost:${PORT}/api/users`);
   });
 }

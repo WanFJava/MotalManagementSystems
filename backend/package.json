@@ -8,6 +8,7 @@
     "seed": "node seeds/seed_rooms.js",
     "seed:user": "node seeds/seed_users.js",
     "test:room": "node tests/test_room_cases.js",
+    "test:contract": "node tests/test_rental_contract_cases.js",
     "test:user": "node tests/test_user_cases.js",
     "test:user-api": "node tests/test_user_api_server.js"
   },

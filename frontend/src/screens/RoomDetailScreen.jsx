@@ -1,17 +1,45 @@
-import React, { useState } from 'react';
-import { roomClientService } from '../services/roomClientService';
+import React, { useState, useEffect } from 'react';
+import { rentalRequestClientService } from '../services/rentalRequestClientService';
 
-export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess }) {
+/**
+ * Màn hình Chi tiết Phòng Trọ & Đặt Giữ Phòng (RoomDetailScreen)
+ * Phân hệ đảm nhiệm: Thành viên 1 - Quang (kết hợp UC03 Đặt phòng)
+ * Nghiệp vụ bắt buộc: Khách thuê bắt buộc phải cập nhật đầy đủ thông tin CCCD và định danh mới được gửi yêu cầu thuê
+ */
+export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess, currentUser, setCurrentScreen }) {
   const [selectedImage, setSelectedImage] = useState(room?.images?.[0] || '');
+  const [submitting, setSubmitting] = useState(false);
+  const [successInfo, setSuccessInfo] = useState(null);
+
+  // Form yêu cầu thuê phòng với đầy đủ thông tin CCCD bắt buộc
   const [rentalForm, setRentalForm] = useState({
-    fullName: '',
-    phone: '',
-    email: '',
+    fullName: currentUser?.fullName || '',
+    phone: currentUser?.phone || '',
+    email: currentUser?.email || '',
+    identityNumber: currentUser?.identityNumber || '',
+    identityIssuedDate: currentUser?.identityIssuedDate ? currentUser.identityIssuedDate.slice(0, 10) : '',
+    identityIssuedPlace: currentUser?.identityIssuedPlace || 'Cục Cảnh sát QLHC về TTXH',
+    dateOfBirth: currentUser?.dateOfBirth ? currentUser.dateOfBirth.slice(0, 10) : '',
+    gender: currentUser?.gender || 'MALE',
+    hometown: currentUser?.hometown || '',
+    currentAddress: currentUser?.currentAddress || '',
     moveInDate: '',
     note: ''
   });
-  const [submitting, setSubmitting] = useState(false);
-  const [successInfo, setSuccessInfo] = useState(null);
+
+  useEffect(() => {
+    if (currentUser) {
+      setRentalForm((prev) => ({
+        ...prev,
+        fullName: prev.fullName || currentUser.fullName || '',
+        phone: prev.phone || currentUser.phone || '',
+        email: prev.email || currentUser.email || '',
+        identityNumber: prev.identityNumber || currentUser.identityNumber || '',
+        hometown: prev.hometown || currentUser.hometown || '',
+        currentAddress: prev.currentAddress || currentUser.currentAddress || ''
+      }));
+    }
+  }, [currentUser]);
 
   if (!room) {
     return (
@@ -24,17 +52,78 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess 
 
   const isAvailable = room.status === 'AVAILABLE';
 
+  // Xử lý gửi yêu cầu thuê phòng
   const handleSubmitRental = async (e) => {
     e.preventDefault();
-    if (!rentalForm.fullName || !rentalForm.phone) {
-      alert('Vui lòng điền Họ tên và Số điện thoại liên hệ!');
+
+    if (!currentUser) {
+      alert('Vui lòng đăng nhập bằng tài khoản Khách thuê trước khi gửi yêu cầu giữ phòng!');
+      if (setCurrentScreen) setCurrentScreen('auth');
+      return;
+    }
+
+    if (!rentalForm.fullName.trim() || !rentalForm.phone.trim()) {
+      alert('Vui lòng cung cấp Họ tên và Số điện thoại liên hệ!');
+      return;
+    }
+
+    // Kiểm tra CCCD bắt buộc
+    if (!rentalForm.identityNumber || !rentalForm.identityNumber.trim()) {
+      alert('⚠️ BẮT BUỘC: Bạn phải cập nhật số Căn cước công dân (CCCD 12 số) mới được phép gửi yêu cầu thuê phòng!');
+      return;
+    }
+
+    if (!/^\d{9,12}$/.test(rentalForm.identityNumber.trim())) {
+      alert('Số CCCD không hợp lệ! Vui lòng nhập từ 9 đến 12 chữ số.');
+      return;
+    }
+
+    if (!rentalForm.hometown.trim()) {
+      alert('⚠️ BẮT BUỘC: Vui lòng cung cấp thông tin Quê quán của bạn!');
+      return;
+    }
+
+    if (!rentalForm.currentAddress.trim()) {
+      alert('⚠️ BẮT BUỘC: Vui lòng cung cấp Địa chỉ thường trú / tạm trú hiện tại!');
+      return;
+    }
+
+    if (!rentalForm.moveInDate) {
+      alert('Vui lòng chọn Ngày dự kiến chuyển vào ở!');
       return;
     }
 
     try {
       setSubmitting(true);
-      const res = await roomClientService.submitRentalRequest(room._id, rentalForm);
+      const payload = {
+        userId: currentUser._id,
+        roomId: room._id,
+        tenantName: rentalForm.fullName.trim(),
+        tenantPhone: rentalForm.phone.trim(),
+        identityNumber: rentalForm.identityNumber.trim(),
+        identityIssuedDate: rentalForm.identityIssuedDate || null,
+        identityIssuedPlace: rentalForm.identityIssuedPlace.trim(),
+        dateOfBirth: rentalForm.dateOfBirth || null,
+        gender: rentalForm.gender,
+        hometown: rentalForm.hometown.trim(),
+        currentAddress: rentalForm.currentAddress.trim(),
+        expectedMoveInDate: rentalForm.moveInDate,
+        note: rentalForm.note
+      };
+
+      const res = await rentalRequestClientService.createRequest(payload);
       setSuccessInfo(res.data);
+
+      // Cập nhật lại thông tin user trong LocalStorage nếu có bổ sung CCCD
+      const storedUser = JSON.parse(localStorage.getItem('motel_user') || '{}');
+      const updatedUser = {
+        ...storedUser,
+        identityNumber: rentalForm.identityNumber.trim(),
+        hometown: rentalForm.hometown.trim(),
+        currentAddress: rentalForm.currentAddress.trim()
+      };
+      localStorage.setItem('motel_user', JSON.stringify(updatedUser));
+
       if (onRentalRequestSuccess) {
         onRentalRequestSuccess(res.message);
       }
@@ -65,7 +154,7 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess 
             gap: '6px'
           }}
         >
-          ← Quay lại danh sách
+          ← Quay lại danh sách phòng
         </button>
       </div>
 
@@ -98,123 +187,130 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess 
               right: '16px',
               backgroundColor: isAvailable ? '#16a34a' : room.status === 'RENTED' ? '#dc2626' : '#d97706',
               color: '#ffffff',
-              fontSize: '13px',
-              fontWeight: '700',
               padding: '6px 14px',
               borderRadius: '20px',
+              fontSize: '13px',
+              fontWeight: '700',
               boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
             }}>
-              {isAvailable ? '🟢 Còn trống' : room.status === 'RENTED' ? '🔴 Đã thuê' : '🛠️ Đang bảo trì'}
+              {isAvailable ? '🟢 Còn trống' : room.status === 'RENTED' ? '🔴 Đã cho thuê' : '🟡 Đang bảo trì'}
             </span>
           </div>
 
-          {/* Photo Thumbnails */}
+          {/* Thumbnail Gallery */}
           {room.images && room.images.length > 1 && (
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '24px', overflowX: 'auto', paddingBottom: '6px' }}>
               {room.images.map((img, idx) => (
                 <img
                   key={idx}
                   src={img}
-                  alt={`Ảnh ${idx + 1}`}
+                  alt={`Thumbnail ${idx}`}
                   onClick={() => setSelectedImage(img)}
                   style={{
-                    width: '70px',
-                    height: '55px',
+                    width: '80px',
+                    height: '60px',
                     borderRadius: '8px',
                     objectFit: 'cover',
                     cursor: 'pointer',
-                    border: selectedImage === img ? '2px solid #2563eb' : '2px solid transparent',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                    border: selectedImage === img ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                    opacity: selectedImage === img ? 1 : 0.7
                   }}
                 />
               ))}
             </div>
           )}
 
-          {/* Room Description & Overview */}
+          {/* Room Specs */}
           <div style={{
             backgroundColor: '#ffffff',
             borderRadius: '16px',
             padding: '24px',
             border: '1px solid #e2e8f0',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            marginBottom: '24px'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px' }}>
-              <h2 style={{ margin: 0, fontSize: '26px', color: '#1e293b' }}>
-                Phòng Trọ Số {room.roomNumber}
-              </h2>
-              <div style={{ fontSize: '24px', fontWeight: '800', color: '#2563eb' }}>
-                {room.basePrice?.toLocaleString('vi-VN')} đ
-                <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 'normal' }}> /tháng</span>
-              </div>
+            <h1 style={{ fontSize: '26px', color: '#1e293b', margin: '0 0 8px 0' }}>
+              Phòng {room.roomNumber}
+            </h1>
+            <div style={{ fontSize: '24px', fontWeight: '800', color: '#2563eb', marginBottom: '20px' }}>
+              {Number(room.basePrice).toLocaleString('vi-VN')} đ/tháng
             </div>
 
-            {/* Quick badges */}
-            <div style={{ display: 'flex', gap: '16px', padding: '12px 0', borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', marginBottom: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', color: '#334155' }}>
-                <span>📐</span> <strong>{room.area || 20} m²</strong> diện tích
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+              gap: '12px',
+              backgroundColor: '#f8fafc',
+              padding: '16px',
+              borderRadius: '12px',
+              marginBottom: '20px'
+            }}>
+              <div>
+                <span style={{ fontSize: '12px', color: '#64748b', display: 'block' }}>Diện tích</span>
+                <strong style={{ fontSize: '16px', color: '#1e293b' }}>📐 {room.area || 20} m²</strong>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', color: '#334155' }}>
-                <span>👥</span> Tối đa <strong>{room.maxOccupants || 2} người</strong>
+              <div>
+                <span style={{ fontSize: '12px', color: '#64748b', display: 'block' }}>Sức chứa tối đa</span>
+                <strong style={{ fontSize: '16px', color: '#1e293b' }}>👥 {room.maxOccupants || 2} người</strong>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', color: '#334155' }}>
-                <span>🕒</span> Giờ giấc tự do
+              <div>
+                <span style={{ fontSize: '12px', color: '#64748b', display: 'block' }}>Trạng thái</span>
+                <strong style={{ fontSize: '16px', color: isAvailable ? '#16a34a' : '#dc2626' }}>
+                  {isAvailable ? 'Sẵn sàng ở' : room.status}
+                </strong>
               </div>
             </div>
 
             {/* Description */}
-            <h4 style={{ margin: '0 0 8px 0', color: '#0f172a' }}>Mô tả chi tiết:</h4>
-            <p style={{ margin: '0 0 20px 0', color: '#475569', lineHeight: '1.6', fontSize: '14px' }}>
-              {room.description || 'Phòng trọ đầy đủ tiện nghi, sạch sẽ thoáng mát, giờ giấc tự do không chung chủ, hệ thống camera an ninh 24/7.'}
-            </p>
+            <div style={{ marginBottom: '20px' }}>
+              <h4 style={{ margin: '0 0 8px 0', fontSize: '15px', color: '#1e293b' }}>Mô tả chi tiết:</h4>
+              <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.6', color: '#475569', whiteSpace: 'pre-line' }}>
+                {room.description || 'Chưa có thông tin mô tả chi tiết cho phòng trọ này.'}
+              </p>
+            </div>
 
-            {/* Amenities Grid */}
-            <h4 style={{ margin: '0 0 12px 0', color: '#0f172a' }}>Tiện ích phòng có sẵn:</h4>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-              gap: '10px'
-            }}>
-              {room.amenities && room.amenities.length > 0 ? (
-                room.amenities.map((item, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      backgroundColor: '#f8fafc',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '8px',
-                      padding: '8px 12px',
-                      fontSize: '13px',
-                      color: '#1e293b',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}
-                  >
-                    <span style={{ color: '#16a34a', fontWeight: 'bold' }}>✓</span> {item}
-                  </div>
-                ))
-              ) : (
-                <span style={{ color: '#94a3b8', fontSize: '13px' }}>Không có tiện ích ghi nhận</span>
-              )}
+            {/* Amenities */}
+            <div>
+              <h4 style={{ margin: '0 0 10px 0', fontSize: '15px', color: '#1e293b' }}>Tiện ích đi kèm:</h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {room.amenities && room.amenities.length > 0 ? (
+                  room.amenities.map((item, idx) => (
+                    <span
+                      key={idx}
+                      style={{
+                        backgroundColor: '#eff6ff',
+                        color: '#1d4ed8',
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      ✓ {item}
+                    </span>
+                  ))
+                ) : (
+                  <span style={{ color: '#94a3b8', fontSize: '13px' }}>Chưa cập nhật tiện ích</span>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Request Rental Form */}
+        {/* Right Column: Form Thuê Phòng Bắt Buộc CCCD */}
         <div>
           <div style={{
             backgroundColor: '#ffffff',
             borderRadius: '16px',
-            padding: '28px',
+            padding: '24px',
             border: '1px solid #e2e8f0',
             boxShadow: '0 4px 16px rgba(0,0,0,0.06)'
           }}>
-            <h3 style={{ margin: '0 0 8px 0', color: '#1e293b', fontSize: '20px' }}>
-              📝 Gửi Yêu Cầu Thuê / Giữ Phòng
+            <h3 style={{ margin: '0 0 6px 0', color: '#1e293b', fontSize: '18px' }}>
+              📝 Đăng Ký Thuê / Giữ Chỗ Phòng {room.roomNumber}
             </h3>
-            <p style={{ margin: '0 0 20px 0', color: '#64748b', fontSize: '13px' }}>
-              Điền thông tin bên dưới để gửi yêu cầu giữ phòng {room.roomNumber}. Quản lý sẽ liên hệ hẹn xem phòng trong 24h.
+            <p style={{ margin: '0 0 18px 0', color: '#64748b', fontSize: '13px' }}>
+              Điền thông tin định danh và ngày dọn vào để ban quản lý xem xét và duyệt phòng cho bạn.
             </p>
 
             {successInfo ? (
@@ -222,37 +318,63 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess 
                 backgroundColor: '#f0fdf4',
                 border: '1px solid #bbf7d0',
                 borderRadius: '12px',
-                padding: '20px',
-                color: '#166534',
-                textAlign: 'center'
+                padding: '24px 20px',
+                textAlign: 'center',
+                color: '#15803d'
               }}>
-                <div style={{ fontSize: '36px', marginBottom: '10px' }}>🎉</div>
-                <h4 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Gửi Yêu Cầu Thành Công!</h4>
-                <p style={{ margin: '0 0 12px 0', fontSize: '13px' }}>
-                  {successInfo.message}
+                <div style={{ fontSize: '48px', marginBottom: '12px' }}>🎉</div>
+                <h4 style={{ margin: '0 0 8px 0', fontSize: '18px' }}>Đã Gửi Yêu Cầu Thuê Thành Công!</h4>
+                <p style={{ margin: '0 0 14px 0', fontSize: '14px', lineHeight: '1.5', color: '#166534' }}>
+                  Yêu cầu giữ phòng <strong>{room.roomNumber}</strong> của bạn đã được chuyển tới ban quản trị.
                 </p>
-                <div style={{ backgroundColor: '#ffffff', padding: '10px', borderRadius: '8px', fontSize: '12px', border: '1px solid #dcfce7', textAlign: 'left' }}>
-                  <strong>Mã yêu cầu:</strong> {successInfo.requestId}<br/>
-                  <strong>Phòng:</strong> {successInfo.room?.roomNumber}<br/>
-                  <strong>Người gửi:</strong> {successInfo.tenant?.fullName} ({successInfo.tenant?.phone})<br/>
-                  <strong>Trạng thái:</strong> Chờ quản lý liên hệ
+
+                <div style={{
+                  backgroundColor: '#ffffff',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  textAlign: 'left',
+                  marginBottom: '20px',
+                  border: '1px solid #dcfce7'
+                }}>
+                  <div>Mã yêu cầu: <strong>#{successInfo._id || successInfo.requestId}</strong></div>
+                  <div>Khách thuê: <strong>{rentalForm.fullName}</strong></div>
+                  <div>Số CCCD: <strong>{rentalForm.identityNumber}</strong></div>
+                  <div>Trạng thái: <strong>🟡 Đang chờ duyệt</strong></div>
                 </div>
-                <button
-                  onClick={() => setSuccessInfo(null)}
-                  style={{
-                    marginTop: '16px',
-                    backgroundColor: '#16a34a',
-                    color: '#ffffff',
-                    border: 'none',
-                    padding: '8px 16px',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontSize: '13px',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  Gửi yêu cầu khác
-                </button>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <button
+                    onClick={() => setCurrentScreen && setCurrentScreen('my-requests')}
+                    style={{
+                      backgroundColor: '#2563eb',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '10px 18px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '700'
+                    }}
+                  >
+                    📋 Xem lại trạng thái yêu cầu của tôi
+                  </button>
+                  <button
+                    onClick={() => setSuccessInfo(null)}
+                    style={{
+                      backgroundColor: '#f1f5f9',
+                      color: '#475569',
+                      border: 'none',
+                      padding: '8px 16px',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '13px',
+                      fontWeight: '600'
+                    }}
+                  >
+                    Gửi yêu cầu giữ phòng khác
+                  </button>
+                </div>
               </div>
             ) : !isAvailable ? (
               <div style={{
@@ -269,21 +391,78 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess 
                   Phòng này hiện đang ở trạng thái <strong>{room.status === 'RENTED' ? 'Đã có khách thuê' : 'Đang sửa chữa/bảo trì'}</strong>. Vui lòng chọn các phòng có trạng thái <strong>Còn trống (AVAILABLE)</strong> để gửi yêu cầu.
                 </p>
               </div>
+            ) : !currentUser ? (
+              /* Yêu cầu đăng nhập trước khi gửi yêu cầu thuê */
+              <div style={{
+                backgroundColor: '#eff6ff',
+                border: '1px solid #bfdbfe',
+                borderRadius: '12px',
+                padding: '24px 20px',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '40px', marginBottom: '12px' }}>🔒</div>
+                <h4 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#1e40af' }}>
+                  Yêu Cầu Đăng Nhập Tài Khoản Khách Thuê
+                </h4>
+                <p style={{ margin: '0 0 18px 0', fontSize: '13px', color: '#3b82f6', lineHeight: '1.5' }}>
+                  Để đảm bảo tính xác thực thông tin và theo dõi tiến độ xét duyệt hợp đồng, bạn cần đăng nhập tài khoản Khách thuê trước khi gửi yêu cầu giữ phòng.
+                </p>
+                <button
+                  onClick={() => setCurrentScreen && setCurrentScreen('auth')}
+                  style={{
+                    backgroundColor: '#2563eb',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '11px 22px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)'
+                  }}
+                >
+                  🔑 Đăng nhập / Đăng ký ngay
+                </button>
+              </div>
             ) : (
               <form onSubmit={handleSubmitRental}>
-                <div style={{ marginBottom: '14px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                {/* Banner cảnh báo bắt buộc CCCD */}
+                <div style={{
+                  backgroundColor: rentalForm.identityNumber ? '#f0fdf4' : '#fffbeb',
+                  border: `1px solid ${rentalForm.identityNumber ? '#bbf7d0' : '#fde68a'}`,
+                  borderRadius: '10px',
+                  padding: '12px',
+                  marginBottom: '16px',
+                  fontSize: '12px',
+                  color: rentalForm.identityNumber ? '#15803d' : '#92400e',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <span>{rentalForm.identityNumber ? '✅' : '⚠️'}</span>
+                  <div>
+                    {rentalForm.identityNumber ? (
+                      <span>Hồ sơ đã ghi nhận CCCD: <strong>{rentalForm.identityNumber}</strong>. Vui lòng kiểm tra lại thông tin bên dưới.</span>
+                    ) : (
+                      <span><strong>BẮT BUỘC:</strong> Bạn phải điền đầy đủ số CCCD (12 số) và Quê quán theo đúng quy định để ban quản lý đăng ký tạm trú!</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* 1. Thông tin liên hệ cơ bản */}
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
                     Họ và tên của bạn: *
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="VD: Nguyễn Văn A"
+                    placeholder="VD: Phạm Văn Khánh"
                     value={rentalForm.fullName}
                     onChange={(e) => setRentalForm({ ...rentalForm, fullName: e.target.value })}
                     style={{
                       width: '100%',
-                      padding: '10px 12px',
+                      padding: '9px 12px',
                       borderRadius: '8px',
                       border: '1px solid #cbd5e1',
                       fontSize: '13px',
@@ -292,58 +471,201 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess 
                   />
                 </div>
 
-                <div style={{ marginBottom: '14px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
-                    Số điện thoại liên hệ: *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="VD: 0987654321"
-                    value={rentalForm.phone}
-                    onChange={(e) => setRentalForm({ ...rentalForm, phone: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      fontSize: '13px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                      Số điện thoại: *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="VD: 0912345678"
+                      value={rentalForm.phone}
+                      onChange={(e) => setRentalForm({ ...rentalForm, phone: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid #cbd5e1',
+                        fontSize: '13px',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                      Email liên hệ:
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="VD: khanh@gmail.com"
+                      value={rentalForm.email}
+                      onChange={(e) => setRentalForm({ ...rentalForm, email: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid #cbd5e1',
+                        fontSize: '13px',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
                 </div>
 
-                <div style={{ marginBottom: '14px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
-                    Email (nếu có):
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="VD: email@example.com"
-                    value={rentalForm.email}
-                    onChange={(e) => setRentalForm({ ...rentalForm, email: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      fontSize: '13px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
+                {/* 2. KHỐI THÔNG TIN CCCD BẮT BUỘC */}
+                <div style={{
+                  backgroundColor: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '10px',
+                  padding: '14px',
+                  marginBottom: '14px'
+                }}>
+                  <div style={{ fontSize: '13px', fontWeight: '800', color: '#1e3a8a', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>🪪</span> THÔNG TIN CĂN CƯỚC CÔNG DÂN (BẮT BUỘC)
+                  </div>
+
+                  <div style={{ marginBottom: '10px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                      Số thẻ CCCD / Hộ chiếu (12 chữ số): *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      maxLength={12}
+                      placeholder="Nhập 12 chữ số CCCD (VD: 001202008899)"
+                      value={rentalForm.identityNumber}
+                      onChange={(e) => setRentalForm({ ...rentalForm, identityNumber: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: '8px',
+                        border: rentalForm.identityNumber ? '1px solid #cbd5e1' : '1px solid #f59e0b',
+                        fontSize: '13px',
+                        boxSizing: 'border-box',
+                        fontWeight: '600'
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                        Ngày cấp:
+                      </label>
+                      <input
+                        type="date"
+                        value={rentalForm.identityIssuedDate}
+                        onChange={(e) => setRentalForm({ ...rentalForm, identityIssuedDate: e.target.value })}
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '12px',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                        Nơi cấp:
+                      </label>
+                      <input
+                        type="text"
+                        value={rentalForm.identityIssuedPlace}
+                        onChange={(e) => setRentalForm({ ...rentalForm, identityIssuedPlace: e.target.value })}
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '12px',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                        Quê quán (Tỉnh/Thành phố): *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="VD: Nam Định"
+                        value={rentalForm.hometown}
+                        onChange={(e) => setRentalForm({ ...rentalForm, hometown: e.target.value })}
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '12px',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                        Giới tính:
+                      </label>
+                      <select
+                        value={rentalForm.gender}
+                        onChange={(e) => setRentalForm({ ...rentalForm, gender: e.target.value })}
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '12px',
+                          boxSizing: 'border-box'
+                        }}
+                      >
+                        <option value="MALE">Nam</option>
+                        <option value="FEMALE">Nữ</option>
+                        <option value="OTHER">Khác</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                      Địa chỉ thường trú / hiện tại: *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="VD: Xã Yên Cường, Ý Yên, Nam Định"
+                      value={rentalForm.currentAddress}
+                      onChange={(e) => setRentalForm({ ...rentalForm, currentAddress: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px 10px',
+                        borderRadius: '8px',
+                        border: '1px solid #cbd5e1',
+                        fontSize: '12px',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
                 </div>
 
-                <div style={{ marginBottom: '14px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
-                    Ngày dự kiến chuyển vào ở:
+                {/* 3. Ngày dọn vào & Ghi chú */}
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                    Ngày dự kiến chuyển vào ở: *
                   </label>
                   <input
                     type="date"
+                    required
                     value={rentalForm.moveInDate}
                     onChange={(e) => setRentalForm({ ...rentalForm, moveInDate: e.target.value })}
                     style={{
                       width: '100%',
-                      padding: '10px 12px',
+                      padding: '9px 12px',
                       borderRadius: '8px',
                       border: '1px solid #cbd5e1',
                       fontSize: '13px',
@@ -352,18 +674,18 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess 
                   />
                 </div>
 
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
-                    Ghi chú / Yêu cầu thêm:
+                <div style={{ marginBottom: '18px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                    Ghi chú thêm cho chủ trọ:
                   </label>
                   <textarea
-                    rows={3}
-                    placeholder="VD: Em nuôi 1 chú mèo ngoan, muốn hẹn xem phòng vào thứ 7 tuần này..."
+                    rows={2}
+                    placeholder="VD: Em muốn hẹn qua xem phòng vào chiều thứ 7..."
                     value={rentalForm.note}
                     onChange={(e) => setRentalForm({ ...rentalForm, note: e.target.value })}
                     style={{
                       width: '100%',
-                      padding: '10px 12px',
+                      padding: '9px 12px',
                       borderRadius: '8px',
                       border: '1px solid #cbd5e1',
                       fontSize: '13px',
@@ -389,7 +711,7 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess 
                     boxShadow: '0 4px 10px rgba(22,163,74,0.2)'
                   }}
                 >
-                  {submitting ? '⏳ Đang gửi yêu cầu...' : '🚀 Gửi Yêu Cầu Giữ Phòng'}
+                  {submitting ? '⏳ Đang xác thực & gửi yêu cầu...' : '🚀 Xác Nhận Gửi Yêu Cầu Thuê Phòng'}
                 </button>
               </form>
             )}

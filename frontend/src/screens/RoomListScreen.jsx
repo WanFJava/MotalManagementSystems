@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function RoomListScreen({ rooms, loading, onSelectRoom, setCurrentScreen }) {
+export default function RoomListScreen({ rooms, loading, onSelectRoom, setCurrentScreen, currentUser }) {
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [quickSearch, setQuickSearch] = useState('');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'table'
@@ -69,24 +69,27 @@ export default function RoomListScreen({ rooms, loading, onSelectRoom, setCurren
             </button>
           </div>
 
-          <button
-            onClick={() => setCurrentScreen('manage')}
-            style={{
-              backgroundColor: '#2563eb',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '8px 16px',
-              fontSize: '13px',
-              fontWeight: '700',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            ➕ Thêm phòng mới
-          </button>
+          {/* Nút thêm phòng mới: Chỉ hiển thị cho Nhân viên (STAFF) và Quản lý (MANAGER) */}
+          {(currentUser?.role === 'STAFF' || currentUser?.role === 'MANAGER') && (
+            <button
+              onClick={() => setCurrentScreen('manage')}
+              style={{
+                backgroundColor: '#2563eb',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '8px 16px',
+                fontSize: '13px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              ➕ Thêm phòng mới
+            </button>
+          )}
         </div>
       </div>
 
