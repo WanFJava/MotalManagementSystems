@@ -4,8 +4,10 @@ export default function Navbar({ currentScreen, setCurrentScreen }) {
   const navItems = [
     { key: 'home', label: '🏠 Trang chủ', desc: 'Tổng quan hệ thống' },
     { key: 'rooms', label: '🛏️ Danh sách phòng', desc: 'Tất cả phòng trọ' },
-    { key: 'search', label: '🔍 Tìm kiếm & Lọc', desc: 'Tìm phòng trống' },
-    { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Dành cho quản lý/chủ trọ' }
+    { key: 'search', label: '🔍 Tìm kiếm', desc: 'Tìm phòng trống' },
+    { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Dành cho quản lý/chủ trọ' },
+    { key: 'requests', label: '📋 Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê' },
+    { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng' }
   ];
 
   return (
@@ -18,7 +20,7 @@ export default function Navbar({ currentScreen, setCurrentScreen }) {
       zIndex: 100
     }}>
       <div style={{
-        maxWidth: '1200px',
+        maxWidth: '1240px',
         margin: '0 auto',
         padding: '12px 24px',
         display: 'flex',
@@ -69,8 +71,8 @@ export default function Navbar({ currentScreen, setCurrentScreen }) {
                   color: isActive ? '#1e3a8a' : '#ffffff',
                   border: 'none',
                   borderRadius: '8px',
-                  padding: '9px 16px',
-                  fontSize: '14px',
+                  padding: '9px 14px',
+                  fontSize: '13px',
                   fontWeight: isActive ? '700' : '500',
                   cursor: 'pointer',
                   display: 'flex',
