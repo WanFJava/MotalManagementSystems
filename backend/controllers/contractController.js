@@ -97,31 +97,56 @@ exports.createContract = async (req, res) => {
       }
     }
 
+    // Kiểm tra tính đầy đủ của thông tin pháp lý CCCD cho cả 2 bên (Bên A & Bên B)
+    const missingA = [];
+    if (!landlordName || !landlordName.trim()) missingA.push('Họ và tên');
+    if (!landlordPhone || !landlordPhone.trim()) missingA.push('Số điện thoại');
+    if (!landlordCccd || !landlordCccd.trim()) missingA.push('Số CCCD');
+    if (!landlordDob) missingA.push('Ngày sinh');
+    if (!landlordAddress || !landlordAddress.trim()) missingA.push('Địa chỉ thường trú');
+
+    const missingB = [];
+    if (!tenantName || !tenantName.trim()) missingB.push('Họ và tên khách thuê');
+    if (!finalPhone || !finalPhone.trim()) missingB.push('Số điện thoại khách thuê');
+    if (!finalCccd || !finalCccd.trim()) missingB.push('Số CCCD khách thuê');
+    if (!finalDob) missingB.push('Ngày sinh khách thuê');
+    if (!finalAddress?.trim() && !finalHometown?.trim()) missingB.push('Địa chỉ thường trú/Quê quán');
+
+    if (missingA.length > 0 || missingB.length > 0) {
+      const reasons = [];
+      if (missingA.length > 0) reasons.push(`Bên cho thuê (Bên A) còn thiếu: ${missingA.join(', ')}`);
+      if (missingB.length > 0) reasons.push(`Bên thuê (Bên B) còn thiếu: ${missingB.join(', ')}`);
+      return res.status(400).json({
+        success: false,
+        message: `Thông tin cá nhân 2 bên không đủ thông tin pháp lý CCCD để lập hợp đồng! ${reasons.join('. ')}. Vui lòng yêu cầu cập nhật đủ thông tin trước khi lập hợp đồng.`
+      });
+    }
+
     const newContract = new Contract({
       room: targetRoomId,
       roomId: targetRoomId,
       signedDate: signedDate ? new Date(signedDate) : new Date(),
       // Bên A
-      landlordName: landlordName || 'Chủ nhà',
-      landlordDob: landlordDob ? new Date(landlordDob) : null,
-      landlordCccd: landlordCccd || '',
-      landlordAddress: landlordAddress || '',
-      landlordPhone: landlordPhone || '',
-      landlordWorkplace: landlordWorkplace || '',
+      landlordName: landlordName.trim(),
+      landlordDob: new Date(landlordDob),
+      landlordCccd: landlordCccd.trim(),
+      landlordAddress: landlordAddress.trim(),
+      landlordPhone: landlordPhone.trim(),
+      landlordWorkplace: landlordWorkplace?.trim() || '',
       // Bên B
       tenantId: tenantId || null,
-      tenantName: tenantName || 'Khách thuê',
-      tenantDob: finalDob ? new Date(finalDob) : null,
-      tenantDateOfBirth: finalDob ? new Date(finalDob) : null,
-      tenantCccd: finalCccd,
-      tenantIdentityNumber: finalCccd,
-      tenantAddress: finalAddress,
-      tenantHometown: finalHometown,
-      tenantPhone: finalPhone,
-      tenantWorkplace: finalWorkplace,
+      tenantName: tenantName.trim(),
+      tenantDob: new Date(finalDob),
+      tenantDateOfBirth: new Date(finalDob),
+      tenantCccd: finalCccd.trim(),
+      tenantIdentityNumber: finalCccd.trim(),
+      tenantAddress: (finalAddress || finalHometown).trim(),
+      tenantHometown: (finalHometown || finalAddress).trim(),
+      tenantPhone: finalPhone.trim(),
+      tenantWorkplace: finalWorkplace?.trim() || '',
       tenantGender: finalGender,
-      tenantIdentityIssuedDate: finalIssuedDate,
-      tenantIdentityIssuedPlace: finalIssuedPlace,
+      tenantIdentityIssuedDate: finalIssuedDate ? new Date(finalIssuedDate) : null,
+      tenantIdentityIssuedPlace: finalIssuedPlace?.trim() || '',
       // HĐ & tài chính
       startDate,
       endDate,

@@ -260,8 +260,13 @@ export default function ManageRentalRequestsScreen({ onNotify, onNavigateToCreat
                                 tenantName: req.tenantName,
                                 tenantPhone: req.tenantPhone,
                                 tenantIdentityNumber: req.identityNumber,
+                                tenantCccd: req.identityNumber,
+                                tenantDob: req.dateOfBirth ? req.dateOfBirth.slice(0, 10) : '',
+                                tenantGender: req.gender,
                                 tenantHometown: req.hometown,
-                                tenantAddress: req.currentAddress,
+                                tenantAddress: req.currentAddress || req.hometown,
+                                tenantIdentityIssuedDate: req.identityIssuedDate ? req.identityIssuedDate.slice(0, 10) : '',
+                                tenantIdentityIssuedPlace: req.identityIssuedPlace,
                                 rentalPrice: room.basePrice
                               });
                             }

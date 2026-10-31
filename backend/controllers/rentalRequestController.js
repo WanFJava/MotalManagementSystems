@@ -56,7 +56,41 @@ exports.createRentalRequest = async (req, res) => {
     const finalHometown = hometown || user?.hometown;
     if (!finalHometown || !finalHometown.trim()) {
       return res.status(400).json({ 
-        message: 'Bắt buộc phải cập nhật thông tin Quê quán trong hồ sơ mới được gửi yêu cầu thuê phòng!' 
+        message: 'Bắt buộc phải cập nhật thông tin Quê quán trong CCCD mới được gửi yêu cầu thuê phòng!' 
+      });
+    }
+
+    const finalCurrentAddress = currentAddress || user?.currentAddress || user?.address;
+    if (!finalCurrentAddress || !finalCurrentAddress.trim()) {
+      return res.status(400).json({
+        message: 'Bắt buộc phải cập nhật Địa chỉ thường trú theo CCCD mới được gửi yêu cầu thuê phòng!'
+      });
+    }
+
+    const finalDob = dateOfBirth || user?.dateOfBirth;
+    if (!finalDob) {
+      return res.status(400).json({
+        message: 'Bắt buộc phải cập nhật Ngày sinh theo CCCD mới được gửi yêu cầu thuê phòng!'
+      });
+    }
+
+    const finalIssuedDate = identityIssuedDate || user?.identityIssuedDate;
+    if (!finalIssuedDate) {
+      return res.status(400).json({
+        message: 'Bắt buộc phải cập nhật Ngày cấp Căn cước công dân mới được gửi yêu cầu thuê phòng!'
+      });
+    }
+
+    const finalIssuedPlace = identityIssuedPlace || user?.identityIssuedPlace;
+    if (!finalIssuedPlace || !finalIssuedPlace.trim()) {
+      return res.status(400).json({
+        message: 'Bắt buộc phải cập nhật Nơi cấp Căn cước công dân mới được gửi yêu cầu thuê phòng!'
+      });
+    }
+
+    if (!expectedMoveInDate) {
+      return res.status(400).json({
+        message: 'Vui lòng chọn Ngày dự kiến chuyển vào ở!'
       });
     }
 

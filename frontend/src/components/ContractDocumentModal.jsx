@@ -178,9 +178,11 @@ export default function ContractDocumentModal({ contract, onClose, onOpenCccd })
             <div style={{ fontWeight: 'bold', fontSize: '15px', color: '#1e3a8a', marginBottom: '4px' }}>
               I. BÊN CHO THUÊ (BÊN A):
             </div>
-            <div><strong>Đại diện:</strong> Ban Quản lý Tòa nhà & Nhà trọ Motel Management Systems</div>
-            <div><strong>Số điện thoại hỗ trợ:</strong> 0988.123.456 - 0912.654.321</div>
-            <div><strong>Địa chỉ:</strong> Khu Đô Thị Đại Học, TP. Hà Nội</div>
+            <div><strong>Họ và tên / Đại diện:</strong> {contract.landlordName || 'Chủ trọ / Ban Quản lý'}</div>
+            <div><strong>Số CCCD:</strong> {contract.landlordCccd || '---'} {contract.landlordDob ? `(Sinh ngày: ${new Date(contract.landlordDob).toLocaleDateString('vi-VN')})` : ''}</div>
+            <div><strong>Số điện thoại:</strong> {contract.landlordPhone || '---'}</div>
+            <div><strong>Địa chỉ thường trú:</strong> {contract.landlordAddress || '---'}</div>
+            {contract.landlordWorkplace && <div><strong>Nơi công tác / Đơn vị:</strong> {contract.landlordWorkplace}</div>}
           </div>
 
           {/* BÊN B */}
@@ -189,10 +191,11 @@ export default function ContractDocumentModal({ contract, onClose, onOpenCccd })
               II. BÊN THUÊ PHÒNG (BÊN B):
             </div>
             <div><strong>Họ và tên:</strong> <span style={{ textTransform: 'uppercase', fontWeight: 'bold' }}>{tenantName}</span></div>
-            <div><strong>Số CCCD/Định danh:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 'bold' }}>{tenantCccd}</span> {tenantDob ? `(Sinh ngày: ${new Date(tenantDob).toLocaleDateString('vi-VN')})` : ''}</div>
+            <div><strong>Số CCCD / CMND:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 'bold' }}>{contract.tenantCccd || tenantCccd}</span> {tenantDob ? `(Sinh ngày: ${new Date(tenantDob).toLocaleDateString('vi-VN')})` : ''}</div>
             <div><strong>Số điện thoại:</strong> {tenantPhone}</div>
-            <div><strong>Quê quán:</strong> {tenantHometown}</div>
-            <div><strong>Nơi thường trú:</strong> {tenantAddress}</div>
+            <div><strong>Địa chỉ thường trú:</strong> {contract.tenantAddress || tenantAddress}</div>
+            <div><strong>Quê quán:</strong> {contract.tenantHometown || tenantHometown}</div>
+            {contract.tenantWorkplace && <div><strong>Nơi công tác / Học tập:</strong> {contract.tenantWorkplace}</div>}
           </div>
 
           {/* ĐIỀU KHOẢN HỢP ĐỒNG */}

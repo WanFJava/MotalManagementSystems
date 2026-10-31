@@ -36,7 +36,11 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess,
         email: prev.email || currentUser.email || '',
         identityNumber: prev.identityNumber || currentUser.identityNumber || '',
         hometown: prev.hometown || currentUser.hometown || '',
-        currentAddress: prev.currentAddress || currentUser.currentAddress || ''
+        currentAddress: prev.currentAddress || currentUser.currentAddress || currentUser.address || '',
+        dateOfBirth: prev.dateOfBirth || (currentUser.dateOfBirth ? currentUser.dateOfBirth.slice(0, 10) : ''),
+        gender: prev.gender || currentUser.gender || 'MALE',
+        identityIssuedDate: prev.identityIssuedDate || (currentUser.identityIssuedDate ? currentUser.identityIssuedDate.slice(0, 10) : ''),
+        identityIssuedPlace: prev.identityIssuedPlace || currentUser.identityIssuedPlace || 'Cục Cảnh sát QLHC về TTXH'
       }));
     }
   }, [currentUser]);
@@ -52,7 +56,7 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess,
 
   const isAvailable = room.status === 'AVAILABLE';
 
-  // Xử lý gửi yêu cầu thuê phòng
+  // Xử lý gửi yêu cầu thuê phòng - Bắt buộc đầy đủ thông tin theo CCCD
   const handleSubmitRental = async (e) => {
     e.preventDefault();
 
@@ -62,34 +66,25 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess,
       return;
     }
 
-    if (!rentalForm.fullName.trim() || !rentalForm.phone.trim()) {
-      alert('Vui lòng cung cấp Họ tên và Số điện thoại liên hệ!');
-      return;
-    }
+    // Kiểm tra tính đầy đủ của tất cả các trường CCCD
+    const missing = [];
+    if (!rentalForm.fullName?.trim()) missing.push('Họ và tên');
+    if (!rentalForm.phone?.trim()) missing.push('Số điện thoại');
+    if (!rentalForm.identityNumber?.trim()) missing.push('Số CCCD (12 chữ số)');
+    if (!rentalForm.dateOfBirth) missing.push('Ngày sinh');
+    if (!rentalForm.identityIssuedDate) missing.push('Ngày cấp CCCD');
+    if (!rentalForm.identityIssuedPlace?.trim()) missing.push('Nơi cấp CCCD');
+    if (!rentalForm.hometown?.trim()) missing.push('Quê quán');
+    if (!rentalForm.currentAddress?.trim()) missing.push('Địa chỉ thường trú theo CCCD');
+    if (!rentalForm.moveInDate) missing.push('Ngày dự kiến dọn vào');
 
-    // Kiểm tra CCCD bắt buộc
-    if (!rentalForm.identityNumber || !rentalForm.identityNumber.trim()) {
-      alert('⚠️ BẮT BUỘC: Bạn phải cập nhật số Căn cước công dân (CCCD 12 số) mới được phép gửi yêu cầu thuê phòng!');
+    if (missing.length > 0) {
+      alert(`⚠️ BẮT BUỘC ĐỊNH DANH CCCD:\nVui lòng nhập đầy đủ các trường thông tin theo Căn cước công dân:\n- ${missing.join('\n- ')}`);
       return;
     }
 
     if (!/^\d{9,12}$/.test(rentalForm.identityNumber.trim())) {
       alert('Số CCCD không hợp lệ! Vui lòng nhập từ 9 đến 12 chữ số.');
-      return;
-    }
-
-    if (!rentalForm.hometown.trim()) {
-      alert('⚠️ BẮT BUỘC: Vui lòng cung cấp thông tin Quê quán của bạn!');
-      return;
-    }
-
-    if (!rentalForm.currentAddress.trim()) {
-      alert('⚠️ BẮT BUỘC: Vui lòng cung cấp Địa chỉ thường trú / tạm trú hiện tại!');
-      return;
-    }
-
-    if (!rentalForm.moveInDate) {
-      alert('Vui lòng chọn Ngày dự kiến chuyển vào ở!');
       return;
     }
 
@@ -114,13 +109,20 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess,
       const res = await rentalRequestClientService.createRequest(payload);
       setSuccessInfo(res.data);
 
-      // Cập nhật lại thông tin user trong LocalStorage nếu có bổ sung CCCD
+      // Cập nhật lại thông tin user trong LocalStorage với toàn bộ thông tin CCCD vừa nhập
       const storedUser = JSON.parse(localStorage.getItem('motel_user') || '{}');
       const updatedUser = {
         ...storedUser,
+        fullName: rentalForm.fullName.trim(),
+        phone: rentalForm.phone.trim(),
         identityNumber: rentalForm.identityNumber.trim(),
+        dateOfBirth: rentalForm.dateOfBirth,
+        gender: rentalForm.gender,
+        identityIssuedDate: rentalForm.identityIssuedDate,
+        identityIssuedPlace: rentalForm.identityIssuedPlace.trim(),
         hometown: rentalForm.hometown.trim(),
-        currentAddress: rentalForm.currentAddress.trim()
+        currentAddress: rentalForm.currentAddress.trim(),
+        address: rentalForm.currentAddress.trim()
       };
       localStorage.setItem('motel_user', JSON.stringify(updatedUser));
 
@@ -551,58 +553,18 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess,
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
-                        Ngày cấp:
+                        Ngày sinh (theo CCCD): *
                       </label>
                       <input
                         type="date"
-                        value={rentalForm.identityIssuedDate}
-                        onChange={(e) => setRentalForm({ ...rentalForm, identityIssuedDate: e.target.value })}
-                        style={{
-                          width: '100%',
-                          padding: '8px 10px',
-                          borderRadius: '8px',
-                          border: '1px solid #cbd5e1',
-                          fontSize: '12px',
-                          boxSizing: 'border-box'
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
-                        Nơi cấp:
-                      </label>
-                      <input
-                        type="text"
-                        value={rentalForm.identityIssuedPlace}
-                        onChange={(e) => setRentalForm({ ...rentalForm, identityIssuedPlace: e.target.value })}
-                        style={{
-                          width: '100%',
-                          padding: '8px 10px',
-                          borderRadius: '8px',
-                          border: '1px solid #cbd5e1',
-                          fontSize: '12px',
-                          boxSizing: 'border-box'
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
-                        Quê quán (Tỉnh/Thành phố): *
-                      </label>
-                      <input
-                        type="text"
                         required
-                        placeholder="VD: Nam Định"
-                        value={rentalForm.hometown}
-                        onChange={(e) => setRentalForm({ ...rentalForm, hometown: e.target.value })}
+                        value={rentalForm.dateOfBirth}
+                        onChange={(e) => setRentalForm({ ...rentalForm, dateOfBirth: e.target.value })}
                         style={{
                           width: '100%',
                           padding: '8px 10px',
                           borderRadius: '8px',
-                          border: '1px solid #cbd5e1',
+                          border: rentalForm.dateOfBirth ? '1px solid #cbd5e1' : '1px solid #f59e0b',
                           fontSize: '12px',
                           boxSizing: 'border-box'
                         }}
@@ -610,7 +572,7 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess,
                     </div>
                     <div>
                       <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
-                        Giới tính:
+                        Giới tính: *
                       </label>
                       <select
                         value={rentalForm.gender}
@@ -629,6 +591,68 @@ export default function RoomDetailScreen({ room, onBack, onRentalRequestSuccess,
                         <option value="OTHER">Khác</option>
                       </select>
                     </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                        Ngày cấp CCCD: *
+                      </label>
+                      <input
+                        type="date"
+                        required
+                        value={rentalForm.identityIssuedDate}
+                        onChange={(e) => setRentalForm({ ...rentalForm, identityIssuedDate: e.target.value })}
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px',
+                          borderRadius: '8px',
+                          border: rentalForm.identityIssuedDate ? '1px solid #cbd5e1' : '1px solid #f59e0b',
+                          fontSize: '12px',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                        Nơi cấp CCCD: *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={rentalForm.identityIssuedPlace}
+                        onChange={(e) => setRentalForm({ ...rentalForm, identityIssuedPlace: e.target.value })}
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid #cbd5e1',
+                          fontSize: '12px',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '10px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                      Quê quán (theo CCCD): *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="VD: Xã Yên Cường, Huyện Ý Yên, Tỉnh Nam Định"
+                      value={rentalForm.hometown}
+                      onChange={(e) => setRentalForm({ ...rentalForm, hometown: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '8px 10px',
+                        borderRadius: '8px',
+                        border: '1px solid #cbd5e1',
+                        fontSize: '12px',
+                        boxSizing: 'border-box'
+                      }}
+                    />
                   </div>
 
                   <div>

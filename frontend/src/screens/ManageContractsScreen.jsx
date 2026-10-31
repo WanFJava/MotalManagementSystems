@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { contractClientService } from '../services/contractClientService';
 import { roomClientService } from '../services/roomClientService';
+import { userClientService } from '../services/userClientService';
 
-export default function ManageContractsScreen({ onNotify, initialPrefill, onClearPrefill }) {
+export default function ManageContractsScreen({ currentUser, setCurrentScreen, onNotify, initialPrefill, onClearPrefill }) {
   const [contracts, setContracts] = useState([]);
   const [rooms, setRooms] = useState([]);
+  const [tenants, setTenants] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState('ALL');
 
@@ -14,21 +16,25 @@ export default function ManageContractsScreen({ onNotify, initialPrefill, onClea
   // Form Lập Hợp đồng mới
   const [showCreateForm, setShowCreateForm] = useState(!!initialPrefill);
   const [form, setForm] = useState({
-    // Bên cho thuê (Bên A - Chủ trọ)
-    landlordName: 'Nguyễn Ngọc Quang',
-    landlordDob: '1990-01-01',
-    landlordCccd: '001090012345',
-    landlordAddress: 'Số 123 Đường Cầu Giấy, P. Dịch Vọng, Q. Cầu Giấy, TP. Hà Nội',
-    landlordPhone: '0987654321',
-    landlordWorkplace: 'Công ty Quản lý Tòa nhà Motel Management',
+    // Bên cho thuê (Bên A - Lấy đúng theo role đăng nhập: MANAGER / STAFF)
+    landlordName: currentUser?.fullName || '',
+    landlordDob: currentUser?.dateOfBirth ? currentUser.dateOfBirth.slice(0, 10) : '',
+    landlordCccd: currentUser?.identityNumber || '',
+    landlordAddress: currentUser?.currentAddress || currentUser?.address || currentUser?.hometown || '',
+    landlordPhone: currentUser?.phone || '',
+    landlordWorkplace: currentUser?.workplace || '',
 
-    // Bên thuê (Bên B - Khách trọ)
+    // Bên thuê (Bên B - Lấy từ CCCD người thuê / Đơn yêu cầu thuê đã duyệt)
+    tenantId: initialPrefill?.tenantId || '',
     tenantName: initialPrefill?.tenantName || '',
-    tenantDob: '2004-05-15',
-    tenantCccd: '038204001234',
-    tenantAddress: 'Xã Phú Minh, Huyện Sóc Sơn, TP. Hà Nội',
-    tenantPhone: '0912345678',
-    tenantWorkplace: 'Đại học FPT Hà Nội',
+    tenantDob: initialPrefill?.tenantDob ? initialPrefill.tenantDob.slice(0, 10) : (initialPrefill?.dateOfBirth ? initialPrefill.dateOfBirth.slice(0, 10) : ''),
+    tenantCccd: initialPrefill?.tenantCccd || initialPrefill?.tenantIdentityNumber || '',
+    tenantAddress: initialPrefill?.tenantAddress || initialPrefill?.currentAddress || initialPrefill?.hometown || '',
+    tenantPhone: initialPrefill?.tenantPhone || initialPrefill?.phone || '',
+    tenantWorkplace: initialPrefill?.tenantWorkplace || '',
+    tenantGender: initialPrefill?.tenantGender || initialPrefill?.gender || 'MALE',
+    tenantIdentityIssuedDate: initialPrefill?.tenantIdentityIssuedDate ? initialPrefill.tenantIdentityIssuedDate.slice(0, 10) : '',
+    tenantIdentityIssuedPlace: initialPrefill?.tenantIdentityIssuedPlace || '',
 
     // Thông tin hợp đồng & tài chính
     signedDate: new Date().toISOString().split('T')[0],
@@ -43,18 +49,41 @@ export default function ManageContractsScreen({ onNotify, initialPrefill, onClea
   useEffect(() => {
     fetchContracts();
     fetchRooms();
+    fetchTenants();
   }, []);
 
+  // Tự động đồng bộ thông tin Bên A khi currentUser được tải hoặc thay đổi
+  useEffect(() => {
+    if (currentUser) {
+      setForm((prev) => ({
+        ...prev,
+        landlordName: prev.landlordName || currentUser.fullName || '',
+        landlordDob: prev.landlordDob || (currentUser.dateOfBirth ? currentUser.dateOfBirth.slice(0, 10) : ''),
+        landlordCccd: prev.landlordCccd || currentUser.identityNumber || '',
+        landlordAddress: prev.landlordAddress || currentUser.currentAddress || currentUser.address || currentUser.hometown || '',
+        landlordPhone: prev.landlordPhone || currentUser.phone || '',
+        landlordWorkplace: prev.landlordWorkplace || currentUser.workplace || ''
+      }));
+    }
+  }, [currentUser]);
+
+  // Tự động điền thông tin Bên B khi nhận initialPrefill từ Yêu cầu thuê
   useEffect(() => {
     if (initialPrefill) {
       setShowCreateForm(true);
       setForm((prev) => ({
         ...prev,
         roomId: initialPrefill.roomId || prev.roomId,
+        tenantId: initialPrefill.tenantId || prev.tenantId || '',
         tenantName: initialPrefill.tenantName || prev.tenantName,
-        tenantPhone: initialPrefill.tenantPhone || prev.tenantPhone,
+        tenantPhone: initialPrefill.tenantPhone || initialPrefill.phone || prev.tenantPhone,
         tenantCccd: initialPrefill.tenantCccd || initialPrefill.tenantIdentityNumber || prev.tenantCccd,
-        tenantAddress: initialPrefill.tenantAddress || prev.tenantAddress,
+        tenantDob: initialPrefill.tenantDob ? initialPrefill.tenantDob.slice(0, 10) : (initialPrefill.dateOfBirth ? initialPrefill.dateOfBirth.slice(0, 10) : prev.tenantDob),
+        tenantAddress: initialPrefill.tenantAddress || initialPrefill.currentAddress || initialPrefill.hometown || prev.tenantAddress,
+        tenantWorkplace: initialPrefill.tenantWorkplace || prev.tenantWorkplace,
+        tenantGender: initialPrefill.tenantGender || initialPrefill.gender || prev.tenantGender,
+        tenantIdentityIssuedDate: initialPrefill.tenantIdentityIssuedDate ? initialPrefill.tenantIdentityIssuedDate.slice(0, 10) : prev.tenantIdentityIssuedDate,
+        tenantIdentityIssuedPlace: initialPrefill.tenantIdentityIssuedPlace || prev.tenantIdentityIssuedPlace,
         rentalPrice: initialPrefill.rentalPrice || prev.rentalPrice
       }));
     }
@@ -81,6 +110,15 @@ export default function ManageContractsScreen({ onNotify, initialPrefill, onClea
     }
   };
 
+  const fetchTenants = async () => {
+    try {
+      const data = await userClientService.getTenants();
+      setTenants(data);
+    } catch (err) {
+      console.error('Lỗi tải danh sách khách thuê:', err);
+    }
+  };
+
   const handleSelectRoom = (roomId) => {
     const r = rooms.find(item => item._id === roomId);
     setForm({
@@ -90,11 +128,68 @@ export default function ManageContractsScreen({ onNotify, initialPrefill, onClea
     });
   };
 
-  // UC05: Tạo hợp đồng mới
+  // Chọn khách thuê từ danh sách khách thuê để auto-fill thông tin CCCD thật
+  const handleSelectTenant = (tenantId) => {
+    if (!tenantId) {
+      return;
+    }
+    const t = tenants.find((item) => item._id === tenantId);
+    if (!t) return;
+
+    setForm((prev) => ({
+      ...prev,
+      tenantId: t._id,
+      tenantName: t.fullName || '',
+      tenantPhone: t.phone || '',
+      tenantCccd: t.identityNumber || '',
+      tenantDob: t.dateOfBirth ? t.dateOfBirth.slice(0, 10) : '',
+      tenantAddress: t.currentAddress || t.address || t.hometown || '',
+      tenantWorkplace: t.workplace || '',
+      tenantGender: t.gender || 'MALE',
+      tenantIdentityIssuedDate: t.identityIssuedDate ? t.identityIssuedDate.slice(0, 10) : '',
+      tenantIdentityIssuedPlace: t.identityIssuedPlace || ''
+    }));
+  };
+
+  // Kiểm tra danh sách các trường còn thiếu của Bên A và Bên B
+  const missingA = [];
+  if (!form.landlordName?.trim()) missingA.push('Họ và tên');
+  if (!form.landlordPhone?.trim()) missingA.push('Số điện thoại');
+  if (!form.landlordCccd?.trim()) missingA.push('Số CCCD');
+  if (!form.landlordDob) missingA.push('Ngày sinh');
+  if (!form.landlordAddress?.trim()) missingA.push('Địa chỉ thường trú');
+
+  const missingB = [];
+  if (!form.tenantName?.trim()) missingB.push('Họ và tên');
+  if (!form.tenantPhone?.trim()) missingB.push('Số điện thoại');
+  if (!form.tenantCccd?.trim()) missingB.push('Số CCCD');
+  if (!form.tenantDob) missingB.push('Ngày sinh');
+  if (!form.tenantAddress?.trim()) missingB.push('Địa chỉ thường trú');
+
+  // UC05: Tạo hợp đồng mới - Kiểm tra đủ điều kiện thông tin 2 bên
   const handleSubmitContract = async (e) => {
     e.preventDefault();
-    if (!form.roomId || !form.tenantName || !form.startDate || !form.endDate || !form.depositAmount || !form.rentalPrice) {
-      alert('Vui lòng điền đầy đủ các trường bắt buộc (*)!');
+    if (!form.roomId) {
+      alert('Vui lòng chọn Phòng trọ để lập hợp đồng!');
+      return;
+    }
+    if (!form.startDate || !form.endDate || !form.depositAmount || !form.rentalPrice) {
+      alert('Vui lòng điền đầy đủ các thông tin điều khoản và tài chính (*)!');
+      return;
+    }
+
+    // Kiểm tra tính đầy đủ thông tin pháp lý CCCD của 2 bên
+    if (missingA.length > 0 || missingB.length > 0) {
+      let errorMsg = '⚠️ KHÔNG ĐỦ THÔNG TIN ĐỊNH DANH ĐỂ LẬP HỢP ĐỒNG PHÁP LÝ:\n';
+      if (missingA.length > 0) {
+        errorMsg += `\n• Bên cho thuê (Bên A) còn thiếu: ${missingA.join(', ')}`;
+      }
+      if (missingB.length > 0) {
+        errorMsg += `\n• Bên thuê (Bên B) còn thiếu: ${missingB.join(', ')}`;
+      }
+      errorMsg += '\n\nVui lòng cập nhật đầy đủ thông tin Căn cước công dân (CCCD) của cả 2 bên trước khi tạo hợp đồng!';
+      alert(errorMsg);
+      if (onNotify) onNotify('Thông tin cá nhân 2 bên chưa đủ để lập hợp đồng! Vui lòng cập nhật đủ.', 'error');
       return;
     }
 
@@ -235,37 +330,89 @@ export default function ManageContractsScreen({ onNotify, initialPrefill, onClea
           <form onSubmit={handleSubmitContract}>
             {/* PHẦN 1: BÊN CHO THUÊ (BÊN A) */}
             <div style={{ backgroundColor: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
-              <h4 style={{ margin: '0 0 12px 0', color: '#1e3a8a', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>🏢</span> I. THÔNG TIN BÊN CHO THUÊ (BÊN A - CHỦ NHÀ / ĐẠI DIỆN)
-              </h4>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                <h4 style={{ margin: 0, color: '#1e3a8a', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span>🏢</span> I. THÔNG TIN BÊN CHO THUÊ (BÊN A - {currentUser?.role === 'MANAGER' ? 'CHỦ TRỌ' : 'QUẢN LÝ / NHÂN VIÊN'})
+                </h4>
+                <span style={{ fontSize: '12px', color: '#64748b' }}>
+                  Tự động điền từ tài khoản đăng nhập: <strong>{currentUser?.fullName || 'Chưa đăng nhập'}</strong>
+                </span>
+              </div>
+
+              {missingA.length > 0 && (
+                <div style={{
+                  backgroundColor: '#fef2f2',
+                  border: '1px solid #f87171',
+                  borderRadius: '8px',
+                  padding: '12px 14px',
+                  marginBottom: '14px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '10px'
+                }}>
+                  <div>
+                    <strong style={{ color: '#991b1b', fontSize: '13px' }}>
+                      ⚠️ Hồ sơ Bên cho thuê (Bên A - Bạn) chưa đủ thông tin pháp lý CCCD để lập hợp đồng:
+                    </strong>
+                    <div style={{ color: '#b91c1c', fontSize: '12px', marginTop: '2px' }}>
+                      Còn thiếu: <strong>{missingA.join(', ')}</strong>. Vui lòng nhập trực tiếp bên dưới hoặc bấm nút để cập nhật vào Hồ sơ cá nhân.
+                    </div>
+                  </div>
+                  {setCurrentScreen && (
+                    <button
+                      type="button"
+                      onClick={() => setCurrentScreen('profile')}
+                      style={{
+                        backgroundColor: '#dc2626',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '6px 12px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      ✏️ Cập nhật Profile
+                    </button>
+                  )}
+                </div>
+              )}
+
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Họ và tên bên cho thuê: *</label>
                   <input
                     type="text"
                     required
+                    placeholder="VD: Nguyễn Văn A"
                     value={form.landlordName}
                     onChange={(e) => setForm({ ...form, landlordName: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: form.landlordName ? '1px solid #cbd5e1' : '1px solid #ef4444', fontSize: '13px', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Ngày tháng năm sinh:</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Ngày tháng năm sinh: *</label>
                   <input
                     type="date"
+                    required
                     value={form.landlordDob}
                     onChange={(e) => setForm({ ...form, landlordDob: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: form.landlordDob ? '1px solid #cbd5e1' : '1px solid #ef4444', fontSize: '13px', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Số CCCD / CMND: *</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Số CCCD / CMND (12 số): *</label>
                   <input
                     type="text"
                     required
+                    maxLength={12}
+                    placeholder="VD: 001090012345"
                     value={form.landlordCccd}
                     onChange={(e) => setForm({ ...form, landlordCccd: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: form.landlordCccd ? '1px solid #cbd5e1' : '1px solid #ef4444', fontSize: '13px', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
@@ -273,25 +420,28 @@ export default function ManageContractsScreen({ onNotify, initialPrefill, onClea
                   <input
                     type="tel"
                     required
+                    placeholder="VD: 0987654321"
                     value={form.landlordPhone}
                     onChange={(e) => setForm({ ...form, landlordPhone: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: form.landlordPhone ? '1px solid #cbd5e1' : '1px solid #ef4444', fontSize: '13px', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Địa chỉ thường trú: *</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Địa chỉ thường trú theo CCCD: *</label>
                   <input
                     type="text"
                     required
+                    placeholder="VD: Số 123 Đường Cầu Giấy, Cầu Giấy, Hà Nội"
                     value={form.landlordAddress}
                     onChange={(e) => setForm({ ...form, landlordAddress: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: form.landlordAddress ? '1px solid #cbd5e1' : '1px solid #ef4444', fontSize: '13px', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Nơi công tác / Đơn vị:</label>
                   <input
                     type="text"
+                    placeholder="VD: Ban Quản lý Khu Nhà trọ"
                     value={form.landlordWorkplace}
                     onChange={(e) => setForm({ ...form, landlordWorkplace: e.target.value })}
                     style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
@@ -302,58 +452,105 @@ export default function ManageContractsScreen({ onNotify, initialPrefill, onClea
 
             {/* PHẦN 2: BÊN THUÊ (BÊN B) */}
             <div style={{ backgroundColor: '#f0fdf4', padding: '16px', borderRadius: '12px', border: '1px solid #bbf7d0', marginBottom: '20px' }}>
-              <h4 style={{ margin: '0 0 12px 0', color: '#166534', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>👤</span> II. THÔNG TIN BÊN THUÊ (BÊN B - KHÁCH TRỌ)
-              </h4>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                <h4 style={{ margin: 0, color: '#166534', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span>👤</span> II. THÔNG TIN BÊN THUÊ (BÊN B - KHÁCH TRỌ)
+                </h4>
+                <span style={{ fontSize: '12px', color: '#15803d' }}>
+                  Lấy từ CCCD người thuê hoặc hồ sơ yêu cầu thuê phòng đã duyệt
+                </span>
+              </div>
+
+              {/* Chọn khách thuê từ danh sách hệ thống */}
+              <div style={{ marginBottom: '14px', backgroundColor: '#ffffff', padding: '10px 12px', borderRadius: '8px', border: '1px solid #86efac' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#166534' }}>
+                  🔍 Chọn nhanh từ danh sách khách thuê đã có tài khoản / CCCD trong hệ thống:
+                </label>
+                <select
+                  onChange={(e) => handleSelectTenant(e.target.value)}
+                  value={form.tenantId || ''}
+                  style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', backgroundColor: '#ffffff', boxSizing: 'border-box' }}
+                >
+                  <option value="">-- Chọn khách thuê để tự động điền CCCD thật (hoặc giữ thông tin từ đơn thuê) --</option>
+                  {tenants.map((t) => (
+                    <option key={t._id} value={t._id}>
+                      {t.fullName} - SĐT: {t.phone} {t.identityNumber ? `| CCCD: ${t.identityNumber}` : '| (Chưa cập nhật CCCD)'}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {missingB.length > 0 && (
+                <div style={{
+                  backgroundColor: '#fffbeb',
+                  border: '1px solid #f59e0b',
+                  borderRadius: '8px',
+                  padding: '12px 14px',
+                  marginBottom: '14px'
+                }}>
+                  <strong style={{ color: '#92400e', fontSize: '13px' }}>
+                    ⚠️ Bên thuê (Bên B) chưa đủ điều kiện thông tin định danh CCCD để lập hợp đồng:
+                  </strong>
+                  <div style={{ color: '#b45309', fontSize: '12px', marginTop: '2px' }}>
+                    Còn thiếu: <strong>{missingB.join(', ')}</strong>. Vui lòng yêu cầu khách thuê hoàn thiện hồ sơ hoặc nhập chính xác theo Căn cước công dân của khách thuê trước khi lập hợp đồng.
+                  </div>
+                </div>
+              )}
+
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Họ và tên khách thuê: *</label>
                   <input
                     type="text"
                     required
-                    placeholder="VD: Nguyễn Văn Đức"
+                    placeholder="VD: Nguyễn Văn B"
                     value={form.tenantName}
                     onChange={(e) => setForm({ ...form, tenantName: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: form.tenantName ? '1px solid #cbd5e1' : '1px solid #ef4444', fontSize: '13px', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Ngày tháng năm sinh:</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Ngày tháng năm sinh: *</label>
                   <input
                     type="date"
+                    required
                     value={form.tenantDob}
                     onChange={(e) => setForm({ ...form, tenantDob: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: form.tenantDob ? '1px solid #cbd5e1' : '1px solid #ef4444', fontSize: '13px', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Số CCCD / CMND:</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Số CCCD / CMND (12 số): *</label>
                   <input
                     type="text"
+                    required
+                    maxLength={12}
                     placeholder="VD: 038204001234"
                     value={form.tenantCccd}
                     onChange={(e) => setForm({ ...form, tenantCccd: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: form.tenantCccd ? '1px solid #cbd5e1' : '1px solid #ef4444', fontSize: '13px', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Số điện thoại liên hệ:</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Số điện thoại liên hệ: *</label>
                   <input
                     type="tel"
+                    required
                     placeholder="VD: 0912345678"
                     value={form.tenantPhone}
                     onChange={(e) => setForm({ ...form, tenantPhone: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: form.tenantPhone ? '1px solid #cbd5e1' : '1px solid #ef4444', fontSize: '13px', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Địa chỉ thường trú:</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', marginBottom: '4px', color: '#334155' }}>Địa chỉ thường trú theo CCCD: *</label>
                   <input
                     type="text"
-                    placeholder="VD: Xã Phú Minh, H. Sóc Sơn, Hà Nội"
+                    required
+                    placeholder="VD: Xã Yên Cường, Ý Yên, Nam Định"
                     value={form.tenantAddress}
                     onChange={(e) => setForm({ ...form, tenantAddress: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: '6px', border: form.tenantAddress ? '1px solid #cbd5e1' : '1px solid #ef4444', fontSize: '13px', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
@@ -735,27 +932,27 @@ export default function ManageContractsScreen({ onNotify, initialPrefill, onClea
                   <tbody>
                     <tr>
                       <td style={{ width: '220px', padding: '3px 0' }}>• Họ và tên:</td>
-                      <td style={{ fontWeight: 'bold' }}>{viewContract.landlordName || 'Nguyễn Ngọc Quang'}</td>
+                      <td style={{ fontWeight: 'bold' }}>{viewContract.landlordName || '---'}</td>
                     </tr>
                     <tr>
                       <td style={{ padding: '3px 0' }}>• Ngày tháng năm sinh:</td>
-                      <td>{formatDate(viewContract.landlordDob) !== '---' ? formatDate(viewContract.landlordDob) : '01/01/1990'}</td>
+                      <td>{formatDate(viewContract.landlordDob)}</td>
                     </tr>
                     <tr>
                       <td style={{ padding: '3px 0' }}>• CMND / CCCD số:</td>
-                      <td style={{ fontWeight: 'bold' }}>{viewContract.landlordCccd || '001090012345'}</td>
+                      <td style={{ fontWeight: 'bold' }}>{viewContract.landlordCccd || '---'}</td>
                     </tr>
                     <tr>
                       <td style={{ padding: '3px 0' }}>• Địa chỉ thường trú:</td>
-                      <td>{viewContract.landlordAddress || 'Số 123 Đường Cầu Giấy, P. Dịch Vọng, Q. Cầu Giấy, TP. Hà Nội'}</td>
+                      <td>{viewContract.landlordAddress || '---'}</td>
                     </tr>
                     <tr>
                       <td style={{ padding: '3px 0' }}>• Số điện thoại liên hệ:</td>
-                      <td style={{ fontWeight: 'bold' }}>{viewContract.landlordPhone || '0987654321'}</td>
+                      <td style={{ fontWeight: 'bold' }}>{viewContract.landlordPhone || '---'}</td>
                     </tr>
                     <tr>
-                      <td style={{ padding: '3px 0' }}>• Nơi công tác:</td>
-                      <td>{viewContract.landlordWorkplace || 'Công ty Quản lý Tòa nhà Motel Management'}</td>
+                      <td style={{ padding: '3px 0' }}>• Nơi công tác / Đơn vị:</td>
+                      <td>{viewContract.landlordWorkplace || '---'}</td>
                     </tr>
                   </tbody>
                 </table>
