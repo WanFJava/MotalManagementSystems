@@ -34,6 +34,11 @@ export const invoiceClientService = {
     return res.data;
   },
 
+  simulateVNPaySuccess: async (invoiceId) => {
+    const res = await axios.post(`${PAYMENT_API_URL}/simulate-success`, { invoiceId });
+    return res.data;
+  },
+
   deleteInvoice: async (id) => {
     const res = await axios.delete(`${API_BASE_URL}/${id}`);
     return res.data;

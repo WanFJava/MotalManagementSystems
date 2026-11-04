@@ -43,7 +43,7 @@ export default function UtilityScreen({ navigation }) {
 
   const handleSave = async () => {
     if (Number(newElec) < Number(oldElec)) {
-      Alert.alert('Lỗi nghiệp vụ', 'Chỉ số điện mới không được nhỏ hơn chỉ số cũ! (TC_INV_01)');
+      Alert.alert('Lỗi nghiệp vụ', 'Chỉ số điện mới không được nhỏ hơn chỉ số cũ!');
       return;
     }
     if (Number(newWater) < Number(oldWater)) {
@@ -75,7 +75,7 @@ export default function UtilityScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>⚡ Quản lý Chỉ số Điện & Nước (UC07)</Text>
+      <Text style={styles.title}>⚡ Quản lý Chỉ số Điện & Nước</Text>
       <Text style={styles.subtitle}>Ghi chỉ số công tơ điện nước hàng tháng cho từng phòng</Text>
 
       {/* Form nhập chỉ số */}

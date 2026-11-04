@@ -146,7 +146,7 @@ export default function ManageTenantScreen({ onNotify }) {
             👥 Quản Lý Hồ Sơ Khách Thuê (Tenant Profile)
           </h1>
           <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>
-            Đặc tả <strong>UC06: Manage Tenant Information</strong> • Quản lý CCCD/Hộ chiếu, tạm trú & phòng cư trú
+            Quản lý CCCD/Hộ chiếu, tạm trú & phòng cư trú
           </p>
         </div>
 

@@ -129,7 +129,7 @@ export default function ContractDetailScreen({ route, navigation }) {
             </Text>
           </View>
         </View>
-        <Text style={styles.contractCode}>Mã HĐ: {contract._id}</Text>
+        <Text style={styles.contractCode}>MÃ HỢP ĐỒNG: #{contract._id?.slice(-8).toUpperCase()}</Text>
         <Text style={styles.signDate}>Ngày ký hợp đồng: {formatDate(contract.signedDate || contract.createdAt)}</Text>
       </View>
 

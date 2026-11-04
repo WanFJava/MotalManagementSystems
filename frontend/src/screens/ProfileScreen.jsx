@@ -490,7 +490,7 @@ export default function ProfileScreen({ currentUser, setCurrentUser, onNotify, s
             color: '#334155',
             lineHeight: '1.6'
           }}>
-            <strong>📌 Quy định & Điều kiện Khai báo Tạm trú (Theo Luật Cư trú & UC06):</strong>
+            <strong>📌 Quy định & Điều kiện Khai báo Tạm trú (Theo Luật Cư trú):</strong>
             <ul style={{ margin: '4px 0 0 0', paddingLeft: '18px' }}>
               <li><strong>Bước 1 - Khách thuê nộp hồ sơ:</strong> Điền chính xác số CCCD (12 chữ số), Quê quán/Thường trú, Nơi ở hiện tại và ảnh 2 mặt CCCD. Khi điền đủ thông tin, hệ thống tự động ghi nhận hồ sơ hợp lệ (<em>🟠 Chờ xác nhận</em>).</li>
               <li><strong>Bước 2 - Chủ trọ nộp Công an & Phê duyệt:</strong> Theo Luật Cư trú, Chủ nhà trọ là bên có trách nhiệm pháp lý đăng ký tạm trú cho khách với Công an xã/phường. Sau khi nộp thành công trên Cổng dịch vụ công Cư trú, Chủ trọ sẽ duyệt trạng thái sang <strong>🟢 Đã Khai Báo Tạm Trú</strong> tại mục <em>Quản lý khách thuê</em>.</li>

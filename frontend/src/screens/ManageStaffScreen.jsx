@@ -134,7 +134,7 @@ export default function ManageStaffScreen({ onNotify, currentUser }) {
             🛡️ Quản Lý Đội Ngũ Nhân Viên (Staff Management)
           </h1>
           <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>
-            Đặc tả <strong>UC15: Manage Staff</strong> • Thêm nhân viên, phân quyền và khóa/mở khóa tài khoản (TC_USER_04)
+            Thêm nhân viên, phân quyền và khóa/mở khóa tài khoản
           </p>
         </div>
 

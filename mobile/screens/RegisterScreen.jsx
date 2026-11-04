@@ -13,13 +13,20 @@ import {
 } from 'react-native';
 import { authApi } from '../services/api';
 
+/**
+ * Màn hình Đăng Ký Tài Khoản Khách Thuê (RegisterScreen)
+ * Đồng bộ chuẩn 100% với Web (frontend/src/screens/AuthScreen.jsx)
+ * - Tab Switch trên cùng: [ 🔑 Đăng Nhập ] | [ 📝 Đăng Ký Khách Thuê ]
+ * - Các trường: Họ và tên, SĐT, Email, Mật khẩu, Xác nhận mật khẩu
+ * - Box lưu ý phân quyền mặc định là Khách thuê (Tenant)
+ * - Nút submit xanh lá [#10b981]: "📝 Hoàn Tất Đăng Ký"
+ */
 export default function RegisterScreen({ navigation }) {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('TENANT');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -58,23 +65,23 @@ export default function RegisterScreen({ navigation }) {
         phone: phone.trim(),
         email: email.trim(),
         password,
-        role
+        role: 'TENANT' // Tài khoản đăng ký qua cổng người dùng luôn là Khách thuê
       });
 
       if (res.data && res.data.success) {
         Alert.alert(
           'Đăng ký thành công 🎉',
-          `Tài khoản "${fullName}" đã được tạo thành công! Hãy đăng nhập để bắt đầu trải nghiệm.`,
+          `Tài khoản "${fullName}" đã được tạo thành công! Bạn có thể đăng nhập ngay.`,
           [
             {
-              text: 'Đến Đăng Nhập',
-              onPress: () => navigation.navigate('Login')
+              text: 'Đến Đăng Nhập Ngay',
+              onPress: () => navigation.navigate('Login', { fillPhone: phone.trim(), fillPass: password })
             }
           ]
         );
       }
     } catch (err) {
-      const errMsg = err.response?.data?.message || 'Đăng ký tài khoản thất bại!';
+      const errMsg = err.response?.data?.message || 'Đăng ký tài khoản thất bại. Vui lòng thử lại!';
       setError(errMsg);
     } finally {
       setLoading(false);
@@ -87,14 +94,31 @@ export default function RegisterScreen({ navigation }) {
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Tạo Tài Khoản Mới</Text>
-          <Text style={styles.subtitle}>Phân hệ Xác thực & Khách thuê (UC01 / TC_USER_01)</Text>
+        {/* Header Switch Tabs Đồng bộ chuẩn Web */}
+        <View style={styles.tabHeader}>
+          <TouchableOpacity
+            style={styles.tabBtn}
+            onPress={() => navigation.navigate('Login')}
+          >
+            <Text style={styles.tabBtnText}>🔑 Đăng Nhập</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.tabBtn, styles.tabBtnActive]}
+          >
+            <Text style={[styles.tabBtnText, styles.tabBtnTextActive]}>
+              📝 Đăng Ký Khách Thuê
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Card */}
+        {/* Card Form */}
         <View style={styles.card}>
+          <Text style={styles.cardTitle}>Tạo Tài Khoản Khách Thuê Mới</Text>
+          <Text style={styles.cardSubtitle}>
+            Đăng ký tài khoản để tìm phòng, đặt thuê phòng và thanh toán hóa đơn trực tuyến
+          </Text>
+
           {error ? (
             <View style={styles.errorBox}>
               <Text style={styles.errorText}>⚠️ {error}</Text>
@@ -126,12 +150,12 @@ export default function RegisterScreen({ navigation }) {
             />
           </View>
 
-          {/* Email */}
+          {/* Địa chỉ Email */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Địa chỉ Email <Text style={styles.req}>*</Text></Text>
             <TextInput
               style={styles.input}
-              placeholder="VD: user@motel.com"
+              placeholder="VD: email@domain.com"
               placeholderTextColor="#9ca3af"
               value={email}
               onChangeText={setEmail}
@@ -140,35 +164,12 @@ export default function RegisterScreen({ navigation }) {
             />
           </View>
 
-          {/* Vai trò */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Vai trò người dùng</Text>
-            <View style={styles.roleRow}>
-              <TouchableOpacity
-                style={[styles.roleBtn, role === 'TENANT' && styles.roleBtnActive]}
-                onPress={() => setRole('TENANT')}
-              >
-                <Text style={[styles.roleBtnText, role === 'TENANT' && styles.roleBtnTextActive]}>
-                  👤 Khách thuê trọ
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.roleBtn, role === 'MANAGER' && styles.roleBtnActive]}
-                onPress={() => setRole('MANAGER')}
-              >
-                <Text style={[styles.roleBtnText, role === 'MANAGER' && styles.roleBtnTextActive]}>
-                  👑 Quản lý / Chủ trọ
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
           {/* Mật khẩu */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Mật khẩu <Text style={styles.req}>*</Text></Text>
             <TextInput
               style={styles.input}
-              placeholder="Tối thiểu 6 ký tự"
+              placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)"
               placeholderTextColor="#9ca3af"
               value={password}
               onChangeText={setPassword}
@@ -176,12 +177,12 @@ export default function RegisterScreen({ navigation }) {
             />
           </View>
 
-          {/* Nhập lại mật khẩu */}
+          {/* Xác nhận Mật khẩu */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Xác nhận mật khẩu <Text style={styles.req}>*</Text></Text>
             <TextInput
               style={styles.input}
-              placeholder="Nhập lại chính xác mật khẩu"
+              placeholder="Nhập lại chính xác mật khẩu..."
               placeholderTextColor="#9ca3af"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
@@ -189,6 +190,14 @@ export default function RegisterScreen({ navigation }) {
             />
           </View>
 
+          {/* Box ghi chú phân quyền mặc định giống Web */}
+          <View style={styles.infoBox}>
+            <Text style={styles.infoBoxText}>
+              ℹ️ Tài khoản đăng ký tại đây sẽ có vai trò là <Text style={{ fontWeight: '800' }}>Khách thuê (Tenant)</Text>. Nếu bạn là nhân viên vận hành, vui lòng liên hệ Chủ trọ (Manager) để được cấp tài khoản.
+            </Text>
+          </View>
+
+          {/* Nút Đăng ký xanh lá chuẩn Web */}
           <TouchableOpacity
             style={[styles.submitBtn, loading && styles.btnDisabled]}
             onPress={handleRegister}
@@ -197,7 +206,7 @@ export default function RegisterScreen({ navigation }) {
             {loading ? (
               <ActivityIndicator color="#ffffff" />
             ) : (
-              <Text style={styles.submitBtnText}>HOÀN TẤT ĐĂNG KÝ</Text>
+              <Text style={styles.submitBtnText}>📝 Hoàn Tất Đăng Ký</Text>
             )}
           </TouchableOpacity>
 
@@ -214,62 +223,72 @@ export default function RegisterScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f3f4f6',
-  },
-  scrollContent: {
-    padding: 20,
-    paddingTop: 10,
-  },
-  header: {
-    alignItems: 'center',
+  container: { flex: 1, backgroundColor: '#f1f5f9' },
+  scrollContent: { padding: 16, paddingBottom: 40 },
+  tabHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#ffffff',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    overflow: 'hidden',
     marginBottom: 16,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#0f172a',
+  tabBtn: {
+    flex: 1,
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: '#f8fafc',
   },
-  subtitle: {
-    fontSize: 13,
+  tabBtnActive: {
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 3,
+    borderBottomColor: '#2563eb',
+  },
+  tabBtnText: {
+    fontSize: 14,
+    fontWeight: '600',
     color: '#64748b',
-    marginTop: 4,
+  },
+  tabBtnTextActive: {
+    color: '#2563eb',
+    fontWeight: '800',
   },
   card: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 20,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
     shadowColor: '#000',
     shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 4 },
     shadowRadius: 10,
     elevation: 3,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#0f172a',
+    marginBottom: 4,
+  },
+  cardSubtitle: {
+    fontSize: 13,
+    color: '#64748b',
+    marginBottom: 16,
+    lineHeight: 18,
   },
   errorBox: {
     backgroundColor: '#fef2f2',
     borderWidth: 1,
     borderColor: '#fecaca',
-    borderRadius: 8,
     padding: 10,
+    borderRadius: 8,
     marginBottom: 14,
   },
-  errorText: {
-    color: '#dc2626',
-    fontSize: 13,
-  },
-  inputGroup: {
-    marginBottom: 14,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#334155',
-    marginBottom: 6,
-  },
-  req: {
-    color: '#ef4444',
-  },
+  errorText: { color: '#dc2626', fontSize: 13, fontWeight: '600' },
+  inputGroup: { marginBottom: 14 },
+  label: { fontSize: 13, fontWeight: '700', color: '#334155', marginBottom: 6 },
+  req: { color: '#dc2626' },
   input: {
     backgroundColor: '#f8fafc',
     borderWidth: 1,
@@ -280,60 +299,37 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#0f172a',
   },
-  roleRow: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  roleBtn: {
-    flex: 1,
+  infoBox: {
     backgroundColor: '#f1f5f9',
     borderRadius: 10,
-    paddingVertical: 10,
-    alignItems: 'center',
-    borderWidth: 1.5,
+    padding: 12,
+    borderWidth: 1,
     borderColor: '#e2e8f0',
+    marginBottom: 18,
   },
-  roleBtnActive: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#2563eb',
-  },
-  roleBtnText: {
-    fontSize: 13,
+  infoBoxText: {
+    fontSize: 12,
     color: '#475569',
-    fontWeight: '500',
-  },
-  roleBtnTextActive: {
-    color: '#2563eb',
-    fontWeight: '700',
+    lineHeight: 17,
   },
   submitBtn: {
-    backgroundColor: '#16a34a',
+    backgroundColor: '#10b981',
+    paddingVertical: 13,
     borderRadius: 10,
-    paddingVertical: 14,
     alignItems: 'center',
-    marginTop: 10,
+    shadowColor: '#10b981',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  btnDisabled: {
-    backgroundColor: '#86efac',
-  },
-  submitBtnText: {
-    color: '#ffffff',
-    fontWeight: '700',
-    fontSize: 15,
-    letterSpacing: 0.5,
-  },
+  btnDisabled: { opacity: 0.6 },
+  submitBtnText: { color: '#ffffff', fontSize: 15, fontWeight: '800' },
   loginPrompt: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 16,
+    alignItems: 'center',
+    marginTop: 18,
   },
-  promptText: {
-    fontSize: 13,
-    color: '#64748b',
-  },
-  loginLink: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#2563eb',
-  },
+  promptText: { fontSize: 13, color: '#64748b' },
+  loginLink: { fontSize: 13, color: '#2563eb', fontWeight: '800' },
 });

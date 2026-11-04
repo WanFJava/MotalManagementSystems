@@ -1,10 +1,6 @@
 const Room = require('../models/Room');
 const Contract = require('../models/Contract');
 const RentalRequest = require('../models/RentalRequest');
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/manh
 
 /**
  * «application logic» / «business logic»

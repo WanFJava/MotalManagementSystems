@@ -18,6 +18,16 @@ const api = axios.create({
   },
 });
 
+export const roomApi = {
+  getRooms: (params) => api.get('/rooms', { params }),
+  getRoomById: (id) => api.get(`/rooms/${id}`),
+  searchRooms: (params) => api.get('/rooms/search', { params }),
+  createRoom: (data) => api.post('/rooms', data),
+  updateRoom: (id, data) => api.put(`/rooms/${id}`, data),
+  deleteRoom: (id) => api.delete(`/rooms/${id}`),
+  submitRentalRequest: (id, data) => api.post(`/rooms/${id}/rental-request`, data),
+};
+
 export const rentalRequestApi = {
   createRequest: (data) => api.post('/rental-requests', data),
   getRequests: (params) => api.get('/rental-requests', { params }),
@@ -27,10 +37,21 @@ export const rentalRequestApi = {
 
 export const contractApi = {
   createContract: (data) => api.post('/contracts', data),
-  getContracts: () => api.get('/contracts'),
+  getContracts: (params) => api.get('/contracts', { params }),
   getContractById: (id) => api.get(`/contracts/${id}`),
   extendContract: (id, endDate) => api.put(`/contracts/${id}/extend`, { endDate }),
   terminateContract: (id) => api.put(`/contracts/${id}/terminate`),
+  signContract: (id, data) => api.put(`/contracts/${id}/sign`, data),
+};
+
+let _currentUser = null;
+
+export const setCurrentUserStore = (user) => {
+  _currentUser = user;
+};
+
+export const getCurrentUserStore = () => {
+  return _currentUser;
 };
 
 export const setAuthToken = (token) => {

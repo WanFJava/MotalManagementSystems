@@ -1,222 +1,218 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import './Navbar.css';
 
 /**
- * Thanh điều hướng ứng dụng (Navbar)
+ * Thanh điều hướng ứng dụng dạng Sidebar dọc bên trái (Navbar)
  * Tích hợp Phân quyền người dùng (Role-Based Access Control - RBAC)
  * - Guest (Chưa đăng nhập): Chỉ xem Trang chủ, Danh sách phòng, Tìm phòng, Đăng nhập.
  * - Tenant (Khách thuê): Trang chủ, Phòng trọ, Tìm phòng, Yêu cầu của tôi, Hợp đồng của tôi, Hồ sơ cá nhân.
  * - Staff (Nhân viên): Quản lý phòng, Yêu cầu thuê, Hợp đồng, Điện & Nước, Hóa đơn & VNPay, Quản lý khách thuê & CCCD.
  * - Manager (Chủ trọ): Kế thừa Staff + Quản trị nhân viên (UC15).
  */
-export default function Navbar({ currentScreen, setCurrentScreen, currentUser, onLogout }) {
-  // Bộ lọc menu điều hướng theo quyền hạn
-  const getNavItems = () => {
-    // 1. Khách vãng lai (Chưa đăng nhập)
-    if (!currentUser) {
-      return [
-        { key: 'home', label: '🏠 Trang chủ', desc: 'Giới thiệu & Tổng quan' },
-        { key: 'rooms', label: '🛏️ Phòng trọ', desc: 'Danh sách phòng' },
-        { key: 'search', label: '🔍 Tìm phòng', desc: 'Tìm kiếm & lọc phòng trống' }
-      ];
-    }
 
-    // 2. Khách thuê (Tenant)
-    if (currentUser.role === 'TENANT') {
-      return [
-        { key: 'home', label: '🏠 Trang chủ', desc: 'Trang chủ khách thuê' },
-        { key: 'rooms', label: '🛏️ Phòng trọ', desc: 'Danh sách phòng' },
-        { key: 'search', label: '🔍 Tìm phòng', desc: 'Tìm kiếm & lọc' },
-        { key: 'my-requests', label: '📋 Yêu cầu của tôi', desc: 'Xem lại trạng thái gửi yêu cầu thuê' },
-        { key: 'my-contracts', label: '📄 Hợp đồng của tôi', desc: 'Xem lại hợp đồng thuê phòng đã ký kết' },
-        { key: 'profile', label: '👤 Hồ sơ của tôi', desc: 'Xem & cập nhật hồ sơ cá nhân' }
-      ];
-    }
-
-    // 3. Nhân viên quản lý (Staff)
-    if (currentUser.role === 'STAFF') {
-      return [
-        { key: 'home', label: '🏠 Trang chủ', desc: 'Bảng điều khiển nhân viên' },
-        { key: 'rooms', label: '🛏️ Phòng trọ', desc: 'Danh sách phòng' },
-        { key: 'search', label: '🔍 Tìm phòng', desc: 'Tìm kiếm & lọc' },
-        { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Quản lý phòng trọ (UC04)' },
-        { key: 'requests', label: '📋 Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê (UC03)' },
-        { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng (UC05)' },
-        { key: 'utilities', label: '⚡ Điện & Nước', desc: 'Chốt số điện nước' },
-        { key: 'invoices', label: '🧾 Hóa đơn & VNPay', desc: 'Quản lý hóa đơn & thanh toán' },
-        { key: 'tenants', label: '👥 Khách thuê', desc: 'Quản lý CCCD & Tạm trú (UC06)' },
-        { key: 'profile', label: '👤 Hồ sơ', desc: 'Hồ sơ cá nhân' }
-      ];
-    }
-
-    // 4. Chủ trọ / Quản lý cấp cao (Manager) - Có thêm UC15 Quản lý nhân viên
+// Bộ lọc menu điều hướng theo quyền hạn (chia nhóm để hiển thị trên sidebar)
+export const getNavSections = (currentUser) => {
+  // 1. Khách vãng lai (Chưa đăng nhập)
+  if (!currentUser) {
     return [
-      { key: 'home', label: '🏠 Trang chủ', desc: 'Bảng điều khiển quản trị' },
-      { key: 'rooms', label: '🛏️ Phòng trọ', desc: 'Danh sách phòng' },
-      { key: 'search', label: '🔍 Tìm phòng', desc: 'Tìm kiếm & lọc' },
-      { key: 'manage', label: '⚙️ Quản lý phòng', desc: 'Quản lý phòng trọ (UC04)' },
-      { key: 'requests', label: '📋 Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê (UC03)' },
-      { key: 'contracts', label: '📄 Hợp đồng', desc: 'Quản lý hợp đồng (UC05)' },
-      { key: 'utilities', label: '⚡ Điện & Nước', desc: 'Chốt số điện nước' },
-      { key: 'invoices', label: '🧾 Hóa đơn & VNPay', desc: 'Quản lý hóa đơn & thanh toán' },
-      { key: 'tenants', label: '👥 Khách thuê', desc: 'Quản lý CCCD & Tạm trú (UC06)' },
-      { key: 'staff', label: '🛡️ Nhân viên', desc: 'Quản lý nhân viên (UC15)' },
-      { key: 'profile', label: '👤 Hồ sơ', desc: 'Hồ sơ cá nhân' }
+      {
+        title: 'Khám phá',
+        items: [
+          { key: 'home', icon: '🏠', label: 'Trang chủ', desc: 'Giới thiệu & Tổng quan' },
+          { key: 'rooms', icon: '🛏️', label: 'Phòng trọ', desc: 'Danh sách phòng' },
+          { key: 'search', icon: '🔍', label: 'Tìm phòng', desc: 'Tìm kiếm & lọc phòng trống' }
+        ]
+      }
     ];
+  }
+
+  // 2. Khách thuê (Tenant)
+  if (currentUser.role === 'TENANT') {
+    return [
+      {
+        title: 'Tổng quan',
+        items: [
+          { key: 'home', icon: '🏠', label: 'Trang chủ', desc: 'Trang chủ khách thuê' },
+          { key: 'my-room', icon: '🔑', label: 'Phòng đang thuê', desc: 'Chi tiết phòng đang ở & hợp đồng' }
+        ]
+      },
+      {
+        title: 'Thuê phòng',
+        items: [
+          { key: 'my-invoices', icon: '🧾', label: 'Hóa đơn & VNPay', desc: 'Tiền điện nước & thanh toán online' },
+          { key: 'my-contracts', icon: '📄', label: 'Hợp đồng của tôi', desc: 'Xem lại hợp đồng thuê phòng đã ký kết' },
+          { key: 'my-requests', icon: '📋', label: 'Yêu cầu của tôi', desc: 'Xem lại trạng thái gửi yêu cầu thuê' },
+          { key: 'rooms', icon: '🛏️', label: 'Xem phòng', desc: 'Danh sách phòng' }
+        ]
+      },
+      {
+        title: 'Tài khoản',
+        items: [
+          { key: 'profile', icon: '👤', label: 'Hồ sơ của tôi', desc: 'Xem & cập nhật hồ sơ cá nhân' }
+        ]
+      }
+    ];
+  }
+
+  // 3. Nhân viên (Staff) & 4. Chủ trọ (Manager)
+  const sections = [
+    {
+      title: 'Tổng quan',
+      items: [
+        { key: 'home', icon: '🏠', label: 'Trang chủ', desc: currentUser.role === 'MANAGER' ? 'Bảng điều khiển quản trị' : 'Bảng điều khiển nhân viên' },
+        { key: 'rooms', icon: '🛏️', label: 'Phòng trọ', desc: 'Danh sách phòng' },
+        { key: 'search', icon: '🔍', label: 'Tìm phòng', desc: 'Tìm kiếm & lọc' }
+      ]
+    },
+    {
+      title: 'Vận hành',
+      items: [
+        { key: 'manage', icon: '⚙️', label: 'Quản lý phòng', desc: 'Quản lý phòng trọ' },
+        { key: 'requests', icon: '📋', label: 'Yêu cầu thuê', desc: 'Duyệt yêu cầu thuê' },
+        { key: 'contracts', icon: '📄', label: 'Hợp đồng', desc: 'Quản lý hợp đồng' }
+      ]
+    },
+    {
+      title: 'Tài chính',
+      items: [
+        { key: 'utilities', icon: '⚡', label: 'Điện & Nước', desc: 'Chốt số điện nước' },
+        { key: 'invoices', icon: '🧾', label: 'Hóa đơn & VNPay', desc: 'Quản lý hóa đơn & thanh toán' }
+      ]
+    },
+    {
+      title: 'Con người',
+      items: [
+        { key: 'tenants', icon: '👥', label: 'Khách thuê', desc: 'Quản lý CCCD & Tạm trú' },
+        ...(currentUser.role === 'MANAGER'
+          ? [{ key: 'staff', icon: '🛡️', label: 'Nhân viên', desc: 'Quản lý nhân viên' }]
+          : []),
+        { key: 'profile', icon: '👤', label: 'Hồ sơ', desc: 'Hồ sơ cá nhân' }
+      ]
+    }
+  ];
+  return sections;
+};
+
+// Lấy thông tin tiêu đề trang hiện tại (dùng cho Topbar)
+const EXTRA_TITLES = {
+  detail: { icon: '🛏️', label: 'Chi tiết phòng', desc: 'Thông tin chi tiết phòng trọ' },
+  auth: { icon: '🔑', label: 'Đăng nhập / Đăng ký', desc: 'Truy cập tài khoản của bạn' },
+  profile: { icon: '👤', label: 'Hồ sơ cá nhân', desc: 'Xem & cập nhật hồ sơ cá nhân' }
+};
+
+export const getScreenMeta = (currentScreen, currentUser) => {
+  for (const section of getNavSections(currentUser)) {
+    const found = section.items.find((i) => i.key === currentScreen);
+    if (found) return found;
+  }
+  return EXTRA_TITLES[currentScreen] || { icon: '📌', label: 'Motel Management', desc: '' };
+};
+
+const ROLE_LABEL = { MANAGER: 'Chủ Trọ', STAFF: 'Nhân Viên', TENANT: 'Khách Thuê' };
+
+const getInitials = (name = '') => {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return 'U';
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[parts.length - 2][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
+export default function Navbar({ currentScreen, setCurrentScreen, currentUser, onLogout, mobileOpen, setMobileOpen }) {
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem('motel_sidebar_collapsed') === '1');
+
+  useEffect(() => {
+    localStorage.setItem('motel_sidebar_collapsed', collapsed ? '1' : '0');
+  }, [collapsed]);
+
+  const sections = getNavSections(currentUser);
+
+  const go = (key) => {
+    setCurrentScreen(key);
+    if (setMobileOpen) setMobileOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const navItems = getNavItems();
-
   return (
-    <header style={{
-      backgroundColor: '#1e3a8a',
-      color: '#ffffff',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-      position: 'sticky',
-      top: 0,
-      zIndex: 100
-    }}>
-      <div style={{
-        maxWidth: '1280px',
-        margin: '0 auto',
-        padding: '10px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '12px'
-      }}>
+    <>
+      <div
+        className={`sidebar__backdrop ${mobileOpen ? 'is-visible' : ''}`}
+        onClick={() => setMobileOpen && setMobileOpen(false)}
+      />
+
+      <aside className={`sidebar ${collapsed ? 'is-collapsed' : ''} ${mobileOpen ? 'is-mobile-open' : ''}`}>
         {/* Logo & Brand */}
-        <div 
-          onClick={() => setCurrentScreen('home')}
-          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
-        >
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            backgroundColor: '#3b82f6',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '20px',
-            fontWeight: 'bold',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-          }}>
-            🏠
-          </div>
-          <div>
-            <div style={{ fontSize: '17px', fontWeight: 'bold', letterSpacing: '0.5px' }}>
-              Motel Management System
-            </div>
-            <div style={{ fontSize: '11px', color: '#93c5fd' }}>
-              SWD392 • Hệ thống Quản lý Nhà trọ & Căn hộ
-            </div>
+        <div className="sidebar__brand" onClick={() => go('home')}>
+          <div className="sidebar__logo">🏠</div>
+          <div className="sidebar__brand-text">
+            <div className="sidebar__brand-title">Motel Manager</div>
+            <div className="sidebar__brand-sub">Hệ thống Quản lý Nhà trọ</div>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <nav style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-          {navItems.map((item) => {
-            const isActive = currentScreen === item.key;
-            return (
-              <button
-                key={item.key}
-                onClick={() => setCurrentScreen(item.key)}
-                style={{
-                  backgroundColor: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.1)',
-                  color: isActive ? '#1e3a8a' : '#ffffff',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '8px 12px',
-                  fontSize: '13px',
-                  fontWeight: isActive ? '700' : '500',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  transition: 'all 0.2s ease',
-                  boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.15)' : 'none'
-                }}
-              >
-                {item.label}
-              </button>
-            );
-          })}
+        <button
+          type="button"
+          className="sidebar__toggle"
+          onClick={() => setCollapsed((c) => !c)}
+          title={collapsed ? 'Mở rộng thanh menu' : 'Thu gọn thanh menu'}
+        >
+          ‹
+        </button>
 
-          {/* User Auth / Profile Button */}
-          {currentUser ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '6px' }}>
-              <button
-                onClick={() => setCurrentScreen('profile')}
-                title="Bấm để xem và cập nhật hồ sơ cá nhân"
-                style={{
-                  backgroundColor: currentScreen === 'profile' ? '#ffffff' : '#3b82f6',
-                  color: currentScreen === 'profile' ? '#1e3a8a' : '#ffffff',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '7px 12px',
-                  fontSize: '12px',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: currentScreen === 'profile' ? '0 2px 8px rgba(0,0,0,0.2)' : 'none'
-                }}
-              >
-                <span>👤</span>
-                <span>{currentUser.fullName?.split(' ').pop() || 'User'}</span>
-                <span style={{
-                  fontSize: '10px',
-                  backgroundColor: currentUser.role === 'MANAGER' ? '#dc2626' : currentUser.role === 'STAFF' ? '#d97706' : '#1d4ed8',
-                  color: '#ffffff',
-                  padding: '2px 6px',
-                  borderRadius: '4px',
-                  fontWeight: '700'
-                }}>
-                  {currentUser.role === 'MANAGER' ? 'Chủ Trọ' : currentUser.role === 'STAFF' ? 'Nhân Viên' : 'Khách Thuê'}
-                </span>
-              </button>
-              <button
-                onClick={onLogout}
-                title="Đăng xuất khỏi hệ thống"
-                style={{
-                  backgroundColor: '#ef4444',
-                  color: '#ffffff',
-                  border: 'none',
-                  borderRadius: '6px',
-                  padding: '7px 10px',
-                  fontSize: '12px',
-                  fontWeight: '600',
-                  cursor: 'pointer'
-                }}
-              >
-                🚪 Thoát
-              </button>
+        {/* Navigation */}
+        <nav className="sidebar__nav">
+          {sections.map((section) => (
+            <div className="sidebar__section" key={section.title}>
+              <div className="sidebar__section-title">{section.title}</div>
+              {section.items.map((item) => {
+                const isActive = currentScreen === item.key || (item.key === 'rooms' && currentScreen === 'detail');
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    data-label={item.label}
+                    title={collapsed ? undefined : item.desc}
+                    className={`sidebar__item ${isActive ? 'is-active' : ''}`}
+                    onClick={() => go(item.key)}
+                  >
+                    <span className="sidebar__icon">{item.icon}</span>
+                    <span className="sidebar__label">{item.label}</span>
+                  </button>
+                );
+              })}
             </div>
+          ))}
+        </nav>
+
+        {/* User / Auth */}
+        <div className="sidebar__footer">
+          {currentUser ? (
+            <>
+              <div
+                className="sidebar__user"
+                onClick={() => go('profile')}
+                title="Bấm để xem và cập nhật hồ sơ cá nhân"
+              >
+                <div className="sidebar__avatar">{getInitials(currentUser.fullName)}</div>
+                <div className="sidebar__user-info">
+                  <div className="sidebar__user-name">{currentUser.fullName || 'Người dùng'}</div>
+                  <span className={`sidebar__role sidebar__role--${currentUser.role}`}>
+                    {ROLE_LABEL[currentUser.role] || currentUser.role}
+                  </span>
+                </div>
+              </div>
+              <button type="button" className="sidebar__logout" onClick={onLogout} title="Đăng xuất khỏi hệ thống">
+                <span>🚪</span>
+                <span className="sidebar__logout-text">Đăng xuất</span>
+              </button>
+            </>
           ) : (
-            <button
-              onClick={() => setCurrentScreen('auth')}
-              style={{
-                backgroundColor: currentScreen === 'auth' ? '#ffffff' : '#10b981',
-                color: currentScreen === 'auth' ? '#1e3a8a' : '#ffffff',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '7px 12px',
-                fontSize: '12px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                marginLeft: '6px'
-              }}
-            >
-              🔑 Đăng nhập / Đăng ký
+            <button type="button" className="sidebar__login" onClick={() => go('auth')} title="Đăng nhập / Đăng ký">
+              <span>🔑</span>
+              <span className="sidebar__logout-text">Đăng nhập / Đăng ký</span>
             </button>
           )}
-        </nav>
-      </div>
-    </header>
+        </div>
+      </aside>
+    </>
   );
 }

@@ -9,6 +9,14 @@ export const contractClientService = {
     return res.data.data || [];
   },
 
+  // Lấy danh sách hợp đồng của một khách thuê cụ thể
+  getMyContracts: async (tenantId, params = {}) => {
+    const res = await axios.get(API_BASE_URL, {
+      params: { tenantId, ...params }
+    });
+    return res.data.data || [];
+  },
+
   // Chi tiết hợp đồng
   getContractById: async (id) => {
     const res = await axios.get(`${API_BASE_URL}/${id}`);

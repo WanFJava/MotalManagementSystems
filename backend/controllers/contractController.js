@@ -138,6 +138,19 @@ exports.createContract = async (req, res) => {
     const initialStatus = status || 'WAITING_TENANT_SIGNATURE';
     const isAlreadyActive = initialStatus === 'ACTIVE';
 
+    let finalTenantId = tenantId || null;
+    if (!finalTenantId && (finalPhone || finalCccd)) {
+      const existingUser = await User.findOne({
+        $or: [
+          ...(finalPhone ? [{ phone: finalPhone.trim() }] : []),
+          ...(finalCccd ? [{ identityNumber: finalCccd.trim() }] : [])
+        ]
+      });
+      if (existingUser) {
+        finalTenantId = existingUser._id;
+      }
+    }
+
     const newContract = new Contract({
       room: targetRoomId,
       roomId: targetRoomId,
@@ -153,7 +166,7 @@ exports.createContract = async (req, res) => {
       landlordSignature: landlordName.trim(), // Bên A ký xác nhận khi tạo
       landlordSignedAt: new Date(),
       // Bên B
-      tenantId: tenantId || null,
+      tenantId: finalTenantId,
       tenantName: tenantName.trim(),
       tenantDob: new Date(finalDob),
       tenantDateOfBirth: new Date(finalDob),

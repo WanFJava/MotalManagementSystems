@@ -27,14 +27,14 @@ export default function PaymentScreen({ route, navigation }) {
         const res = await createPaymentUrl(invoiceId);
         if (res.data?.paymentUrl) {
           Alert.alert(
-            'Cổng thanh toán VNPay Sandbox (TC_INV_03)',
-            `Đã tạo liên kết thanh toán thành công!\nMã đơn: ${invoiceCode}\nSố tiền: ${totalAmount?.toLocaleString('vi-VN')} đ\n\n(Mô phỏng: Xác nhận trừ tiền thành công trên Sandbox)`,
+            'Cổng thanh toán VNPay',
+            `Đã tạo liên kết thanh toán thành công!\nMã đơn: ${invoiceCode}\nSố tiền: ${totalAmount?.toLocaleString('vi-VN')} đ`,
             [
               {
                 text: 'Mô phỏng thanh toán thành công',
                 onPress: async () => {
                   // Xác nhận hoàn tất thanh toán
-                  await payCash(invoiceId, 'Thanh toán qua VNPay Sandbox Mobile App');
+                  await payCash(invoiceId, 'Thanh toán qua VNPay Mobile App');
                   Alert.alert('Thành công', 'Thanh toán hóa đơn thành công! (PAID)');
                   navigation.navigate('PaymentHistory');
                 }
@@ -57,7 +57,7 @@ export default function PaymentScreen({ route, navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>💳 Thanh toán Hóa đơn (UC09)</Text>
+      <Text style={styles.title}>💳 Thanh toán Hóa đơn</Text>
       <Text style={styles.subtitle}>Chọn phương thức thanh toán an toàn và tiện lợi</Text>
 
       {/* Tóm tắt thanh toán */}
@@ -77,7 +77,7 @@ export default function PaymentScreen({ route, navigation }) {
       >
         <Text style={styles.methodIcon}>🏦</Text>
         <View style={{ flex: 1 }}>
-          <Text style={styles.methodName}>Cổng thanh toán VNPay Sandbox</Text>
+          <Text style={styles.methodName}>Cổng thanh toán VNPay</Text>
           <Text style={styles.methodDesc}>Quét mã VNPAY-QR hoặc thẻ ATM nội địa</Text>
         </View>
         <Text style={styles.radio}>{selectedMethod === 'VNPAY' ? '🔘' : '⚪'}</Text>
@@ -89,7 +89,7 @@ export default function PaymentScreen({ route, navigation }) {
       >
         <Text style={styles.methodIcon}>💵</Text>
         <View style={{ flex: 1 }}>
-          <Text style={styles.methodName}>Thanh toán tiền mặt tại quầy (UC10)</Text>
+          <Text style={styles.methodName}>Thanh toán tiền mặt tại quầy</Text>
           <Text style={styles.methodDesc}>Nhân viên xác nhận thu tiền mặt trực tiếp</Text>
         </View>
         <Text style={styles.radio}>{selectedMethod === 'CASH' ? '🔘' : '⚪'}</Text>

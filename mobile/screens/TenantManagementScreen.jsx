@@ -98,7 +98,7 @@ export default function TenantManagementScreen({ navigation }) {
       {/* Header Bar */}
       <View style={styles.header}>
         <Text style={styles.title}>Quản Lý Khách Thuê</Text>
-        <Text style={styles.subtitle}>Phân hệ Hồ sơ Khách thuê & Tạm trú (UC06 / SWR2.3)</Text>
+        <Text style={styles.subtitle}>Hồ sơ khách thuê & tạm trú</Text>
       </View>
 
       {/* Search Input */}
@@ -245,7 +245,7 @@ export default function TenantManagementScreen({ navigation }) {
 
                   {/* Tình trạng Đăng ký Tạm Trú */}
                   <View style={styles.formGroup}>
-                    <Text style={styles.formLabel}>Tình trạng Đăng ký Tạm Trú Công An (UC06)</Text>
+                    <Text style={styles.formLabel}>Tình trạng Đăng ký Tạm Trú Công An</Text>
                     <View style={styles.tempStatusRow}>
                       <TouchableOpacity
                         style={[styles.tempBtn, editTempStatus === 'REGISTERED' && styles.tempBtnActive]}

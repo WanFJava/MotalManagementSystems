@@ -33,6 +33,30 @@ exports.createVNPayUrl = async (req, res) => {
   }
 };
 
+// Mô phỏng thanh toán VNPay Sandbox thành công (Hỗ trợ Khách thuê test trực tiếp)
+exports.simulateVNPaySuccess = async (req, res) => {
+  try {
+    const { invoiceId } = req.body;
+    if (!invoiceId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Thiếu mã định danh hóa đơn (invoiceId)'
+      });
+    }
+    const result = await utilityInvoiceService.simulateVNPaySuccess(invoiceId);
+    res.status(200).json({
+      success: true,
+      message: result.message,
+      data: result
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 // Xử lý VNPay Return URL (Khách quay lại từ cổng VNPay Sandbox)
 exports.vnpayReturn = async (req, res) => {
   try {

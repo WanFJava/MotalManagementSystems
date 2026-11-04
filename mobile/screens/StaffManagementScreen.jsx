@@ -129,7 +129,7 @@ export default function StaffManagementScreen({ navigation }) {
       <View style={styles.header}>
         <View style={styles.headerTitles}>
           <Text style={styles.title}>Quản Lý Nhân Viên</Text>
-          <Text style={styles.subtitle}>Phân quyền và tài khoản vận hành (UC15 / TC_USER_04)</Text>
+          <Text style={styles.subtitle}>Phân quyền và tài khoản vận hành</Text>
         </View>
         <TouchableOpacity
           style={styles.addBtn}

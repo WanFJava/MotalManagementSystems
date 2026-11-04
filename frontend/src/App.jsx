@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
+import Navbar, { getScreenMeta } from './components/Navbar';
 import HomeScreen from './screens/HomeScreen';
 import RoomListScreen from './screens/RoomListScreen';
 import RoomSearchScreen from './screens/RoomSearchScreen';
@@ -8,6 +8,8 @@ import ManageRoomScreen from './screens/ManageRoomScreen';
 import ManageRentalRequestsScreen from './screens/ManageRentalRequestsScreen';
 import MyRentalRequestsScreen from './screens/MyRentalRequestsScreen';
 import MyContractsScreen from './screens/MyContractsScreen';
+import MyRoomScreen from './screens/MyRoomScreen';
+import MyInvoicesScreen from './screens/MyInvoicesScreen';
 import ManageContractsScreen from './screens/ManageContractsScreen';
 import ManageUtilitiesScreen from './screens/ManageUtilitiesScreen';
 import ManageInvoicesScreen from './screens/ManageInvoicesScreen';
@@ -68,6 +70,7 @@ export default function App() {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [toast, setToast] = useState(null);
   const [currentUser, setCurrentUser] = useState(() => userClientService.getCurrentUser());
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // State prefill khi duyệt yêu cầu thuê -> chuyển sang tạo hợp đồng
   const [contractPrefill, setContractPrefill] = useState(null);
@@ -102,7 +105,8 @@ export default function App() {
 
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('vnp_ResponseCode') || urlParams.get('vnpay') === 'return') {
-      setCurrentScreen('invoices');
+      const targetScreen = urlParams.get('screen') || (currentUser?.role === 'TENANT' ? 'my-invoices' : 'invoices');
+      setCurrentScreen(targetScreen);
       const paramsObj = {};
       urlParams.forEach((val, key) => { paramsObj[key] = val; });
 
@@ -270,6 +274,52 @@ export default function App() {
       );
     }
 
+    // 2.3. MÀN HÌNH THÔNG TIN PHÒNG ĐANG THUÊ (Dành riêng cho TENANT)
+    if (currentScreen === 'my-room') {
+      if (!currentUser) {
+        return (
+          <AccessDeniedCard
+            icon="🔒"
+            title="Yêu Cầu Đăng Nhập"
+            message="Vui lòng đăng nhập bằng tài khoản Khách thuê (Tenant) để xem thông tin phòng đang thuê của bạn."
+            onAction={() => setCurrentScreen('auth')}
+            actionText="Đăng nhập ngay"
+          />
+        );
+      }
+
+      return (
+        <MyRoomScreen
+          currentUser={currentUser}
+          setCurrentScreen={setCurrentScreen}
+          onNotify={(msg, type) => showToast(msg, type)}
+        />
+      );
+    }
+
+    // 2.4. MÀN HÌNH HÓA ĐƠN & THANH TOÁN VNPAY (Dành riêng cho TENANT - UC09)
+    if (currentScreen === 'my-invoices') {
+      if (!currentUser) {
+        return (
+          <AccessDeniedCard
+            icon="🔒"
+            title="Yêu Cầu Đăng Nhập"
+            message="Vui lòng đăng nhập bằng tài khoản Khách thuê (Tenant) để theo dõi hóa đơn và thanh toán qua VNPay."
+            onAction={() => setCurrentScreen('auth')}
+            actionText="Đăng nhập ngay"
+          />
+        );
+      }
+
+      return (
+        <MyInvoicesScreen
+          currentUser={currentUser}
+          setCurrentScreen={setCurrentScreen}
+          onNotify={(msg, type) => showToast(msg, type)}
+        />
+      );
+    }
+
     // 3. MÀN HÌNH QUẢN TRỊ VẬN HÀNH (Dành riêng cho STAFF và MANAGER)
     const staffScreens = ['manage', 'requests', 'contracts', 'tenants', 'utilities', 'invoices'];
     if (staffScreens.includes(currentScreen)) {
@@ -305,7 +355,7 @@ export default function App() {
           <AccessDeniedCard
             icon="🔒"
             title="Yêu Cầu Quyền Chủ Trọ"
-            message="Chức năng Quản lý Nhân viên (UC15) chỉ dành riêng cho Chủ trọ / Quản lý cấp cao (Manager)."
+            message="Chức năng Quản lý Nhân viên chỉ dành riêng cho Chủ trọ / Quản lý cấp cao (Manager)."
             onAction={() => setCurrentScreen('auth')}
             actionText="Đăng nhập tài khoản Quản lý"
           />
@@ -398,57 +448,59 @@ export default function App() {
     return null;
   };
 
+  const screenMeta = getScreenMeta(currentScreen, currentUser);
+  const todayLabel = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', color: '#0f172a', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+    <div className="app-shell">
       {/* Toast Notification Popup */}
       {toast && (
-        <div style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          zIndex: 9999,
-          backgroundColor: toast.type === 'success' ? '#16a34a' : toast.type === 'error' ? '#dc2626' : '#2563eb',
-          color: '#ffffff',
-          padding: '12px 20px',
-          borderRadius: '10px',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
-          fontSize: '14px',
-          fontWeight: '600',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}>
+        <div className={`app-toast app-toast--${toast.type}`}>
           <span>{toast.type === 'success' ? '✅' : toast.type === 'error' ? '❌' : 'ℹ️'}</span>
           <span>{toast.message}</span>
         </div>
       )}
 
-      {/* Header Navigation với phân quyền hiển thị */}
+      {/* Sidebar Navigation dọc bên trái với phân quyền hiển thị */}
       <Navbar
         currentScreen={currentScreen}
         setCurrentScreen={setCurrentScreen}
         currentUser={currentUser}
         onLogout={handleLogout}
+        mobileOpen={mobileNavOpen}
+        setMobileOpen={setMobileNavOpen}
       />
 
-      {/* Main Content Area kèm Route Guard */}
-      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 20px 60px 20px' }}>
-        {renderCurrentScreen()}
-      </main>
+      <div className="app-content">
+        {/* Topbar: tiêu đề trang hiện tại */}
+        <header className="app-topbar">
+          <button
+            type="button"
+            className="sidebar__mobile-btn"
+            onClick={() => setMobileNavOpen(true)}
+            aria-label="Mở menu"
+          >
+            ☰
+          </button>
+          <div>
+            <h1 className="app-topbar__title">{screenMeta.icon} {screenMeta.label}</h1>
+            {screenMeta.desc && <div className="app-topbar__desc">{screenMeta.desc}</div>}
+          </div>
+          <div className="app-topbar__right">
+            <span className="app-topbar__date">📅 {todayLabel}</span>
+          </div>
+        </header>
 
-      {/* Footer */}
-      <footer style={{
-        backgroundColor: '#ffffff',
-        borderTop: '1px solid #e2e8f0',
-        padding: '24px 20px',
-        textAlign: 'center',
-        fontSize: '13px',
-        color: '#64748b'
-      }}>
-        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
-          <strong>Motel Management System</strong> • Hệ thống Quản lý Nhà trọ & Căn hộ Dịch vụ (SWD392)
-        </div>
-      </footer>
+        {/* Main Content Area kèm Route Guard */}
+        <main className="app-main">
+          {renderCurrentScreen()}
+        </main>
+
+        {/* Footer */}
+        <footer className="app-footer">
+          <strong>Motel Management System</strong> • Hệ thống Quản lý Nhà trọ & Căn hộ Dịch vụ
+        </footer>
+      </div>
     </div>
   );
 }

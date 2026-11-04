@@ -1,0 +1,118 @@
+{
+  "info": {
+    "_postman_id": "motel-management-system-swd392",
+    "name": "Motel Management System API",
+    "description": "Bộ sưu tập kiểm thử RESTful API đầy đủ 4 phân hệ của nhóm Project SWD392",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Phân hệ Phòng (Room - Quang)",
+      "item": [
+        {
+          "name": "GET Lấy danh sách phòng",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:5000/api/rooms", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "rooms"] }
+          }
+        },
+        {
+          "name": "GET Tìm kiếm & Lọc phòng",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:5000/api/rooms/search?status=AVAILABLE&minPrice=1000000&maxPrice=4000000", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "rooms", "search"], "query": [{ "key": "status", "value": "AVAILABLE" }, { "key": "minPrice", "value": "1000000" }, { "key": "maxPrice", "value": "4000000" }] }
+          }
+        },
+        {
+          "name": "POST Thêm phòng mới",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomNumber\": \"305\",\n  \"basePrice\": 3200000,\n  \"area\": 25,\n  \"maxOccupants\": 2,\n  \"amenities\": [\"Wifi\", \"Điều hòa\", \"Nóng lạnh\", \"Tủ lạnh\"],\n  \"status\": \"AVAILABLE\",\n  \"description\": \"Phòng mới xây có ban công thoáng mát\"\n}"
+            },
+            "url": { "raw": "http://localhost:5000/api/rooms", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "rooms"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Phân hệ Tài khoản & Khách thuê (User & Tenant - Khánh)",
+      "item": [
+        {
+          "name": "POST Đăng nhập",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"0901234567\",\n  \"password\": \"Password123@\"\n}"
+            },
+            "url": { "raw": "http://localhost:5000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "GET Xem thông tin cá nhân",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:5000/api/users/profile?userId=0901234567", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "users", "profile"] }
+          }
+        },
+        {
+          "name": "GET Danh sách khách thuê",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:5000/api/users/tenants", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "users", "tenants"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Phân hệ Yêu cầu thuê & Hợp đồng (Contract - Đức)",
+      "item": [
+        {
+          "name": "GET Danh sách yêu cầu thuê",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:5000/api/rental-requests", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "rental-requests"] }
+          }
+        },
+        {
+          "name": "GET Danh sách hợp đồng",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:5000/api/contracts", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "contracts"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Phân hệ Điện nước, Hóa đơn & VNPay (Invoice - Mạnh)",
+      "item": [
+        {
+          "name": "GET Danh sách chỉ số điện nước",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:5000/api/utilities", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "utilities"] }
+          }
+        },
+        {
+          "name": "GET Danh sách hóa đơn",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "http://localhost:5000/api/invoices", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "invoices"] }
+          }
+        }
+      ]
+    }
+  ]
+}

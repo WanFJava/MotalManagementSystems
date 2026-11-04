@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "Motel Manager",
+    "slug": "motel-manager",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "android": {
+      "package": "com.swd392.motelmanager",
+      "versionCode": 1,
+      "usesCleartextTraffic": true,
+      "permissions": ["INTERNET"]
+    },
+    "ios": {
+      "bundleIdentifier": "com.swd392.motelmanager"
+    },
+    "plugins": []
+  }
+}

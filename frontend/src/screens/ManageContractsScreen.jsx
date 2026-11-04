@@ -550,7 +550,7 @@ export default function ManageContractsScreen({ currentUser, setCurrentUser, set
           <div style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', marginBottom: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
             <div>
               <h3 style={{ margin: '0 0 6px 0', color: '#166534', fontSize: '19px' }}>
-                📝 Lập Hợp Đồng Thuê Phòng Mới (UC05)
+                📝 Lập Hợp Đồng Thuê Phòng Mới
               </h3>
               <p style={{ margin: 0, color: '#64748b', fontSize: '13px' }}>
                 Trích xuất thông tin định danh CCCD chính xác của Bên A (Chủ nhà) và Bên B (Khách thuê) để sinh văn bản hợp đồng pháp lý.
@@ -1690,7 +1690,7 @@ export default function ManageContractsScreen({ currentUser, setCurrentUser, set
                       }}
                       style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: '12px', cursor: 'pointer', textDecoration: 'underline' }}
                     >
-                      Mở trang Hồ sơ chi tiết (UC01) ↗
+                      Mở trang Hồ sơ chi tiết ↗
                     </button>
                   )}
                 </div>

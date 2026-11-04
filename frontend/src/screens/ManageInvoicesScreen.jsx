@@ -113,7 +113,7 @@ export default function ManageInvoicesScreen({ onNotify, initialPrefill, onClear
       const returnUrl = `${window.location.origin}/?screen=invoices&vnpay=return`;
       const res = await invoiceClientService.createVNPayUrl(invoiceId, returnUrl);
       if (res.data && res.data.paymentUrl) {
-        if (onNotify) onNotify('Đang chuyển hướng sang Cổng thanh toán VNPay Sandbox...', 'info');
+        if (onNotify) onNotify('Đang chuyển hướng sang Cổng thanh toán VNPay...', 'info');
         // Mở popup hoặc tab mới tới VNPay Sandbox
         window.open(res.data.paymentUrl, '_blank');
       } else {
@@ -160,10 +160,10 @@ export default function ManageInvoicesScreen({ onNotify, initialPrefill, onClear
       }}>
         <div>
           <h1 style={{ fontSize: '26px', fontWeight: '800', color: '#0f172a', margin: '0 0 6px 0' }}>
-            🧾 Quản lý Hóa đơn & Thanh toán (UC08, UC09, UC10)
+            🧾 Quản lý Hóa đơn & Thanh toán
           </h1>
           <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>
-            Tính toán hóa đơn hàng tháng theo hợp đồng, hỗ trợ thanh toán trực tuyến qua <strong>VNPay Sandbox</strong> và thu tiền mặt trực tiếp.
+            Tính toán hóa đơn hàng tháng theo hợp đồng, hỗ trợ thanh toán trực tuyến qua <strong>VNPay</strong> và thu tiền mặt trực tiếp.
           </p>
         </div>
 
@@ -720,7 +720,7 @@ export default function ManageInvoicesScreen({ onNotify, initialPrefill, onClear
                       boxShadow: '0 4px 10px rgba(0,91,170,0.25)'
                     }}
                   >
-                    <span>🏦 Cổng VNPay Sandbox</span>
+                    <span>🏦 Cổng VNPay</span>
                     <small style={{ fontWeight: '400', opacity: 0.9 }}>Quét mã QR / Thẻ ATM</small>
                   </button>
 

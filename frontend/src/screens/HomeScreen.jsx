@@ -232,7 +232,7 @@ export default function HomeScreen({ rooms, loading, onSelectRoom, setCurrentScr
                     boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
                   }}
                 >
-                  ⚙️ Quản lý phòng (UC04)
+                  ⚙️ Quản lý phòng
                 </button>
                 <button
                   onClick={() => setCurrentScreen('requests')}
@@ -247,7 +247,7 @@ export default function HomeScreen({ rooms, loading, onSelectRoom, setCurrentScr
                     cursor: 'pointer'
                   }}
                 >
-                  📋 Duyệt yêu cầu thuê (UC03)
+                  📋 Duyệt yêu cầu thuê
                 </button>
                 <button
                   onClick={() => setCurrentScreen('contracts')}
@@ -262,7 +262,7 @@ export default function HomeScreen({ rooms, loading, onSelectRoom, setCurrentScr
                     cursor: 'pointer'
                   }}
                 >
-                  📄 Hợp đồng (UC05)
+                  📄 Hợp đồng
                 </button>
                 <button
                   onClick={() => setCurrentScreen('tenants')}
@@ -277,7 +277,7 @@ export default function HomeScreen({ rooms, loading, onSelectRoom, setCurrentScr
                     cursor: 'pointer'
                   }}
                 >
-                  👥 Khách thuê & Tạm trú (UC06)
+                  👥 Khách thuê & Tạm trú
                 </button>
                 {currentUser?.role === 'MANAGER' && (
                   <button
@@ -293,7 +293,7 @@ export default function HomeScreen({ rooms, loading, onSelectRoom, setCurrentScr
                       cursor: 'pointer'
                     }}
                   >
-                    🛡️ Quản lý nhân viên (UC15)
+                    🛡️ Quản lý nhân viên
                   </button>
                 )}
               </>

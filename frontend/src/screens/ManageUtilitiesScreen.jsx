@@ -183,7 +183,7 @@ export default function ManageUtilitiesScreen({ onNotify, onNavigateToInvoice })
       }}>
         <div>
           <h1 style={{ fontSize: '26px', fontWeight: '800', color: '#0f172a', margin: '0 0 6px 0' }}>
-            ⚡ Quản lý Chỉ số Điện & Nước (UC07)
+            ⚡ Quản lý Chỉ số Điện & Nước
           </h1>
           <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>
             Ghi nhận số công tơ điện nước hàng tháng, tự động tính kWh điện, m³ nước tiêu thụ và chuẩn bị số liệu lập hóa đơn.

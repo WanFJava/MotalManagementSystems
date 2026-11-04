@@ -3,6 +3,7 @@ const Invoice = require('../models/Invoice');
 const PaymentTransaction = require('../models/PaymentTransaction');
 const Room = require('../models/Room');
 const Contract = require('../models/Contract');
+const User = require('../models/User');
 const vnpayHelper = require('./vnpayHelper');
 
 class UtilityInvoiceService {
@@ -147,12 +148,19 @@ class UtilityInvoiceService {
     // Sinh mã hóa đơn duy nhất
     const invoiceCode = `INV-${month.replace('-', '')}-${room.roomNumber}-${Date.now().toString().slice(-4)}`;
 
+    let finalTenantId = activeContract.tenantId?._id || activeContract.tenantId || activeContract.tenant || null;
+    if (!finalTenantId && activeContract.tenantPhone) {
+      const u = await User.findOne({ phone: activeContract.tenantPhone.trim() });
+      if (u) finalTenantId = u._id;
+    }
+
     const newInvoice = await Invoice.create({
       invoiceCode,
       roomId: room._id,
       room: room._id,
       contractId: activeContract._id,
       contract: activeContract._id,
+      tenantId: finalTenantId,
       tenantName: activeContract.tenantName,
       tenantPhone: activeContract.tenantPhone || '',
       month,
@@ -182,18 +190,25 @@ class UtilityInvoiceService {
   }
 
   /**
-   * Lấy danh sách hóa đơn
+   * Lấy danh sách hóa đơn (Có hỗ trợ lọc theo phòng, khách, tháng, trạng thái)
    */
-  async getAllInvoices({ status, month, roomId, tenantName }) {
+  async getAllInvoices({ status, month, roomId, tenantName, tenantId, tenantPhone }) {
     const filter = {};
     if (status) filter.status = status;
     if (month) filter.month = month;
     if (roomId) filter.$or = [{ roomId }, { room: roomId }];
     if (tenantName) filter.tenantName = { $regex: tenantName, $options: 'i' };
+    if (tenantPhone) filter.tenantPhone = tenantPhone;
+    if (tenantId) {
+      filter.$or = [
+        { tenantId },
+        { 'contract.tenantId': tenantId }
+      ];
+    }
 
     return await Invoice.find(filter)
-      .populate('room', 'roomNumber basePrice')
-      .populate('contract', 'tenantName rentalPrice')
+      .populate('room', 'roomNumber basePrice area address amenities images')
+      .populate('contract', 'tenantName rentalPrice tenantId startDate endDate depositAmount')
       .sort({ createdAt: -1 });
   }
 
@@ -327,6 +342,43 @@ class UtilityInvoiceService {
         invoice
       };
     }
+  }
+
+  /**
+   * Mô phỏng thanh toán VNPay thành công (Sandbox / Local Test)
+   */
+  async simulateVNPaySuccess(invoiceId) {
+    const invoice = await Invoice.findById(invoiceId).populate('room');
+    if (!invoice) throw new Error('Không tìm thấy thông tin hóa đơn');
+    if (invoice.status === 'PAID') throw new Error('Hóa đơn này đã được thanh toán trước đó!');
+
+    invoice.status = 'PAID';
+    invoice.paymentMethod = 'VNPAY';
+    invoice.paidAt = new Date();
+    await invoice.save();
+
+    const transactionCode = `TXN-VNP-SIM-${Date.now()}`;
+    const transaction = await PaymentTransaction.create({
+      invoiceId: invoice._id,
+      invoice: invoice._id,
+      transactionCode,
+      amount: invoice.totalAmount,
+      paymentMethod: 'VNPAY',
+      bankCode: 'NCB',
+      vnpayTxnRef: invoice.invoiceCode,
+      vnpayTransactionNo: Date.now().toString().slice(-8),
+      vnpayResponseCode: '00',
+      status: 'SUCCESS',
+      paidAt: new Date(),
+      note: 'Thanh toán trực tuyến VNPay Sandbox (Khách thuê xác nhận)'
+    });
+
+    return {
+      success: true,
+      message: 'Thanh toán hóa đơn qua VNPay thành công!',
+      invoice,
+      transaction
+    };
   }
 
   /**

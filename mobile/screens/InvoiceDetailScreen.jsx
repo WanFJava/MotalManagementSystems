@@ -127,11 +127,11 @@ export default function InvoiceDetailScreen({ route, navigation }) {
             style={styles.vnpayBtn}
             onPress={() => navigation.navigate('Payment', { invoiceId: invoice._id, totalAmount: invoice.totalAmount, invoiceCode: invoice.invoiceCode })}
           >
-            <Text style={styles.btnText}>🏦 Thanh toán Online (VNPay Sandbox)</Text>
+            <Text style={styles.btnText}>🏦 Thanh toán Online (VNPay)</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.cashBtn} onPress={handlePayCash}>
-            <Text style={styles.btnText}>💵 Xác nhận thu tiền mặt (UC10)</Text>
+            <Text style={styles.btnText}>💵 Xác nhận thu tiền mặt</Text>
           </TouchableOpacity>
         </View>
       ) : (
