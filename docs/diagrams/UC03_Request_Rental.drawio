@@ -1,100 +1,158 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="app.diagrams.net" modified="2026-11-09T16:40:00.000Z" agent="Antigravity/2.0" version="24.0.0" type="device">
-  <diagram id="diag_uc03" name="UC03 - Request Rental">
-    <mxGraphModel dx="1280" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="750" math="0" shadow="0">
+<mxfile host="app.diagrams.net">
+  <diagram name="UC03 Request Rental" id="uc03-request-rental">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="950" math="0" shadow="0">
       <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="2" value="&lt;b&gt;SEQUENCE DIAGRAM - UC03: Gửi yêu cầu thuê phòng (Request Rental)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontColor=#1b365d;" vertex="1" parent="1">
-          <mxGeometry x="60" y="20" width="1000" height="35" as="geometry" />
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        <!-- Lifelines -->
+        <mxCell id="lf_tenant" value="Tenant" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="115" y="40" width="30" height="850" as="geometry"/>
         </mxCell>
-        <mxCell id="3" value="alt&#xa;[TC_RENTAL_02: Room status != AVAILABLE (Phòng đã thuê/bảo trì)]" style="shape=umlFrame;whiteSpace=wrap;html=1;width=60;height=25;boundedLbl=1;verticalAlign=top;align=left;spacingLeft=8;fillColor=#fffbf0;strokeColor=#d6b656;strokeWidth=1.5;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="300" width="1090" height="260" as="geometry" />
+        <mxCell id="lf_ui" value="«boundary»&lt;br&gt;RentalRequestScreen" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
+          <mxGeometry x="315" y="40" width="170" height="850" as="geometry"/>
         </mxCell>
-        <mxCell id="4" value="[TC_RENTAL_01: Room status == AVAILABLE (Phòng hợp lệ)]" style="line;strokeWidth=1;dashed=1;labelPosition=center;verticalLabelPosition=top;align=left;spacingLeft=15;html=1;strokeColor=#d6b656;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="410" width="1090" height="10" as="geometry" />
+        <mxCell id="lf_controller" value="«control»&lt;br&gt;RentalRequestController" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
+          <mxGeometry x="615" y="40" width="170" height="850" as="geometry"/>
         </mxCell>
-        <mxCell id="ll_tenant" value="Khách thuê&#xa;(Tenant)" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;size=40;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="60" y="70" width="60" height="560" as="geometry" />
+        <mxCell id="lf_room" value="«entity»&lt;br&gt;Room" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
+          <mxGeometry x="930" y="40" width="140" height="850" as="geometry"/>
         </mxCell>
-        <mxCell id="ll_ui" value="&lt;b&gt;«boundary»&lt;br&gt;RentalRequestScreen&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="230" y="70" width="170" height="560" as="geometry" />
+        <mxCell id="lf_db" value="«database»&lt;br&gt;MongoDB" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="40" width="140" height="850" as="geometry"/>
         </mxCell>
-        <mxCell id="ll_api" value="&lt;b&gt;«control»&lt;br&gt;RentalRequestController&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="470" y="70" width="180" height="560" as="geometry" />
+
+        <!-- Activation Bars -->
+        <mxCell id="bar_T" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_tenant">
+          <mxGeometry x="9" y="100" width="12" height="710" as="geometry"/>
         </mxCell>
-        <mxCell id="ll_room" value="&lt;b&gt;«entity»&lt;br&gt;MongoDB: Room&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="720" y="70" width="150" height="560" as="geometry" />
+        <mxCell id="bar_UI" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_ui">
+          <mxGeometry x="79" y="100" width="12" height="710" as="geometry"/>
         </mxCell>
-        <mxCell id="ll_req" value="&lt;b&gt;«entity»&lt;br&gt;MongoDB: RentalRequest&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="930" y="70" width="170" height="560" as="geometry" />
+        <mxCell id="bar_C" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_controller">
+          <mxGeometry x="79" y="170" width="12" height="610" as="geometry"/>
         </mxCell>
-        <mxCell id="5" value="1. Chọn phòng trống &amp;amp; điền SĐT, ngày dự kiến, ghi chú" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=1;strokeColor=#182E3E;" edge="1" parent="1">
+        <mxCell id="bar_R" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_room">
+          <mxGeometry x="64" y="270" width="12" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="bar_DB_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db">
+          <mxGeometry x="64" y="295" width="12" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="bar_DB_1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db">
+          <mxGeometry x="64" y="605" width="12" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Alt Frame -->
+        <mxCell id="alt_0" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;" vertex="1" parent="1">
+          <mxGeometry x="40" y="405" width="1280" height="385" as="geometry"/>
+        </mxCell>
+        <mxCell id="div_0" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="90" y="150" as="sourcePoint" />
-            <mxPoint x="315" y="150" as="targetPoint" />
+            <mxPoint x="40" y="555" as="sourcePoint"/>
+            <mxPoint x="1320" y="555" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="6" value="2. Bấm nút &amp;quot;Gửi yêu cầu thuê&amp;quot;" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=1;strokeColor=#182E3E;" edge="1" parent="1">
+        <mxCell id="guard_0" value="[TC_RENTAL_02: room not found or status != &apos;AVAILABLE&apos;]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="120" y="405" width="340" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="guard_1" value="[TC_RENTAL_01: status == &apos;AVAILABLE&apos;]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="120" y="557" width="280" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Messages -->
+        <mxCell id="msg_0" value="1: select available room &amp; enter contact info" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="90" y="190" as="sourcePoint" />
-            <mxPoint x="315" y="190" as="targetPoint" />
+            <mxPoint x="136" y="150" as="sourcePoint"/>
+            <mxPoint x="394" y="150" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="7" value="3. POST /api/rental-requests (roomId, tenantName, phone, date, note)" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=0;strokeColor=#182E3E;" edge="1" parent="1">
+        <mxCell id="msg_1" value="2: clickSubmit()" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="315" y="220" as="sourcePoint" />
-            <mxPoint x="560" y="220" as="targetPoint" />
+            <mxPoint x="136" y="185" as="sourcePoint"/>
+            <mxPoint x="394" y="185" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="8" value="4. Room.findById(roomId)" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=0;strokeColor=#182E3E;" edge="1" parent="1">
+        <mxCell id="msg_2" value="3: POST /api/rental-requests (roomId, tenantName, phone, date, note)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="560" y="250" as="sourcePoint" />
-            <mxPoint x="795" y="250" as="targetPoint" />
+            <mxPoint x="406" y="210" as="sourcePoint"/>
+            <mxPoint x="694" y="210" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="9" value="5. Thông tin Room (status, price, ...)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=0;strokeColor=#4A6572;" edge="1" parent="1">
+        <mxCell id="msg_3" value="validateInput(roomId, tenantName)" style="html=1;align=left;spacingLeft=4;verticalAlign=middle;endArrow=block;endFill=1;rounded=0;fontSize=11;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="795" y="280" as="sourcePoint" />
-            <mxPoint x="560" y="280" as="targetPoint" />
+            <mxPoint x="706" y="235" as="sourcePoint"/>
+            <mxPoint x="706" y="260" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="736" y="235"/>
+              <mxPoint x="736" y="260"/>
+            </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="10" value="6a. Trả về 400 Bad Request (&amp;quot;Phòng không khả dụng để thuê&amp;quot;)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=0;strokeColor=#4A6572;" edge="1" parent="1">
+        <mxCell id="msg_4" value="4: findById(roomId)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="560" y="340" as="sourcePoint" />
-            <mxPoint x="315" y="340" as="targetPoint" />
+            <mxPoint x="706" y="310" as="sourcePoint"/>
+            <mxPoint x="994" y="310" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="11" value="7a. Hiển thị thông báo lỗi trên màn hình" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=0;strokeColor=#4A6572;" edge="1" parent="1">
+        <mxCell id="msg_5" value="findOne({ _id: roomId })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="315" y="370" as="sourcePoint" />
-            <mxPoint x="90" y="370" as="targetPoint" />
+            <mxPoint x="1006" y="335" as="sourcePoint"/>
+            <mxPoint x="1234" y="335" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="12" value="6b. RentalRequest.create(status: &amp;apos;PENDING&amp;apos;, requestDate: now)" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=0;strokeColor=#182E3E;" edge="1" parent="1">
+        <mxCell id="msg_6" value="room document" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="560" y="440" as="sourcePoint" />
-            <mxPoint x="1015" y="440" as="targetPoint" />
+            <mxPoint x="1234" y="375" as="sourcePoint"/>
+            <mxPoint x="1006" y="375" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="13" value="7b. Trả về yêu cầu vừa tạo thành công" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=0;strokeColor=#4A6572;" edge="1" parent="1">
+        <mxCell id="msg_7" value="room" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1015" y="470" as="sourcePoint" />
-            <mxPoint x="560" y="470" as="targetPoint" />
+            <mxPoint x="994" y="390" as="sourcePoint"/>
+            <mxPoint x="706" y="390" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="14" value="8b. Trả về 201 Created (Kèm dữ liệu RentalRequest)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=0;strokeColor=#4A6572;" edge="1" parent="1">
+
+        <!-- Alt 1: Error branch -->
+        <mxCell id="msg_8" value="5a: 400 Bad Request (&quot;Phòng hiện tại không khả dụng để thuê&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="560" y="500" as="sourcePoint" />
-            <mxPoint x="315" y="500" as="targetPoint" />
+            <mxPoint x="694" y="470" as="sourcePoint"/>
+            <mxPoint x="406" y="470" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="15" value="9b. Thông báo gửi yêu cầu thành công, chờ chủ trọ duyệt" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;edgeStyle=orthogonalEdgeStyle;rounded=0;fontSize=11;fontStyle=0;strokeColor=#4A6572;" edge="1" parent="1">
+        <mxCell id="msg_9" value="displayErrorAlert()" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="315" y="530" as="sourcePoint" />
-            <mxPoint x="90" y="530" as="targetPoint" />
+            <mxPoint x="394" y="505" as="sourcePoint"/>
+            <mxPoint x="136" y="505" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
+
+        <!-- Alt 2: Success branch -->
+        <mxCell id="msg_10" value="5b: RentalRequest.create({ roomId, tenantName, phone, date, status: &apos;PENDING&apos; })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="706" y="625" as="sourcePoint"/>
+            <mxPoint x="1234" y="625" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_11" value="savedRentalRequest document" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1234" y="670" as="sourcePoint"/>
+            <mxPoint x="706" y="670" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_12" value="6b: 201 Created (rentalRequest)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="694" y="715" as="sourcePoint"/>
+            <mxPoint x="406" y="715" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_13" value="displaySuccessAlert(&quot;Gửi yêu cầu thuê phòng thành công&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="394" y="750" as="sourcePoint"/>
+            <mxPoint x="136" y="750" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>
