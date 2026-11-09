@@ -1,0 +1,80 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Class Diagram - Room Module" id="class-diagram-room-module">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <!-- Boundary: RoomInventoryPage -->
+        <mxCell id="cls_ui_inventory" value="«boundary»&#xa;RoomInventoryPage&#xa;--&#xa;- rooms: Room[]&#xa;- selectedRoom: Room&#xa;- filterStatus: String&#xa;- isModalOpen: Boolean&#xa;--&#xa;+ componentDidMount(): void&#xa;+ loadRooms(): void&#xa;+ handleCreateRoom(data: CreateRoomDTO): void&#xa;+ handleUpdateRoom(id: String, data: UpdateRoomDTO): void&#xa;+ handleDeleteRoom(id: String): void&#xa;+ render(): JSX.Element" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="310" height="210" as="geometry"/>
+        </mxCell>
+
+        <!-- Boundary: RoomSearchPage -->
+        <mxCell id="cls_ui_search" value="«boundary»&#xa;RoomSearchPage&#xa;--&#xa;- searchResults: Room[]&#xa;- filterCriteria: RoomFilterDTO&#xa;- loading: Boolean&#xa;--&#xa;+ handleSearch(): void&#xa;+ handleFilterChange(field: String, val: Any): void&#xa;+ renderGridCards(): JSX.Element" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="310" height="170" as="geometry"/>
+        </mxCell>
+
+        <!-- Boundary: RoomDetailPage -->
+        <mxCell id="cls_ui_detail" value="«boundary»&#xa;RoomDetailPage&#xa;--&#xa;- room: Room&#xa;- requestModalOpen: Boolean&#xa;--&#xa;+ loadRoomDetails(id: String): void&#xa;+ submitRentalRequest(req: RentalRequestDTO): void" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="540" width="310" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- Controller: RoomController -->
+        <mxCell id="cls_controller" value="«controller»&#xa;RoomController&#xa;--&#xa;--&#xa;+ getAllRooms(req: Request, res: Response): Promise&lt;void&gt;&#xa;+ searchRooms(req: Request, res: Response): Promise&lt;void&gt;&#xa;+ getRoomById(req: Request, res: Response): Promise&lt;void&gt;&#xa;+ createRoom(req: Request, res: Response): Promise&lt;void&gt;&#xa;+ updateRoom(req: Request, res: Response): Promise&lt;void&gt;&#xa;+ deleteRoom(req: Request, res: Response): Promise&lt;void&gt;&#xa;+ createRentalRequest(req: Request, res: Response): Promise&lt;void&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="240" width="380" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- Service: RoomService -->
+        <mxCell id="cls_service" value="«service»&#xa;RoomService&#xa;--&#xa;--&#xa;+ fetchAllRooms(): Promise&lt;Room[]&gt;&#xa;+ searchByCriteria(filter: RoomFilterDTO): Promise&lt;Room[]&gt;&#xa;+ findRoomById(id: String): Promise&lt;Room&gt;&#xa;+ createNewRoom(dto: CreateRoomDTO): Promise&lt;Room&gt;&#xa;+ updateRoomById(id: String, dto: UpdateRoomDTO): Promise&lt;Room&gt;&#xa;+ removeRoom(id: String): Promise&lt;Boolean&gt;&#xa;+ validateRoomNumberUnique(num: String): Promise&lt;Boolean&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="530" width="380" height="210" as="geometry"/>
+        </mxCell>
+
+        <!-- Entity: Room -->
+        <mxCell id="cls_entity_room" value="«entity»&#xa;Room&#xa;--&#xa;+ _id: ObjectId&#xa;+ roomNumber: String&#xa;+ basePrice: Number&#xa;+ area: Number&#xa;+ maxOccupants: Number&#xa;+ amenities: String[]&#xa;+ status: RoomStatus&#xa;+ description: String&#xa;+ images: String[]&#xa;+ createdAt: Date&#xa;+ updatedAt: Date&#xa;--&#xa;+ isAvailable(): Boolean&#xa;+ canBeDeleted(): Boolean" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="140" width="280" height="270" as="geometry"/>
+        </mxCell>
+
+        <!-- Entity: RentalRequest -->
+        <mxCell id="cls_entity_req" value="«entity»&#xa;RentalRequest&#xa;--&#xa;+ _id: ObjectId&#xa;+ roomId: ObjectId&#xa;+ tenantName: String&#xa;+ tenantPhone: String&#xa;+ tenantEmail: String&#xa;+ moveInDate: Date&#xa;+ note: String&#xa;+ status: RequestStatus&#xa;+ createdAt: Date&#xa;--&#xa;+ approve(): void&#xa;+ reject(reason: String): void" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="470" width="280" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- Enum RoomStatus -->
+        <mxCell id="cls_enum_status" value="«enumeration»&#xa;RoomStatus&#xa;--&#xa;AVAILABLE&#xa;RENTED&#xa;MAINTENANCE" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="740" width="160" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Relationships -->
+        <mxCell id="rel_ui_ctrl1" value="HTTP POST/PUT/DEL" style="endArrow=open;dashed=1;html=1;endFill=0;exitX=1;exitY=0.5;entryX=0;entryY=0.25;" edge="1" parent="1" source="cls_ui_inventory" target="cls_controller">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel_ui_ctrl2" value="HTTP GET /search" style="endArrow=open;dashed=1;html=1;endFill=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="cls_ui_search" target="cls_controller">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="rel_ui_ctrl3" value="HTTP POST /rental-request" style="endArrow=open;dashed=1;html=1;endFill=0;exitX=1;exitY=0.5;entryX=0;entryY=0.8;" edge="1" parent="1" source="cls_ui_detail" target="cls_controller">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_ctrl_srv" value="delegates to" style="endArrow=open;dashed=1;html=1;endFill=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cls_controller" target="cls_service">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_srv_room" value="manages" style="endArrow=open;dashed=1;html=1;endFill=0;exitX=1;exitY=0.25;entryX=0;entryY=0.75;" edge="1" parent="1" source="cls_service" target="cls_entity_room">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_srv_req" value="creates" style="endArrow=open;dashed=1;html=1;endFill=0;exitX=1;exitY=0.75;entryX=0;entryY=0.5;" edge="1" parent="1" source="cls_service" target="cls_entity_req">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_room_req" value="1        0..*" style="endArrow=none;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cls_entity_room" target="cls_entity_req">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_room_status" value="uses" style="endArrow=open;dashed=1;html=1;endFill=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cls_entity_room" target="cls_enum_status">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
