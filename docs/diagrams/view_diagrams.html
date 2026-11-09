@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>UML Sequence Diagrams - Rental Request & Contract Management</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f6f9; color: #333; }
+    header { background: #1b365d; color: white; padding: 20px 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    header h1 { font-size: 22px; margin-bottom: 6px; }
+    header p { font-size: 14px; opacity: 0.9; }
+    .container { max-width: 1400px; margin: 25px auto; padding: 0 20px; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+    .tab-btn { background: white; border: 1px solid #ccc; padding: 10px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 14px; color: #444; }
+    .tab-btn:hover { background: #e8f0fe; border-color: #1a73e8; color: #1a73e8; }
+    .tab-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; box-shadow: 0 2px 6px rgba(26,115,232,0.3); }
+    .tab-content { display: none; background: white; border-radius: 8px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); border: 1px solid #e1e4e8; }
+    .tab-content.active { display: block; }
+    .desc-box { background: #f8f9fa; border-left: 4px solid #1a73e8; padding: 12px 16px; border-radius: 0 6px 6px 0; margin-bottom: 20px; font-size: 14px; line-height: 1.6; }
+    .diagram-wrapper { overflow-x: auto; padding: 20px 0; text-align: center; background: #ffffff; }
+    .actions { margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end; }
+    .btn { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 13px; text-decoration: none; color: #333; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+    .btn:hover { background: #f0f0f0; }
+    .btn-primary { background: #1a73e8; color: white; border-color: #1a73e8; }
+    .btn-primary:hover { background: #1557b0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📊 UML Sequence Diagrams (Biểu đồ tuần tự)</h1>
+  <p>Dự án: Motel Management System | Phân hệ: Rental Request &amp; Contract Management | Môn: SWD392</p>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(0)">1. UC03: Request Rental</button>
+    <button class="tab-btn" onclick="switchTab(1)">2. UC05: Manage Contract</button>
+    <button class="tab-btn" onclick="switchTab(2)">3. UC05.1: Extend Contract</button>
+    <button class="tab-btn" onclick="switchTab(3)">4. UC05.2: Terminate Contract</button>
+  </div>
+
+  <!-- TAB 1: UC03 -->
+  <div class="tab-content active" id="tab-0">
+    <div class="desc-box">
+      <strong>Use Case:</strong> UC03 - Gửi yêu cầu thuê phòng (Request Rental)<br>
+      <strong>Tác nhân:</strong> Khách thuê (Tenant) &rarr; RentalRequestScreen &rarr; RentalRequestController &rarr; Room &amp; RentalRequest Collection<br>
+      <strong>Test Cases:</strong> <code>TC_RENTAL_01</code> (Gửi thành công khi phòng trống), <code>TC_RENTAL_02</code> (Chặn đặt phòng đang thuê hoặc bảo trì).
+    </div>
+    <div class="diagram-wrapper">
+      <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Tenant as Khách thuê (Tenant)
+    participant UI as Frontend (RentalRequestScreen)
+    participant API as RentalRequestController
+    participant RoomDB as MongoDB (Room)
+    participant ReqDB as MongoDB (RentalRequest)
+
+    Tenant->>UI: 1. Chọn phòng trống & điền SĐT, ngày dự kiến, ghi chú
+    Tenant->>UI: 2. Bấm nút "Gửi yêu cầu thuê"
+    activate UI
+    UI->>API: 3. POST /api/rental-requests (roomId, tenantName, phone, date, note)
+    activate API
+    API->>RoomDB: 4. Room.findById(roomId)
+    activate RoomDB
+    RoomDB-->>API: 5. Thông tin Room
+    deactivate RoomDB
+
+    alt [TC_RENTAL_02] Room status != 'AVAILABLE'
+        API-->>UI: 6a. 400 Bad Request ("Phòng không khả dụng để thuê")
+        UI-->>Tenant: 7a. Hiển thị thông báo lỗi
+    else [TC_RENTAL_01] Room status == 'AVAILABLE'
+        API->>ReqDB: 6b. RentalRequest.create(status: 'PENDING')
+        activate ReqDB
+        ReqDB-->>API: 7b. Tạo yêu cầu mới thành công
+        deactivate ReqDB
+        API-->>UI: 8b. 201 Created (Kèm bản ghi RentalRequest)
+        deactivate API
+        UI-->>Tenant: 9b. Thông báo gửi yêu cầu thành công, chờ chủ trọ duyệt
+    end
+    deactivate UI
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: UC05 -->
+  <div class="tab-content" id="tab-1">
+    <div class="desc-box">
+      <strong>Use Case:</strong> UC05 - Lập hợp đồng mới (Manage Contract)<br>
+      <strong>Tác nhân:</strong> Chủ trọ (Landlord) &rarr; ManageContractsScreen &rarr; ContractController &rarr; Room &amp; Contract Collection<br>
+      <strong>Test Cases:</strong> <code>TC_CTR_01</code> (Lập hợp đồng thành công, phòng tự chuyển RENTED), <code>TC_CTR_02</code> (Chặn lập trùng hợp đồng).
+    </div>
+    <div class="diagram-wrapper">
+      <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Landlord as Chủ trọ (Landlord)
+    participant UI as Frontend (ManageContractsScreen)
+    participant API as ContractController
+    participant RoomDB as MongoDB (Room)
+    participant CtrDB as MongoDB (Contract)
+
+    Landlord->>UI: 1. Nhập thông tin Bên A, Bên B, ngày ký, thời hạn, cọc, giá thuê
+    Landlord->>UI: 2. Bấm "Xác nhận lập hợp đồng"
+    activate UI
+    UI->>API: 3. POST /api/contracts (roomId, Bên A, Bên B, signedDate, startDate, endDate, cọc, giá)
+    activate API
+    API->>RoomDB: 4. Room.findById(roomId)
+    activate RoomDB
+    RoomDB-->>API: 5. Thông tin phòng
+    deactivate RoomDB
+    API->>CtrDB: 6. Contract.findOne({ roomId, status: 'ACTIVE' })
+    activate CtrDB
+    CtrDB-->>API: 7. Kết quả tìm kiếm hợp đồng đang ACTIVE
+    deactivate CtrDB
+
+    alt [TC_CTR_02] Phòng đang RENTED hoặc đã có hợp đồng ACTIVE
+        API-->>UI: 8a. 400 Bad Request ("Phòng đang có hợp đồng hoặc đã thuê")
+        UI-->>Landlord: 9a. Cảnh báo lỗi lập trùng hợp đồng
+    else [TC_CTR_01] Dữ liệu hợp lệ & Phòng còn trống (AVAILABLE)
+        API->>CtrDB: 8b. Contract.create(status: 'ACTIVE', signedDate, Bên A, Bên B, ...)
+        activate CtrDB
+        CtrDB-->>API: 9b. Hợp đồng lưu thành công
+        deactivate CtrDB
+        API->>RoomDB: 10b. Cập nhật Room.status = 'RENTED'
+        activate RoomDB
+        RoomDB-->>API: 11b. Cập nhật phòng thành công
+        deactivate RoomDB
+        API-->>UI: 12b. 201 Created (Tạo hợp đồng thành công)
+        deactivate API
+        UI-->>Landlord: 13b. Thông báo thành công, mở nút "👁️ Xem HĐ" để xem và in
+    end
+    deactivate UI
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: UC05.1 -->
+  <div class="tab-content" id="tab-2">
+    <div class="desc-box">
+      <strong>Use Case:</strong> UC05.1 - Gia hạn hợp đồng (Extend Contract)<br>
+      <strong>Tác nhân:</strong> Chủ trọ (Landlord) &rarr; ManageContractsScreen &rarr; ContractController &rarr; Contract Collection
+    </div>
+    <div class="diagram-wrapper">
+      <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Landlord as Chủ trọ (Landlord)
+    participant UI as Frontend (ManageContractsScreen)
+    participant API as ContractController
+    participant CtrDB as MongoDB (Contract)
+
+    Landlord->>UI: 1. Bấm nút "Gia hạn" tại hàng hợp đồng
+    Landlord->>UI: 2. Nhập ngày kết thúc mới (newEndDate)
+    activate UI
+    UI->>API: 3. PUT /api/contracts/:id/extend ({ endDate: newEndDate })
+    activate API
+    API->>CtrDB: 4. Contract.findById(id)
+    activate CtrDB
+    CtrDB-->>API: 5. Thông tin hợp đồng hiện tại
+    deactivate CtrDB
+
+    alt Hợp đồng không ở trạng thái ACTIVE
+        API-->>UI: 6a. 400 Bad Request ("Chỉ có thể gia hạn hợp đồng đang ACTIVE")
+        UI-->>Landlord: 7a. Báo lỗi trạng thái không hợp lệ
+    else Hợp đồng ACTIVE hợp lệ
+        API->>CtrDB: 6b. Cập nhật contract.endDate = newEndDate & save()
+        activate CtrDB
+        CtrDB-->>API: 7b. Lưu gia hạn thành công
+        deactivate CtrDB
+        API-->>UI: 8b. 200 OK ("Gia hạn hợp đồng thành công")
+        deactivate API
+        UI-->>Landlord: 9b. Cập nhật thời hạn hợp đồng mới trên bảng danh sách
+    end
+    deactivate UI
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: UC05.2 -->
+  <div class="tab-content" id="tab-3">
+    <div class="desc-box">
+      <strong>Use Case:</strong> UC05.2 - Thanh lý hợp đồng &amp; Giải phóng phòng (Terminate Contract)<br>
+      <strong>Tác nhân:</strong> Chủ trọ (Landlord) &rarr; ManageContractsScreen &rarr; ContractController &rarr; Contract &amp; Room Collection<br>
+      <strong>Test Case:</strong> <code>TC_CTR_03</code> (Thanh lý hợp đồng và tự động giải phóng phòng về AVAILABLE).
+    </div>
+    <div class="diagram-wrapper">
+      <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Landlord as Chủ trọ (Landlord)
+    participant UI as Frontend (ManageContractsScreen)
+    participant API as ContractController
+    participant CtrDB as MongoDB (Contract)
+    participant RoomDB as MongoDB (Room)
+
+    Landlord->>UI: 1. Bấm nút "Thanh lý" tại hàng hợp đồng
+    Landlord->>UI: 2. Xác nhận hộp thoại "Xác nhận thanh lý?"
+    activate UI
+    UI->>API: 3. PUT /api/contracts/:id/terminate
+    activate API
+    API->>CtrDB: 4. Contract.findById(id)
+    activate CtrDB
+    CtrDB-->>API: 5. Thông tin hợp đồng hiện tại
+    deactivate CtrDB
+
+    alt Hợp đồng đã bị thanh lý trước đó (status == 'TERMINATED')
+        API-->>UI: 6a. 400 Bad Request ("Hợp đồng đã được thanh lý trước đó")
+        UI-->>Landlord: 7a. Báo lỗi không thể thanh lý lại
+    else [TC_CTR_03] Thanh lý hợp lệ
+        API->>CtrDB: 6b. Cập nhật contract.status = 'TERMINATED' & save()
+        activate CtrDB
+        CtrDB-->>API: 7b. Lưu trạng thái TERMINATED thành công
+        deactivate CtrDB
+        API->>RoomDB: 8b. Cập nhật Room.findById(contract.roomId) -> status = 'AVAILABLE'
+        activate RoomDB
+        RoomDB-->>API: 9b. Giải phóng phòng thành công (status: AVAILABLE)
+        deactivate RoomDB
+        API-->>UI: 10b. 200 OK ("Thanh lý hợp đồng thành công")
+        deactivate API
+        UI-->>Landlord: 11b. Cập nhật bảng: HĐ TERMINATED, Phòng tự chuyển về AVAILABLE
+    end
+    deactivate UI
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  function switchTab(index) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', i === index);
+    });
+    document.querySelectorAll('.tab-content').forEach((c, i) => {
+      c.classList.toggle('active', i === index);
+    });
+  }
+</script>
+
+</body>
+</html>
