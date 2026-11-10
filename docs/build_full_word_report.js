@@ -16,12 +16,12 @@ const {
   PageBreak,
   Header,
   Footer,
-  PageNumber
+  PageNumber,
+  ImageRun
 } = require('docx');
 
 const primaryColor = "1F497D"; // FPT / Professional Navy
 const secondaryColor = "595959";
-const headerBgColor = "EBF1F5";
 const tableBorderColor = "D3D3D3";
 
 const thinBorder = {
@@ -36,6 +36,8 @@ const cellBorders = {
   left: thinBorder,
   right: thinBorder
 };
+
+const imgDir = path.join(__dirname, 'diagram_images');
 
 function createCell(text, isHeader = false, widthPercent = 25, isBold = false) {
   return new TableCell({
@@ -125,6 +127,43 @@ function createBodyP(text, isItalic = false) {
   });
 }
 
+function createImageParagraph(imgFileName, width, height, captionText) {
+  const p = path.join(imgDir, imgFileName);
+  if (!fs.existsSync(p)) {
+    return new Paragraph({ text: `[Missing Image: ${imgFileName}]` });
+  }
+
+  const imgBuffer = fs.readFileSync(p);
+  return [
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { before: 140, after: 100 },
+      children: [
+        new ImageRun({
+          data: imgBuffer,
+          transformation: {
+            width: width,
+            height: height
+          }
+        })
+      ]
+    }),
+    new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { before: 40, after: 180 },
+      children: [
+        new TextRun({
+          text: captionText,
+          bold: true,
+          size: 20,
+          color: primaryColor,
+          font: "Calibri"
+        })
+      ]
+    })
+  ];
+}
+
 function createFigureBox(figureTitle, diagramFileName) {
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -146,7 +185,7 @@ function createFigureBox(figureTitle, diagramFileName) {
                 spacing: { before: 180, after: 60 },
                 children: [
                   new TextRun({
-                    text: `[ DIAGRAM PLACEHOLDER: ${diagramFileName} ]`,
+                    text: `[ DIAGRAM: ${diagramFileName} ]`,
                     bold: true,
                     size: 22,
                     color: primaryColor,
@@ -159,7 +198,7 @@ function createFigureBox(figureTitle, diagramFileName) {
                 spacing: { before: 40, after: 60 },
                 children: [
                   new TextRun({
-                    text: `Exported file available at: docs/diagrams/${diagramFileName}`,
+                    text: `Available in draw.io format at: docs/diagrams/${diagramFileName}`,
                     size: 18,
                     color: "555555",
                     italics: true,
@@ -206,7 +245,7 @@ async function buildDocument() {
       {
         properties: {},
         children: [
-          new Paragraph({ spacing: { before: 1200 } }),
+          new Paragraph({ spacing: { before: 1000 } }),
           new Paragraph({
             alignment: AlignmentType.CENTER,
             spacing: { before: 200, after: 100 },
@@ -222,7 +261,7 @@ async function buildDocument() {
           }),
           new Paragraph({
             alignment: AlignmentType.CENTER,
-            spacing: { before: 100, after: 400 },
+            spacing: { before: 100, after: 300 },
             children: [
               new TextRun({
                 text: "DEPARTMENT OF SOFTWARE ENGINEERING",
@@ -235,12 +274,12 @@ async function buildDocument() {
           }),
           new Paragraph({
             alignment: AlignmentType.CENTER,
-            spacing: { before: 400, after: 200 },
+            spacing: { before: 300, after: 150 },
             children: [
               new TextRun({
                 text: "CAPSTONE PROJECT REPORT",
                 bold: true,
-                size: 40,
+                size: 38,
                 color: primaryColor,
                 font: "Calibri"
               })
@@ -248,12 +287,12 @@ async function buildDocument() {
           }),
           new Paragraph({
             alignment: AlignmentType.CENTER,
-            spacing: { before: 100, after: 300 },
+            spacing: { before: 100, after: 200 },
             children: [
               new TextRun({
                 text: "REPORT 4 – SOFTWARE DESIGN DOCUMENT (SDD)",
                 bold: true,
-                size: 30,
+                size: 28,
                 color: "2E74B5",
                 font: "Calibri"
               })
@@ -261,7 +300,7 @@ async function buildDocument() {
           }),
           new Paragraph({
             alignment: AlignmentType.CENTER,
-            spacing: { before: 200, after: 600 },
+            spacing: { before: 150, after: 450 },
             children: [
               new TextRun({
                 text: "Project: Motel Management System (MMS)",
@@ -276,42 +315,42 @@ async function buildDocument() {
           // Info Table
           new Table({
             alignment: AlignmentType.CENTER,
-            width: { size: 85, type: WidthType.PERCENTAGE },
+            width: { size: 88, type: WidthType.PERCENTAGE },
             borders: cellBorders,
             rows: [
               new TableRow({
                 children: [
-                  createCell("Role in Project", true, 30),
-                  createCell("Member Name", true, 35),
-                  createCell("Assigned Module", true, 35)
+                  createCell("Role in Project", true, 28),
+                  createCell("Member Name", true, 34),
+                  createCell("Assigned Module", true, 38)
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("Team Leader", false, 30, true),
-                  createCell("Quang", false, 35, true),
-                  createCell("Room & Search Management", false, 35)
+                  createCell("Team Leader", false, 28, true),
+                  createCell("Quang", false, 34, true),
+                  createCell("Room & Search Management", false, 38)
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("Member 2", false, 30),
-                  createCell("Phạm Văn Khánh", false, 35),
-                  createCell("User Auth & Tenant KYC", false, 35)
+                  createCell("Member 2", false, 28),
+                  createCell("Phạm Văn Khánh", false, 34),
+                  createCell("User Auth & Tenant KYC", false, 38)
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("Member 3", false, 30),
-                  createCell("Đức", false, 35),
-                  createCell("Rental Contract Management", false, 35)
+                  createCell("Member 3", false, 28),
+                  createCell("Đức", false, 34),
+                  createCell("Rental Contract Management", false, 38)
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("Member 4", false, 30),
-                  createCell("Nguyễn Văn Mạnh", false, 35),
-                  createCell("Utility, Billing & VNPay Payment", false, 35)
+                  createCell("Member 4", false, 28),
+                  createCell("Nguyễn Văn Mạnh", false, 34),
+                  createCell("Utility, Billing & VNPay Payment", false, 38)
                 ]
               })
             ]
@@ -319,7 +358,7 @@ async function buildDocument() {
 
           new Paragraph({
             alignment: AlignmentType.CENTER,
-            spacing: { before: 1200 },
+            spacing: { before: 900 },
             children: [
               new TextRun({
                 text: "Hanoi, Academic Year 2026",
@@ -389,7 +428,7 @@ async function buildDocument() {
         children: [
           // Record of Changes
           createHeading1("I. Record of Changes"),
-          createBodyP("This document records all modifications, reviews, and architectural milestones throughout the software design lifecycle."),
+          createBodyP("This document records all architectural revisions, design specifications, and review checkpoints throughout the Capstone software design phase."),
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             borders: cellBorders,
@@ -416,7 +455,7 @@ async function buildDocument() {
                 children: [
                   createCell("2026-10-31"),
                   createCell("0.5"),
-                  createCell("Full Domain Class Diagram & Mongoose Schema specifications"),
+                  createCell("Full Domain Class Diagram & Mongoose Schemas design"),
                   createCell("Team"),
                   createCell("Mentor")
                 ]
@@ -434,7 +473,7 @@ async function buildDocument() {
                 children: [
                   createCell("2026-11-10"),
                   createCell("1.0"),
-                  createCell("Final SDD: Architecture, Package, 4 Module Class Diagrams, 14 Sequence Diagrams"),
+                  createCell("Final SDD: High-resolution Architecture diagrams, 4 Module Class Diagrams, 14 Sequence Diagrams"),
                   createCell("Quang (Lead)"),
                   createCell("Instructor")
                 ]
@@ -442,99 +481,120 @@ async function buildDocument() {
             ]
           }),
 
-          new Paragraph({ spacing: { before: 240 } }),
+          new Paragraph({ spacing: { before: 200 } }),
 
           // Table of Contents Summary
-          createHeading1("II. Table of Contents Summary"),
-          createBodyP("1. System Design: 1.1 System Architecture, 1.2 Package Diagrams (Frontend & Backend)"),
-          createBodyP("2. Detailed Design:"),
+          createHeading1("II. Table of Contents"),
+          createBodyP("1. System Design"),
+          createBodyP("   1.1 System Architecture: 1.1.1 Front-end Architecture, 1.1.2 Back-end Architecture"),
+          createBodyP("   1.2 Package Diagram: 1.2.1 Front-end Package Diagram, 1.2.2 Back-end Package Diagram"),
+          createBodyP("2. Detailed Design"),
           createBodyP("   2.1 Module 1: Authentication & Tenant Management (Phạm Văn Khánh)"),
           createBodyP("   2.2 Module 2: Room & Search Management (Quang - Team Leader)"),
           createBodyP("   2.3 Module 3: Rental Contract Management (Đức)"),
-          createBodyP("   2.4 Module 4: Utility, Billing & VNPay Payment (Nguyễn Văn Mạnh)"),
-          createBodyP("3. Database Design: 3.1 Domain Model / Class Diagram, 3.2 Collection Schemas & Data Dictionary"),
+          createBodyP("   2.4 Module 4: Utility, Invoice & VNPay Payment (Nguyễn Văn Mạnh)"),
+          createBodyP("3. Database Design"),
+          createBodyP("   3.1 System Domain Model / Class Diagram"),
+          createBodyP("   3.2 Collection Schemas & Data Dictionary (users, rooms, contracts, invoices...)"),
 
           new Paragraph({ children: [new PageBreak()] }),
 
           // 1. System Design
           createHeading1("1. System Design"),
           createHeading2("1.1 System Architecture"),
-          createBodyP("The Motel Management System (MMS) is engineered on a distributed 3-tier enterprise architecture ensuring security, separation of concerns, and cloud scalability:"),
-          createBodyP("• Tier 1 - Presentation Layer: Modern responsive Web Administration Dashboard (React 18, Vite, Tailwind CSS) for landlords/staff and Native Mobile Application (React Native / Expo) for tenants."),
-          createBodyP("• Tier 2 - Application Layer: High-performance Node.js / Express.js RESTful API engine incorporating JWT Authentication, Role-Based Access Control (RBAC), and domain Service layers."),
-          createBodyP("• Tier 3 - Data Storage & External Services: MongoDB cluster for high-throughput document persistence alongside the external VNPay Payment Gateway Sandbox for financial settlements."),
-
-          new Paragraph({ spacing: { before: 120, after: 120 } }),
-          createFigureBox("Figure 1.1. System Architecture Diagram", "System_Architecture.drawio"),
-          new Paragraph({ spacing: { before: 120, after: 120 } }),
+          createBodyP("The Motel Management System (MMS) adopts an enterprise 3-tier distributed architecture, separating Presentation (Client), Application Logic (NodeJS RESTful API), and Persistent Data Storage (MongoDB cluster & VNPay payment gateway)."),
 
           createHeading3("1.1.1 Front-end Architecture"),
-          createBodyP("The frontend adheres to component-driven design. The Web portal manages state via React Context API and handles asynchronous REST traffic using Axios interceptors. The Mobile client is packaged via Expo for Android deployment, persisting session tokens via AsyncStorage."),
+          createBodyP("The front-end client architecture features two main client targets: React Admin Web for landlords/staff and React Native (Expo) for mobile tenants. The presentation layer delegates navigation through React Router DOM and React Navigation, modularizes UI into Pages, Components, and Contexts, and communicates asynchronously via an Axios Service Layer."),
+
+          // INSERT FIGURE 1.1.1 IMAGE
+          ...createImageParagraph("Figure_1_1_1_Frontend_Architecture.png", 460, 630, "Figure 1.1.1. Front-end Architecture"),
+
+          new Paragraph({ children: [new PageBreak()] }),
 
           createHeading3("1.1.2 Back-end Architecture"),
-          createBodyP("The backend applies the standard Controller-Service-Repository pattern. Routes define HTTP interfaces, Middlewares enforce authentication and payload validation, Controllers orchestrate request lifecycles, Services implement pure business calculations, and Mongoose Models represent database collections with automatic schema validation hooks."),
+          createBodyP("The backend architecture strictly enforces a layered pipeline matching the SAMS Capstone standard: API Layer (Routes) -> Request Processing Layer (Middlewares, Validators) -> Application Layer (Controllers) -> Business Logic Layer (Services) -> Data Access Layer (Mongoose Models) -> MongoDB Database. Auxiliary logic (Jobs, Utils, Constants, Configs) is encapsulated in dedicated packages."),
+
+          // INSERT FIGURE 1.1.2 IMAGE
+          ...createImageParagraph("Figure_1_1_2_Backend_Architecture.png", 460, 570, "Figure 1.1.2. Back-end Architecture"),
+
+          new Paragraph({ children: [new PageBreak()] }),
 
           createHeading2("1.2 Package Diagram"),
-          createHeading3("1.2.1 Front-end Package Diagram"),
-          createBodyP("The frontend repository is structured into modular namespaces:"),
-          createBodyP("• src/components: Shared atomic widgets (modals, data tables, alert toasts, form inputs)."),
-          createBodyP("• src/pages: Functional route destinations (RoomsPage, ContractsPage, InvoicesPage, ProfilePage)."),
-          createBodyP("• src/services: Typed API clients mapped to backend REST endpoints."),
-          createBodyP("• src/context: Global state providers (AuthContext, ThemeContext)."),
+          createHeading3("1.2.1 Front-end package diagram"),
+          createBodyP("The front-end package diagram defines the structural organization of both the Admin Web and Tenant Mobile clients, connected through shared Services, Context providers, and utility formatters:"),
 
-          createHeading3("1.2.2 Back-end Package Diagram"),
-          createBodyP("The backend directory enforces strict separation of responsibilities:"),
+          // INSERT FIGURE 1.2.1 IMAGE
+          ...createImageParagraph("Figure_1_2_1_Frontend_Package_Diagram.png", 580, 395, "Figure 1.2.1. Front-end package diagram"),
+
+          new Paragraph({ spacing: { before: 180 } }),
+
+          createHeading3("1.2.2 Back-end package diagram"),
+          createBodyP("The back-end package structure organizes components into 10 decoupled directories to optimize reusability, testability, and maintainability:"),
+
+          // INSERT FIGURE 1.2.2 IMAGE
+          ...createImageParagraph("Figure_1_2_2_Backend_Package_Diagram.png", 580, 448, "Figure 1.2.2. Back-end package diagram"),
+
+          createBodyP("Package descriptions:"),
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             borders: cellBorders,
             rows: [
               new TableRow({
                 children: [
-                  createCell("No", true, 10),
-                  createCell("Package", true, 25),
-                  createCell("Description & Responsibilities", true, 65)
+                  createCell("No", true, 8),
+                  createCell("Package", true, 20),
+                  createCell("Description", true, 72)
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("1"),
-                  createCell("config/"),
-                  createCell("Database connections, JWT signing keys, VNPay merchant credentials")
+                  createCell("01"), createCell("/config"), createCell("Contains configuration settings for the backend system such as environment variables, database connection setup, and VNPay merchant credentials.")
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("2"),
-                  createCell("routes/"),
-                  createCell("RESTful route declarations and HTTP method bindings")
+                  createCell("02"), createCell("/constants"), createCell("Stores constant values and enumerations (User roles, Room status, Contract status, Invoice status) to avoid hardcoding values and improve maintainability.")
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("3"),
-                  createCell("middlewares/"),
-                  createCell("JWT verification, RBAC guard, input validation, and global error handlers")
+                  createCell("03"), createCell("/controllers"), createCell("Handles incoming HTTP requests and responses. Controllers receive requests from routes, extract parameters, call services, and return unified JSON responses to the client.")
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("4"),
-                  createCell("controllers/"),
-                  createCell("HTTP request extraction, DTO mapping, and JSON response delivery")
+                  createCell("04"), createCell("/jobs"), createCell("Contains scheduled background tasks (cron jobs) that run automatically at specified intervals to handle time-sensitive operations (expiring unpaid bookings, monthly invoice generation, payment reminders).")
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("5"),
-                  createCell("services/"),
-                  createCell("Core business rules: pricing algorithms, signature verification, VNPay hash")
+                  createCell("05"), createCell("/middlewares"), createCell("Contains middleware functions used in the request processing pipeline, such as JWT authentication, Role-Based Access Control (RBAC), error handling, and request logging.")
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("6"),
-                  createCell("models/"),
-                  createCell("Mongoose schemas: User, Room, RentalRequest, Contract, Utility, Invoice")
+                  createCell("06"), createCell("/models"), createCell("Defines data models and database schemas used in the application. These models represent collections stored in MongoDB and enforce data integrity constraints.")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("07"), createCell("/routes"), createCell("Defines API endpoints and maps incoming HTTP requests to corresponding controller functions.")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("08"), createCell("/service"), createCell("Implements the core business logic of the application. Services process data, interact with models, and provide reusable business operations for controllers.")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("09"), createCell("/utils"), createCell("Provides helper functions and reusable utilities that support different parts of the application (response formatters, cryptographic HMAC hashing, token utilities).")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("10"), createCell("/validators"), createCell("Contains validation logic to verify request data (phone format, price bounds, citizen ID length) before requests are processed by controllers.")
                 ]
               })
             ]
@@ -547,7 +607,7 @@ async function buildDocument() {
 
           // 2.1 Module 1: Khanh
           createHeading2("2.1 Module 1: Authentication & Tenant Management (Phạm Văn Khánh)"),
-          createBodyP("This module governs user onboarding, authentication via JSON Web Tokens, tenant KYC compliance (citizen ID verification), and staff permission management."),
+          createBodyP("This module manages user identity, secure authentication using JSON Web Tokens, tenant KYC compliance (citizen ID verification), and staff account management."),
           
           createHeading3("2.1.1 Class Diagram - User & Tenant Module"),
           createFigureBox("Figure 2.1.1. Class Diagram - User & Tenant Module", "ClassDiagram_User_Module.drawio"),
@@ -640,9 +700,11 @@ async function buildDocument() {
           // 3. Database Design
           createHeading1("3. Database Design"),
           createHeading2("3.1 System Domain Model / Class Diagram"),
-          createBodyP("The domain diagram captures the holistic schema architecture, relationships, and multiplicities across the entire Motel Management System:"),
+          createBodyP("The domain model captures the complete entity-relationship graph, cardinalities, foreign key mappings, and schema attributes across the Motel Management System:"),
 
-          createFigureBox("Figure 3.1. Full System Domain Class Diagram", "ClassDiagram_Full_Project.drawio"),
+          // INSERT FIGURE 3.1 IMAGE
+          ...createImageParagraph("Figure_3_1_System_Domain_Class_Diagram.png", 590, 393, "Figure 3.1. System Domain Class Diagram"),
+
           new Paragraph({ spacing: { before: 180, after: 120 } }),
 
           createHeading2("3.2 Collection Schemas & Data Dictionary"),
@@ -871,8 +933,8 @@ async function buildDocument() {
           }),
 
           new Paragraph({ spacing: { before: 240 } }),
-          createHeading1("4. Conclusion & Handover"),
-          createBodyP("This Software Design Document serves as the authoritative blueprint for development, API testing, quality assurance, and graduation defense. All corresponding draw.io visual diagrams are synchronized and ready for oral examinations.")
+          createHeading1("4. Conclusion"),
+          createBodyP("This Software Design Document constitutes the official technical architecture and detailed specifications of the Motel Management System (MMS). All system-level diagrams and module-specific sequence diagrams are fully realized and ready for academic grading and individual defense.")
         ]
       }
     ]
