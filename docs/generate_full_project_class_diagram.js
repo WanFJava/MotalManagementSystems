@@ -1,0 +1,127 @@
+const fs = require('fs');
+const path = require('path');
+
+const targetDirs = [
+  path.join(__dirname, 'diagrams'),
+  'C:\\Users\\nguye\\Downloads'
+];
+
+targetDirs.forEach(dir => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+});
+
+function wrap(name, id, content, width = 1600, height = 1100) {
+  return `<mxfile host="app.diagrams.net">
+  <diagram name="${name}" id="${id}">
+    <mxGraphModel dx="1600" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="${width}" pageHeight="${height}" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+${content}
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}
+
+const fullProjectClassXml = `        <!-- Module 1: USER & AUTH (Khanh) -->
+        <mxCell id="cls_user" value="«entity»&#xa;User&#xa;--&#xa;+ _id: ObjectId&#xa;+ fullName: String&#xa;+ email: String&#xa;+ phone: String&#xa;+ passwordHash: String&#xa;+ role: UserRole&#xa;+ identityNumber: String&#xa;+ currentRoom: ObjectId&#xa;+ isActive: Boolean&#xa;+ createdAt: Date&#xa;--&#xa;+ comparePassword(pwd: String): Boolean&#xa;+ generateAuthToken(): String" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="280" height="230" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cls_enum_role" value="«enumeration»&#xa;UserRole&#xa;--&#xa;MANAGER&#xa;STAFF&#xa;TENANT" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="340" width="160" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Module 2: ROOM MANAGEMENT (Quang - Leader) -->
+        <mxCell id="cls_room" value="«entity»&#xa;Room&#xa;--&#xa;+ _id: ObjectId&#xa;+ roomNumber: String&#xa;+ basePrice: Number&#xa;+ area: Number&#xa;+ maxOccupants: Number&#xa;+ amenities: String[]&#xa;+ status: RoomStatus&#xa;+ description: String&#xa;+ images: String[]&#xa;+ createdAt: Date&#xa;--&#xa;+ isAvailable(): Boolean&#xa;+ canBeDeleted(): Boolean" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="80" width="280" height="250" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cls_enum_room_status" value="«enumeration»&#xa;RoomStatus&#xa;--&#xa;AVAILABLE&#xa;RENTED&#xa;MAINTENANCE" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="360" width="160" height="100" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cls_rental_req" value="«entity»&#xa;RentalRequest&#xa;--&#xa;+ _id: ObjectId&#xa;+ roomId: ObjectId&#xa;+ tenantId: ObjectId&#xa;+ tenantName: String&#xa;+ tenantPhone: String&#xa;+ moveInDate: Date&#xa;+ note: String&#xa;+ status: RequestStatus&#xa;+ createdAt: Date&#xa;--&#xa;+ approve(): void&#xa;+ reject(reason: String): void" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="520" width="280" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- Module 3: CONTRACT (Duc) -->
+        <mxCell id="cls_contract" value="«entity»&#xa;RentalContract&#xa;--&#xa;+ _id: ObjectId&#xa;+ roomId: ObjectId&#xa;+ tenantId: ObjectId&#xa;+ landlordName: String&#xa;+ tenantName: String&#xa;+ tenantPhone: String&#xa;+ tenantCccd: String&#xa;+ rentalPrice: Number&#xa;+ depositAmount: Number&#xa;+ startDate: Date&#xa;+ endDate: Date&#xa;+ landlordSignature: String&#xa;+ tenantSignature: String&#xa;+ status: ContractStatus&#xa;--&#xa;+ signOnline(signature: String): void&#xa;+ extend(newEndDate: Date): void&#xa;+ terminate(): void" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="80" width="300" height="320" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cls_enum_contract_status" value="«enumeration»&#xa;ContractStatus&#xa;--&#xa;WAITING_TENANT_SIGNATURE&#xa;ACTIVE&#xa;EXPIRED&#xa;TERMINATED" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="430" width="220" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- Module 4: UTILITY & INVOICE & PAYMENT (Manh) -->
+        <mxCell id="cls_utility" value="«entity»&#xa;UtilityReading&#xa;--&#xa;+ _id: ObjectId&#xa;+ roomId: ObjectId&#xa;+ month: Number&#xa;+ year: Number&#xa;+ prevElectric: Number&#xa;+ currElectric: Number&#xa;+ prevWater: Number&#xa;+ currWater: Number&#xa;+ recordedBy: ObjectId&#xa;+ isBilled: Boolean&#xa;--&#xa;+ calculateUsage(): UsageDTO" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="580" width="280" height="230" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cls_invoice" value="«entity»&#xa;Invoice&#xa;--&#xa;+ _id: ObjectId&#xa;+ contractId: ObjectId&#xa;+ roomId: ObjectId&#xa;+ tenantId: ObjectId&#xa;+ month: Number&#xa;+ year: Number&#xa;+ roomCharge: Number&#xa;+ electricCharge: Number&#xa;+ waterCharge: Number&#xa;+ totalAmount: Number&#xa;+ status: InvoiceStatus&#xa;+ paidAt: Date&#xa;--&#xa;+ calculateTotal(): Number&#xa;+ markAsPaid(): void" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="100" width="300" height="290" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cls_payment" value="«entity»&#xa;PaymentTransaction&#xa;--&#xa;+ _id: ObjectId&#xa;+ invoiceId: ObjectId&#xa;+ amount: Number&#xa;+ paymentMethod: String&#xa;+ vnpayTxnRef: String&#xa;+ vnpayBankCode: String&#xa;+ status: String&#xa;+ transactionDate: Date&#xa;--&#xa;+ verifyChecksum(): Boolean" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="520" width="280" height="210" as="geometry"/>
+        </mxCell>
+
+        <!-- RELATIONSHIPS -->
+        <mxCell id="rel_u_role" value="has" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cls_user" target="cls_enum_role">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_r_status" value="has" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cls_room" target="cls_enum_room_status">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_u_req" value="submits&#xa;1        0..*" style="endArrow=none;html=1;exitX=0.75;exitY=1;entryX=0.25;entryY=0;" edge="1" parent="1" source="cls_user" target="cls_rental_req">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_r_req" value="for room&#xa;1        0..*" style="endArrow=none;html=1;exitX=0.25;exitY=1;entryX=0.75;entryY=0;" edge="1" parent="1" source="cls_room" target="cls_rental_req">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_r_ctr" value="leased by&#xa;1             0..1" style="endArrow=none;html=1;exitX=1;exitY=0.4;entryX=0;entryY=0.4;" edge="1" parent="1" source="cls_room" target="cls_contract">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_u_ctr" value="signs&#xa;1                                            0..*" style="endArrow=none;html=1;exitX=0.5;exitY=0;entryX=0.5;entryY=0;rounded=0;" edge="1" parent="1" source="cls_user" target="cls_contract">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="30"/>
+              <mxPoint x="990" y="30"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel_ctr_status" value="has" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cls_contract" target="cls_enum_contract_status">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_r_utility" value="measured in&#xa;1        0..*" style="endArrow=none;html=1;exitX=0.8;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="cls_room" target="cls_utility">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_ctr_inv" value="bills&#xa;1           0..*" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="cls_contract" target="cls_invoice">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_util_inv" value="applies to&#xa;0..1        1" style="endArrow=none;html=1;exitX=1;exitY=0.3;entryX=0.2;entryY=1;" edge="1" parent="1" source="cls_utility" target="cls_invoice">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rel_inv_pay" value="settled by&#xa;1            0..1" style="endArrow=none;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cls_invoice" target="cls_payment">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>`;
+
+const fullFile = wrap('Class Diagram - Full Project', 'class-diagram-full-project', fullProjectClassXml, 1600, 900);
+
+targetDirs.forEach(dir => {
+  const dest = path.join(dir, 'ClassDiagram_Full_Project.drawio');
+  fs.writeFileSync(dest, fullFile, 'utf8');
+  console.log(`Generated Full Project Class Diagram: ${dest}`);
+});
