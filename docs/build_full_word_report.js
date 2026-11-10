@@ -62,9 +62,9 @@ function createCell(text, isHeader = false, widthPercent = 25, isBold = false) {
   });
 }
 
+// FIX: Do NOT set `text: title` on Paragraph when passing children TextRun!
 function createHeading1(title) {
   return new Paragraph({
-    text: title,
     heading: HeadingLevel.HEADING_1,
     spacing: { before: 360, after: 180 },
     children: [
@@ -81,7 +81,6 @@ function createHeading1(title) {
 
 function createHeading2(title) {
   return new Paragraph({
-    text: title,
     heading: HeadingLevel.HEADING_2,
     spacing: { before: 240, after: 120 },
     children: [
@@ -98,7 +97,6 @@ function createHeading2(title) {
 
 function createHeading3(title) {
   return new Paragraph({
-    text: title,
     heading: HeadingLevel.HEADING_3,
     spacing: { before: 180, after: 90 },
     children: [
@@ -113,17 +111,31 @@ function createHeading3(title) {
   });
 }
 
-function createBodyP(text, isItalic = false) {
+function createBodyP(text, isItalic = false, isBold = false) {
   return new Paragraph({
-    spacing: { before: 80, after: 80, line: 276 },
+    spacing: { before: 70, after: 70, line: 276 },
     children: [
       new TextRun({
         text: text,
         size: 22,
         font: "Calibri",
-        italics: isItalic
+        italics: isItalic,
+        bold: isBold
       })
     ]
+  });
+}
+
+function createBulletP(bulletText, leadBold = "") {
+  const runs = [];
+  if (leadBold) {
+    runs.push(new TextRun({ text: leadBold, bold: true, size: 22, font: "Calibri" }));
+  }
+  runs.push(new TextRun({ text: bulletText, size: 22, font: "Calibri" }));
+  return new Paragraph({
+    indent: { left: 400 },
+    spacing: { before: 50, after: 50, line: 260 },
+    children: runs
   });
 }
 
@@ -182,7 +194,7 @@ function createFigureBox(figureTitle, diagramFileName) {
             children: [
               new Paragraph({
                 alignment: AlignmentType.CENTER,
-                spacing: { before: 140, after: 50 },
+                spacing: { before: 140, after: 40 },
                 children: [
                   new TextRun({
                     text: `[ DIAGRAM: ${diagramFileName} ]`,
@@ -195,10 +207,10 @@ function createFigureBox(figureTitle, diagramFileName) {
               }),
               new Paragraph({
                 alignment: AlignmentType.CENTER,
-                spacing: { before: 40, after: 50 },
+                spacing: { before: 30, after: 40 },
                 children: [
                   new TextRun({
-                    text: `Available in draw.io format at: docs/diagrams/${diagramFileName}`,
+                    text: `Exported draw.io vector file: docs/diagrams/${diagramFileName}`,
                     size: 18,
                     color: "555555",
                     italics: true,
@@ -208,7 +220,7 @@ function createFigureBox(figureTitle, diagramFileName) {
               }),
               new Paragraph({
                 alignment: AlignmentType.CENTER,
-                spacing: { before: 40, after: 140 },
+                spacing: { before: 30, after: 140 },
                 children: [
                   new TextRun({
                     text: figureTitle,
@@ -322,35 +334,35 @@ async function buildDocument() {
                 children: [
                   createCell("Role in Project", true, 26),
                   createCell("Member Name", true, 34),
-                  createCell("Assigned Module & Scope", true, 40)
+                  createCell("Assigned Subsystem", true, 40)
                 ]
               }),
               new TableRow({
                 children: [
                   createCell("Team Leader", false, 26, true),
                   createCell("Quang", false, 34, true),
-                  createCell("Room & Search (5 Sequence Diagrams)", false, 40)
+                  createCell("Room & Search Management (5 Use Cases)", false, 40)
                 ]
               }),
               new TableRow({
                 children: [
                   createCell("Member 2", false, 26),
                   createCell("Phạm Văn Khánh", false, 34),
-                  createCell("User Auth & KYC (4 Sequence Diagrams)", false, 40)
+                  createCell("Authentication & Tenant KYC (4 Use Cases)", false, 40)
                 ]
               }),
               new TableRow({
                 children: [
                   createCell("Member 3", false, 26),
                   createCell("Đức", false, 34),
-                  createCell("Rental Contract (4 Sequence Diagrams)", false, 40)
+                  createCell("Rental Contract Management (4 Use Cases)", false, 40)
                 ]
               }),
               new TableRow({
                 children: [
                   createCell("Member 4", false, 26),
                   createCell("Nguyễn Văn Mạnh", false, 34),
-                  createCell("Utility & VNPay (4 Sequence Diagrams)", false, 40)
+                  createCell("Utility, Billing & VNPay Payment (4 Use Cases)", false, 40)
                 ]
               })
             ]
@@ -472,8 +484,8 @@ async function buildDocument() {
               new TableRow({
                 children: [
                   createCell("2026-11-10"),
-                  createCell("1.1"),
-                  createCell("Added System Context Diagram (DFD Level 0); Expanded to 17 Sequence Diagrams (>= 4 per member)"),
+                  createCell("1.0"),
+                  createCell("Completed SDD: High-resolution diagrams, 4 Module Class Diagrams, 17 Sequence Diagrams"),
                   createCell("Quang (Lead)"),
                   createCell("Instructor")
                 ]
@@ -483,20 +495,46 @@ async function buildDocument() {
 
           new Paragraph({ spacing: { before: 200 } }),
 
-          // Table of Contents Summary
-          createHeading1("II. Table of Contents"),
+          // Table of Contents
+          createHeading1("Table of Contents"),
+          createBodyP("I. Record of Changes"),
           createBodyP("1. System Design"),
-          createBodyP("   1.0 System Context Diagram (DFD Level 0)"),
-          createBodyP("   1.1 System Architecture: 1.1.1 Front-end Architecture, 1.1.2 Back-end Architecture"),
-          createBodyP("   1.2 Package Diagram: 1.2.1 Front-end Package Diagram, 1.2.2 Back-end Package Diagram"),
+          createBulletP("1.0 System Context Diagram (DFD Level 0)"),
+          createBulletP("1.1 System Architecture"),
+          createBulletP("   1.1.1 Front-end Architecture"),
+          createBulletP("   1.1.2 Back-end Architecture"),
+          createBulletP("1.2 Package Diagram"),
+          createBulletP("   1.2.1 Front-end package diagram"),
+          createBulletP("   1.2.2 Back-end package diagram"),
           createBodyP("2. Detailed Design"),
-          createBodyP("   2.1 Module 1: Authentication & Tenant Management (Phạm Văn Khánh - 4 Sequence Diagrams)"),
-          createBodyP("   2.2 Module 2: Room & Search Management (Quang - Team Leader - 5 Sequence Diagrams)"),
-          createBodyP("   2.3 Module 3: Rental Contract Management (Đức - 4 Sequence Diagrams)"),
-          createBodyP("   2.4 Module 4: Utility, Invoice & VNPay Payment (Nguyễn Văn Mạnh - 4 Sequence Diagrams)"),
+          createBulletP("2.1 Authentication & Tenant Management (Phạm Văn Khánh)"),
+          createBulletP("   2.1.1 Class Diagram"),
+          createBulletP("   2.1.2 Sign In"),
+          createBulletP("   2.1.3 Sign Up"),
+          createBulletP("   2.1.4 Update Tenant Profile (KYC)"),
+          createBulletP("   2.1.5 Manage Staff Accounts"),
+          createBulletP("2.2 Room & Search Management (Quang)"),
+          createBulletP("   2.2.1 Class Diagram"),
+          createBulletP("   2.2.2 Search & Filter Rooms"),
+          createBulletP("   2.2.3 Request Rental"),
+          createBulletP("   2.2.4 Create Room"),
+          createBulletP("   2.2.5 Update Room Info"),
+          createBulletP("   2.2.6 Delete Room"),
+          createBulletP("2.3 Rental Contract Management (Đức)"),
+          createBulletP("   2.3.1 Class Diagram"),
+          createBulletP("   2.3.2 Create Contract"),
+          createBulletP("   2.3.3 Sign Contract"),
+          createBulletP("   2.3.4 Extend Contract"),
+          createBulletP("   2.3.5 Terminate Contract"),
+          createBulletP("2.4 Utility, Billing & Payment (Nguyễn Văn Mạnh)"),
+          createBulletP("   2.4.1 Class Diagram"),
+          createBulletP("   2.4.2 Record Utility Readings"),
+          createBulletP("   2.4.3 Generate Monthly Invoices"),
+          createBulletP("   2.4.4 Pay Invoice via VNPay"),
+          createBulletP("   2.4.5 VNPay IPN Callback"),
           createBodyP("3. Database Design"),
-          createBodyP("   3.1 System Domain Model / Class Diagram"),
-          createBodyP("   3.2 Collection Schemas & Data Dictionary (users, rooms, contracts, invoices...)"),
+          createBulletP("3.1 System Domain Model / Class Diagram"),
+          createBulletP("3.2 Collection Schemas & Data Dictionary"),
 
           new Paragraph({ children: [new PageBreak()] }),
 
@@ -506,11 +544,11 @@ async function buildDocument() {
           // 1.0 System Context Diagram
           createHeading2("1.0 System Context Diagram (DFD Level 0)"),
           createBodyP("The System Context Diagram defines the high-level boundary of the Motel Management System (MMS) and delineates information exchanges with external stakeholders and third-party cloud infrastructure:"),
-          createBodyP("• Tenant / Guest (Mobile & Web): Exchanges authentication credentials, room search queries, rental reservation requests, KYC citizen identification documents, digital contract signatures, and online invoice payment instructions."),
-          createBodyP("• Landlord (Admin Web Portal): Inputs room inventory data, pricing policies, lease creation / extension / termination authorizations, and reviews rental requests alongside revenue analytics."),
-          createBodyP("• Operations Staff (Web & Mobile): Transmits monthly electricity and water meter numbers, registers cash settlements, and monitors assigned room maintenance schedules."),
-          createBodyP("• VNPay Payment Gateway (External API): Receives cryptographic HMAC-SHA512 order parameters and returns server-to-server asynchronous IPN webhooks to settle invoices."),
-          createBodyP("• Cloudinary Storage (CDN Service): Persists and serves media assets including room showcase galleries, tenant citizen IDs, and vector signature PNGs."),
+          createBulletP("Exchanges authentication credentials, room search queries, rental reservation requests, KYC citizen identification documents, digital contract signatures, and online invoice payment instructions.", "• Tenant / Guest (Mobile & Web): "),
+          createBulletP("Inputs room inventory data, pricing policies, lease creation / extension / termination authorizations, and reviews rental requests alongside revenue analytics.", "• Landlord (Admin Web Portal): "),
+          createBulletP("Transmits monthly electricity and water meter numbers, registers cash settlements, and monitors assigned room maintenance schedules.", "• Operations Staff (Web & Mobile): "),
+          createBulletP("Receives cryptographic HMAC-SHA512 order parameters and returns server-to-server asynchronous IPN webhooks to settle invoices.", "• VNPay Payment Gateway (External API): "),
+          createBulletP("Persists and serves media assets including room showcase galleries, tenant citizen IDs, and vector signature PNGs.", "• Cloudinary Storage (CDN Service): "),
 
           // INSERT FIGURE 1.0 CONTEXT DIAGRAM IMAGE
           ...createImageParagraph("Figure_1_0_System_Context_Diagram.png", 580, 460, "Figure 1.0. System Context Diagram (DFD Level 0)"),
@@ -622,110 +660,220 @@ async function buildDocument() {
           createHeading1("2. Detailed Design"),
 
           // 2.1 Module 1: Khanh
-          createHeading2("2.1 Module 1: Authentication & Tenant Management (Phạm Văn Khánh - 4 Sequence Diagrams)"),
-          createBodyP("This module manages user identity, secure authentication using JSON Web Tokens, tenant KYC compliance (citizen ID verification), and staff account management."),
+          createHeading2("2.1 Authentication & Tenant Management"),
+          createBodyP("Assigned Team Member: Phạm Văn Khánh", false, true),
+          createBodyP("This module governs user onboarding, authentication via JSON Web Tokens, tenant KYC compliance (citizen ID verification), and operations staff account provisioning."),
           
-          createHeading3("2.1.1 Class Diagram - User & Tenant Module"),
-          createFigureBox("Figure 2.1.1. Class Diagram - User & Tenant Module", "ClassDiagram_User_Module.drawio"),
+          createHeading3("2.1.1 Class Diagram"),
+          createFigureBox("Figure 2.1.1. Authentication & Tenant Management Class Diagram", "ClassDiagram_User_Module.drawio"),
           new Paragraph({ spacing: { before: 120, after: 120 } }),
 
-          createHeading3("2.1.2 Sign Up (Register) Sequence Diagram"),
-          createFigureBox("Figure 2.1.2. Sign Up Sequence Diagram", "UC-M01_1_Register_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: The user inputs name, phone, email, and password. The system queries MongoDB to ensure uniqueness of phone/email. If unique, password is encrypted with Bcrypt (salt round = 10), new User document is persisted, and a signed JWT is returned for seamless login."),
+          createHeading3("2.1.2 Sign In"),
+          createFigureBox("Figure 2.1.2. Sign In Sequence Diagram", "UC-M01_2_Login_SequenceDiagram.drawio"),
+          createBodyP("1. User enters phone/email and password on LoginScreen and clicks Sign In."),
+          createBodyP("2. LoginScreen sends HTTP POST request to /api/auth/login with account and password."),
+          createBodyP("3. auth.controller extracts credentials and invokes auth.service.authenticateUser()."),
+          createBodyP("4. auth.service queries MongoDB: db.users.findOne({ $or: [{ phone }, { email }] })."),
+          createBodyP("5. MongoDB returns user record with passwordHash, role, and isLocked status."),
+          createBodyP("6. auth.service compares password using bcrypt.compare(password, user.passwordHash)."),
+          createBodyP("7. If valid and not locked: auth.service signs JWT token with user ID and role, and returns user object."),
+          createBodyP("8. auth.controller returns HTTP 200 OK with accessToken and user profile."),
+          createBodyP("9. LoginScreen stores JWT in AsyncStorage / LocalStorage and redirects user to Dashboard by role."),
+          createBodyP("Alternative Flow: If user not found, password incorrect, or account is locked, auth.service throws UnauthorizedError. auth.controller returns HTTP 401 Unauthorized, and UI displays error toast."),
 
-          createHeading3("2.1.3 Sign In (Login) Sequence Diagram"),
-          createFigureBox("Figure 2.1.3. Sign In Sequence Diagram", "UC-M01_2_Login_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: The client sends credentials to POST /api/auth/login. The service compares bcrypt hash and verifies account is not locked. Upon validation, a JWT session token containing user ID and role is issued."),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.1.3 Sign Up"),
+          createFigureBox("Figure 2.1.3. Sign Up Sequence Diagram", "UC-M01_1_Register_SequenceDiagram.drawio"),
+          createBodyP("1. Tenant fills full name, email, phone number, and password on RegisterScreen, then clicks Sign Up."),
+          createBodyP("2. RegisterScreen dispatches HTTP POST /api/auth/register with user registration payload."),
+          createBodyP("3. auth.controller receives request and delegates to auth.service.registerUser()."),
+          createBodyP("4. auth.service executes db.users.findOne to check if phone or email is already registered."),
+          createBodyP("5. If existing user found: throws ConflictError, returns HTTP 400 Bad Request, UI shows error alert."),
+          createBodyP("6. If available: auth.service hashes password using bcrypt with salt rounds = 10."),
+          createBodyP("7. auth.service creates new User document with role = 'TENANT' and persists to MongoDB."),
+          createBodyP("8. auth.service signs JWT token, returns created user data and session token."),
+          createBodyP("9. auth.controller returns HTTP 201 Created; RegisterScreen navigates tenant to Home Screen."),
 
-          createHeading3("2.1.4 Update Tenant Profile (KYC) Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.1.4 Update Tenant Profile"),
           createFigureBox("Figure 2.1.4. Update Tenant Profile Sequence Diagram", "UC-M06_Update_Tenant_Profile_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: The tenant submits 12-digit Citizen ID (CCCD), hometown, and identity card photographs. Upon validation, isKycDone is flagged true, allowing instant 1-click room rental requests."),
+          createBodyP("1. Tenant opens ProfileScreen, enters 12-digit Citizen ID (CCCD), hometown, and uploads ID photos."),
+          createBodyP("2. ProfileScreen issues HTTP PUT /api/tenants/profile with Bearer Token and profileData."),
+          createBodyP("3. tenant.controller verifies session token and invokes tenant.service.updateTenantProfile()."),
+          createBodyP("4. tenant.service validates that citizen ID contains exactly 12 numeric digits."),
+          createBodyP("5. If invalid: returns HTTP 400 Bad Request; UI displays validation error badge."),
+          createBodyP("6. If valid: tenant.service updates MongoDB record: { cccd, hometown, isKycDone: true }."),
+          createBodyP("7. tenant.controller returns HTTP 200 OK; UI displays verified KYC badge."),
 
-          createHeading3("2.1.5 Manage Staff Accounts Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.1.5 Manage Staff Accounts"),
           createFigureBox("Figure 2.1.5. Manage Staff Accounts Sequence Diagram", "UC-M15_Manage_Staff_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Landlord inputs staff details (fullName, phone, role: STAFF). System validates uniqueness, hashes temporary password with Bcrypt, creates user record, and updates staff roster."),
+          createBodyP("1. Landlord opens Staff Management view, inputs staff name, phone, email, and role: STAFF."),
+          createBodyP("2. UI dispatches HTTP POST /api/tenants/staff with authorization header."),
+          createBodyP("3. tenant.controller verifies caller has role LANDLORD or ADMIN."),
+          createBodyP("4. auth.service checks phone uniqueness, hashes initial temporary password, and saves staff user."),
+          createBodyP("5. System returns HTTP 201 Created; UI appends newly registered staff member to the staff table."),
 
           new Paragraph({ children: [new PageBreak()] }),
 
           // 2.2 Module 2: Quang
-          createHeading2("2.2 Module 2: Room & Search Management (Quang - Team Leader - 5 Sequence Diagrams)"),
+          createHeading2("2.2 Room & Search Management"),
+          createBodyP("Assigned Team Leader: Quang", false, true),
           createBodyP("Responsible for room inventory management, multi-criteria search algorithms, rental request processing, and operational room state transitions."),
 
-          createHeading3("2.2.1 Class Diagram - Room Module"),
-          createFigureBox("Figure 2.2.1. Class Diagram - Room Module", "ClassDiagram_Room_Module.drawio"),
+          createHeading3("2.2.1 Class Diagram"),
+          createFigureBox("Figure 2.2.1. Room & Search Management Class Diagram", "ClassDiagram_Room_Module.drawio"),
           new Paragraph({ spacing: { before: 120, after: 120 } }),
 
-          createHeading3("2.2.2 Search & Filter Rooms Sequence Diagram"),
+          createHeading3("2.2.2 Search & Filter Rooms"),
           createFigureBox("Figure 2.2.2. Search & Filter Rooms Sequence Diagram", "UC-M02_Search_Room_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: The client provides keyword, minPrice, maxPrice, and amenities. The backend executes a MongoDB query with regex and range operators. If matched, room array is returned; otherwise, an empty array triggers the UI Empty State."),
+          createBodyP("1. User adjusts search criteria on SearchRoomScreen (keyword, minPrice, maxPrice, area, amenities) and clicks Search Rooms."),
+          createBodyP("2. SearchRoomScreen sends HTTP GET /api/rooms/search with query string parameters."),
+          createBodyP("3. room.controller delegates to room.service.filterRooms(queryCriteria)."),
+          createBodyP("4. room.service constructs MongoDB query with regex keyword and price bounds, executing db.rooms.find().sort({ createdAt: -1 })."),
+          createBodyP("5. MongoDB returns cursor of matching room documents."),
+          createBodyP("6. If matching rooms found: room.controller returns HTTP 200 OK with rooms array, UI renders room cards."),
+          createBodyP("7. If no rooms match: room.controller returns HTTP 200 OK with empty array, UI renders Empty State placeholder."),
 
-          createHeading3("2.2.3 Request Rental / Hold Room Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.2.3 Request Rental"),
           createFigureBox("Figure 2.2.3. Request Rental Sequence Diagram", "UC-M03_Request_Rental_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Tenant requests reservation on a selected room. Service checks room.status === 'AVAILABLE'. If available, a RentalRequest document with status PENDING is created for landlord approval."),
+          createBodyP("1. Tenant views room details and clicks Request Rental / Hold Room."),
+          createBodyP("2. UI displays modal form; tenant inputs full name, phone number, expected move-in date, and notes."),
+          createBodyP("3. UI sends HTTP POST /api/rooms/:id/rental-request with tenant request payload."),
+          createBodyP("4. room.controller validates input fields and queries room document from MongoDB."),
+          createBodyP("5. If room status is not AVAILABLE (e.g. RENTED or MAINTENANCE): returns HTTP 400 Bad Request, UI shows warning toast."),
+          createBodyP("6. If room is AVAILABLE: room.service creates RentalRequest document with status = 'PENDING'."),
+          createBodyP("7. room.controller returns HTTP 201 Created; UI displays confirmation dialog with request tracking ID."),
 
-          createHeading3("2.2.4 Create Room Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.2.4 Create Room"),
           createFigureBox("Figure 2.2.4. Create Room Sequence Diagram", "UC-M04_1_Create_Room_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Landlord inputs room number, type, price, and amenities. System verifies room number uniqueness, validates positive price, and stores room as AVAILABLE."),
+          createBodyP("1. Landlord fills room number, type, monthly price, area, and amenity tags on Add Room screen."),
+          createBodyP("2. UI sends HTTP POST /api/rooms with room payload."),
+          createBodyP("3. room.controller validates input parameters (price > 0, area > 0, roomNumber not empty)."),
+          createBodyP("4. room.service queries db.rooms.findOne({ roomNumber }) to ensure uniqueness."),
+          createBodyP("5. If room number already exists: returns HTTP 409 Conflict; UI highlights duplicate input."),
+          createBodyP("6. If room number is unique: persists new Room document with status = 'AVAILABLE'."),
+          createBodyP("7. room.controller returns HTTP 201 Created; UI closes modal and updates room inventory table."),
 
-          createHeading3("2.2.5 Update Room Info Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.2.5 Update Room Info"),
           createFigureBox("Figure 2.2.5. Update Room Info Sequence Diagram", "UC-M04_2_Update_Room_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Fully synchronized with instructor-approved UC-M09 specification: updates pricing, amenities, and media with atomic persistence."),
+          createBodyP("1. Landlord edits room details (price, description, amenities, images) on Edit Room modal."),
+          createBodyP("2. UI sends HTTP PUT /api/rooms/:id with updated fields."),
+          createBodyP("3. room.controller validates parameters and calls room.service.modifyRoom(id, payload)."),
+          createBodyP("4. room.service updates document in MongoDB via db.rooms.findByIdAndUpdate()."),
+          createBodyP("5. room.controller returns HTTP 200 OK; UI updates room row with updated information."),
 
-          createHeading3("2.2.6 Delete Room Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.2.6 Delete Room"),
           createFigureBox("Figure 2.2.6. Delete Room Sequence Diagram", "UC-M04_3_Delete_Room_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Critical business rule guard: System queries active contracts. If room status is RENTED or has active contracts, deletion is strictly aborted with 400 Bad Request to guarantee data integrity."),
+          createBodyP("1. Landlord clicks Delete Room icon for a specific room."),
+          createBodyP("2. UI sends HTTP DELETE /api/rooms/:id."),
+          createBodyP("3. room.controller queries active contracts in db.contracts.find({ roomId, status: 'ACTIVE' })."),
+          createBodyP("4. Critical Business Guard: If active contracts exist or room.status is RENTED: system aborts deletion and returns HTTP 400 Bad Request ('Cannot delete room with active lease')."),
+          createBodyP("5. If room is AVAILABLE and has no active contracts: executes db.rooms.deleteOne({ _id: id })."),
+          createBodyP("6. room.controller returns HTTP 200 OK; UI removes room row from data table."),
 
           new Paragraph({ children: [new PageBreak()] }),
 
           // 2.3 Module 3: Duc
-          createHeading2("2.3 Module 3: Rental Contract Management (Đức - 4 Sequence Diagrams)"),
-          createBodyP("Manages electronic lease contracts, legally binding terms, online digital signatures, contract extensions, and security deposit liquidations."),
+          createHeading2("2.3 Rental Contract Management"),
+          createBodyP("Assigned Team Member: Đức", false, true),
+          createBodyP("Governs legally binding leases, terms, digital signatures, lease extensions, and security deposit liquidations."),
 
-          createHeading3("2.3.1 Class Diagram - Contract Module"),
-          createFigureBox("Figure 2.3.1. Class Diagram - Contract Module", "ClassDiagram_Contract_Module.drawio"),
+          createHeading3("2.3.1 Class Diagram"),
+          createFigureBox("Figure 2.3.1. Rental Contract Management Class Diagram", "ClassDiagram_Contract_Module.drawio"),
           new Paragraph({ spacing: { before: 120, after: 120 } }),
 
-          createHeading3("2.3.2 Create Contract Sequence Diagram"),
+          createHeading3("2.3.2 Create Contract"),
           createFigureBox("Figure 2.3.2. Create Contract Sequence Diagram", "UC-M05_1_Create_Contract_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Landlord converts an approved RentalRequest into an official lease. Room status automatically switches to RENTED, and the contract is staged in PENDING_SIGN."),
+          createBodyP("1. Landlord selects an approved RentalRequest and inputs deposit amount, rental price, start date, and end date."),
+          createBodyP("2. UI sends HTTP POST /api/contracts with contract creation payload."),
+          createBodyP("3. contract.controller verifies room availability in db.rooms.findById(roomId)."),
+          createBodyP("4. If room is already occupied or not available: returns HTTP 409 Conflict."),
+          createBodyP("5. If available: creates new Contract document with status = 'PENDING_SIGN' and updates room.status = 'RENTED'."),
+          createBodyP("6. contract.controller returns HTTP 201 Created; UI refreshes contract list."),
 
-          createHeading3("2.3.3 Tenant Sign Contract Online Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.3.3 Sign Contract"),
           createFigureBox("Figure 2.3.3. Sign Contract Sequence Diagram", "UC-M05_2_Sign_Contract_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Tenant inspects legal terms on mobile, draws signature on touch canvas, and clicks confirm. System verifies user identity, saves digital signature image, and activates contract (status: ACTIVE)."),
+          createBodyP("1. Tenant opens lease contract on mobile app, reviews legal clauses, draws signature on touch canvas, and clicks Sign."),
+          createBodyP("2. UI sends HTTP POST /api/contracts/:id/sign with signature base64 image data."),
+          createBodyP("3. contract.controller verifies tenant identity matches contract.tenantId and contract.status is PENDING_SIGN."),
+          createBodyP("4. contract.service saves signature URL, sets signedAt timestamp, and updates status to 'ACTIVE'."),
+          createBodyP("5. contract.controller returns HTTP 200 OK; UI presents downloadable signed PDF contract."),
 
-          createHeading3("2.3.4 Extend Contract Duration Sequence Diagram"),
-          createFigureBox("Figure 2.3.4. Extend Contract Duration Sequence Diagram", "UC-M05_3_Extend_Contract_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Landlord or tenant initiates extension. System asserts contract is ACTIVE and newEndDate > currentEndDate, updating lease expiration."),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.3.4 Extend Contract"),
+          createFigureBox("Figure 2.3.4. Extend Contract Sequence Diagram", "UC-M05_3_Extend_Contract_SequenceDiagram.drawio"),
+          createBodyP("1. Landlord or tenant selects an active lease and specifies a new extended end date (e.g. +6 or +12 months)."),
+          createBodyP("2. UI sends HTTP PUT /api/contracts/:id/extend with newEndDate."),
+          createBodyP("3. contract.service verifies contract is currently ACTIVE and newEndDate is after current endDate."),
+          createBodyP("4. If invalid date: returns HTTP 400 Bad Request; UI displays date picker error toast."),
+          createBodyP("5. If valid: updates contract.endDate in MongoDB and logs extension addendum."),
+          createBodyP("6. contract.controller returns HTTP 200 OK; UI updates contract expiration badge."),
 
-          createHeading3("2.3.5 Terminate Contract & Refund Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.3.5 Terminate Contract"),
           createFigureBox("Figure 2.3.5. Terminate Contract Sequence Diagram", "UC-M05_4_Terminate_Contract_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Landlord liquidates contract. Guard asserts all invoices are settled (UNPAID count = 0), sets contract to TERMINATED, refunds deposit, and releases room status back to AVAILABLE."),
+          createBodyP("1. Landlord selects contract to terminate, enters check-out inspection notes and deposit refund amount."),
+          createBodyP("2. UI sends HTTP POST /api/contracts/:id/terminate with refundAmount and reason."),
+          createBodyP("3. contract.service queries db.invoices.find({ contractId, status: 'UNPAID' })."),
+          createBodyP("4. Guard Condition: If unpaid invoices remain: returns HTTP 409 Conflict ('Cannot terminate lease with unpaid debt')."),
+          createBodyP("5. If all invoices settled: sets contract.status = 'TERMINATED' and restores room.status = 'AVAILABLE'."),
+          createBodyP("6. contract.controller returns HTTP 200 OK; UI updates contract status and frees room for new tenants."),
 
           new Paragraph({ children: [new PageBreak()] }),
 
           // 2.4 Module 4: Manh
-          createHeading2("2.4 Module 4: Utility, Invoice & VNPay Payment (Nguyễn Văn Mạnh - 4 Sequence Diagrams)"),
-          createBodyP("Manages monthly utility meter readings, automated billing generation, and direct payment integration with the VNPay Payment Gateway."),
+          createHeading2("2.4 Utility, Billing & Payment Management"),
+          createBodyP("Assigned Team Member: Nguyễn Văn Mạnh", false, true),
+          createBodyP("Manages monthly utility meter recordings, automated billing calculation, and direct payment integration with the VNPay Gateway."),
 
-          createHeading3("2.4.1 Class Diagram - Billing & Payment Module"),
-          createFigureBox("Figure 2.4.1. Class Diagram - Billing & Payment Module", "ClassDiagram_Billing_Module.drawio"),
+          createHeading3("2.4.1 Class Diagram"),
+          createFigureBox("Figure 2.4.1. Utility, Billing & Payment Class Diagram", "ClassDiagram_Billing_Module.drawio"),
           new Paragraph({ spacing: { before: 120, after: 120 } }),
 
-          createHeading3("2.4.2 Record Utility Readings Sequence Diagram"),
+          createHeading3("2.4.2 Record Utility Readings"),
           createFigureBox("Figure 2.4.2. Record Utility Readings Sequence Diagram", "UC-M07_Record_Utility_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Staff inputs new electricity and water readings. Guard condition asserts newReading >= oldReading, computes net consumption, and records utility data for monthly invoicing."),
+          createBodyP("1. Staff selects room, billing month, and inputs new electricity and water meter indicators."),
+          createBodyP("2. UI sends HTTP POST /api/utilities with roomId, month, newElec, and newWater."),
+          createBodyP("3. utility.service queries previous month reading to obtain oldElec and oldWater."),
+          createBodyP("4. Guard Condition: If newElec < oldElec or newWater < oldWater: returns HTTP 400 Bad Request."),
+          createBodyP("5. If valid: calculates electricUsage and waterUsage, and persists UtilityReading document."),
+          createBodyP("6. utility.controller returns HTTP 201 Created; UI updates reading table with green success badge."),
 
-          createHeading3("2.4.3 Generate Monthly Invoices Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.4.3 Generate Monthly Invoices"),
           createFigureBox("Figure 2.4.3. Generate Monthly Invoices Sequence Diagram", "UC-M08_Generate_Invoice_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Batch process calculates total room rent + electricity usage + water usage + WiFi/garbage fees across all active contracts, generating monthly invoices staged in UNPAID status."),
+          createBodyP("1. Landlord selects billing cycle (e.g. 2026-11) and clicks Generate Invoices."),
+          createBodyP("2. UI dispatches HTTP POST /api/invoices/generate with month parameter."),
+          createBodyP("3. invoice.service queries active contracts and matching utility reading documents."),
+          createBodyP("4. If utility readings are missing for any room: returns HTTP 400 Bad Request; UI alerts staff to input readings."),
+          createBodyP("5. If readings complete: service calculates: total = roomAmount + (electricUsage * price) + (waterUsage * price) + internet + garbage."),
+          createBodyP("6. invoice.service executes db.invoices.insertMany() with status = 'UNPAID'."),
+          createBodyP("7. invoice.controller returns HTTP 201 Created; UI displays generated invoice batch."),
 
-          createHeading3("2.4.4 Pay Invoice via VNPay Gateway Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.4.4 Pay Invoice via VNPay"),
           createFigureBox("Figure 2.4.4. Pay Invoice via VNPay Sequence Diagram", "UC-M09_1_VNPay_Payment_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Tenant initiates invoice payment. Service constructs VNPay query parameters, generates cryptographic HMAC-SHA512 checksum, and returns redirect URL to VNPay Sandbox."),
+          createBodyP("1. Tenant views unpaid invoice and clicks Pay via VNPay."),
+          createBodyP("2. UI sends HTTP POST /api/payments/create-vnpay-url with invoiceId and bankCode (e.g. 'NCB')."),
+          createBodyP("3. payment.service checks invoice.status === 'UNPAID'. If already paid: returns HTTP 400 Bad Request."),
+          createBodyP("4. payment.service constructs VNPay query parameters and generates HMAC-SHA512 secure checksum using vnp_HashSecret."),
+          createBodyP("5. payment.controller returns HTTP 200 OK with paymentUrl; UI redirects browser/mobile webview to VNPay portal."),
 
-          createHeading3("2.4.5 VNPay IPN Callback & Webhook Sequence Diagram"),
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.4.5 VNPay IPN Callback"),
           createFigureBox("Figure 2.4.5. VNPay IPN Webhook Sequence Diagram", "UC-M09_2_VNPay_IPN_Callback_SequenceDiagram.drawio"),
-          createBodyP("Flow Description: Asynchronous server-to-server webhook from VNPay. System validates secure checksum. If response code is '00', payment record is created, invoice is set to PAID, and confirmation code 00 is returned."),
+          createBodyP("1. VNPay Server issues server-to-server HTTP GET to /api/payments/vnpay-ipn with transaction parameters and vnp_SecureHash."),
+          createBodyP("2. payment.service validates HMAC-SHA512 checksum using hash secret key."),
+          createBodyP("3. If checksum invalid: returns HTTP 200 with { RspCode: '97', Message: 'Invalid Checksum' }."),
+          createBodyP("4. If checksum valid and vnp_ResponseCode === '00': persists PaymentTransaction document in MongoDB."),
+          createBodyP("5. payment.service updates invoice.status = 'PAID' and sets paidAt timestamp."),
+          createBodyP("6. payment.controller responds to VNPay with HTTP 200 { RspCode: '00', Message: 'Success' }."),
 
           new Paragraph({ children: [new PageBreak()] }),
 
