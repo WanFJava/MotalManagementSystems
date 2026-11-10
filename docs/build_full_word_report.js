@@ -62,7 +62,6 @@ function createCell(text, isHeader = false, widthPercent = 25, isBold = false) {
   });
 }
 
-// FIX: Do NOT set `text: title` on Paragraph when passing children TextRun!
 function createHeading1(title) {
   return new Paragraph({
     heading: HeadingLevel.HEADING_1,
@@ -541,17 +540,153 @@ async function buildDocument() {
           // 1. System Design
           createHeading1("1. System Design"),
 
-          // 1.0 System Context Diagram
+          // 1.0 System Context Diagram (DFD Level 0) - Fully rewritten to match user diagram
           createHeading2("1.0 System Context Diagram (DFD Level 0)"),
-          createBodyP("The System Context Diagram defines the high-level boundary of the Motel Management System (MMS) and delineates information exchanges with external stakeholders and third-party cloud infrastructure:"),
-          createBulletP("Exchanges authentication credentials, room search queries, rental reservation requests, KYC citizen identification documents, digital contract signatures, and online invoice payment instructions.", "• Tenant / Guest (Mobile & Web): "),
-          createBulletP("Inputs room inventory data, pricing policies, lease creation / extension / termination authorizations, and reviews rental requests alongside revenue analytics.", "• Landlord (Admin Web Portal): "),
-          createBulletP("Transmits monthly electricity and water meter numbers, registers cash settlements, and monitors assigned room maintenance schedules.", "• Operations Staff (Web & Mobile): "),
-          createBulletP("Receives cryptographic HMAC-SHA512 order parameters and returns server-to-server asynchronous IPN webhooks to settle invoices.", "• VNPay Payment Gateway (External API): "),
-          createBulletP("Persists and serves media assets including room showcase galleries, tenant citizen IDs, and vector signature PNGs.", "• Cloudinary Storage (CDN Service): "),
+          createBodyP("The System Context Diagram (Context-level Data Flow Diagram - DFD Level 0) models the highest-level operational boundary of the Motel Management System (Process 0: Motel Management Systems). It visualizes all information flows exchanged between the core software engine and the four primary external entities (terminators): Tenant, Manager, Staff, and the external Payment Gateway."),
 
-          // INSERT FIGURE 1.0 CONTEXT DIAGRAM IMAGE
-          ...createImageParagraph("Figure_1_0_System_Context_Diagram.png", 580, 460, "Figure 1.0. System Context Diagram (DFD Level 0)"),
+          // INSERT FIGURE 1.0 CONTEXT DIAGRAM IMAGE (Exact diagram from user)
+          ...createImageParagraph("Figure_1_0_System_Context_Diagram.png", 590, 330, "Figure 1.0. System Context Diagram (DFD Level 0)"),
+
+          new Paragraph({ spacing: { before: 100 } }),
+          createBodyP("Detailed Specification of External Entities and Data Flows:", false, true),
+
+          createBodyP("1. Entity: Tenant (Khách thuê & Khách vãng lai)", false, true),
+          createBulletP("Registration Information (full name, phone, email, initial password to establish credentials).", "• Inbound Flow: "),
+          createBulletP("Login Information (authentication account and encrypted password).", "• Inbound Flow: "),
+          createBulletP("Room Search Criteria (keywords, budget price range, surface area, and amenity filters).", "• Inbound Flow: "),
+          createBulletP("Rental Request (reservation inquiry, expected move-in date, occupancy count).", "• Inbound Flow: "),
+          createBulletP("Payment Request (authorization to settle rent and utility invoices via digital banking).", "• Inbound Flow: "),
+          createBulletP("Maintenance Request (repair tickets regarding electrical, water, or furniture issues).", "• Inbound Flow: "),
+          createBulletP("Feedback / Complaint (evaluations of room quality and operational service reviews).", "• Inbound Flow: "),
+          createBulletP("Room Information (detailed room specifications, photo galleries, rental price, and real-time status).", "• Outbound Flow: "),
+          createBulletP("Contract (legally compliant electronic lease agreements and digital signature prompts).", "• Outbound Flow: "),
+          createBulletP("Invoice (itemized monthly billing for rent, electric usage, water usage, and fixed service fees).", "• Outbound Flow: "),
+          createBulletP("Payment Result (instant digital transaction confirmations and balance updates).", "• Outbound Flow: "),
+          createBulletP("Notifications (automated reminders for upcoming due dates, maintenance status, and lease expiry).", "• Outbound Flow: "),
+          createBulletP("Maintenance Status (real-time progress updates on submitted repair tickets).", "• Outbound Flow: "),
+
+          createBodyP("2. Entity: Manager / Landlord (Chủ trọ / Quản lý cấp cao)", false, true),
+          createBulletP("Pricing Configuration (base rent per room type, electricity price per kWh, water rate per cubic meter).", "• Inbound Flow: "),
+          createBulletP("Service Configuration (fixed fees including high-speed internet, environmental sanitation, security).", "• Inbound Flow: "),
+          createBulletP("Contract Management (authorizing draft contracts, approving extensions, and confirming terminations).", "• Inbound Flow: "),
+          createBulletP("Staff Management (registering employee accounts, defining operational roles, and revoking permissions).", "• Inbound Flow: "),
+          createBulletP("Tenant Management (reviewing citizen KYC profiles, approving occupants, and resolving tenant disputes).", "• Inbound Flow: "),
+          createBulletP("Report Requests (ad-hoc queries for financial metrics, occupancy trends, and debt tracking).", "• Inbound Flow: "),
+          createBulletP("Revenue Reports (consolidated gross and net revenue analytics across monthly and yearly cycles).", "• Outbound Flow: "),
+          createBulletP("Payment Reports (audit trails of settled transactions, pending payments, and overdue debts).", "• Outbound Flow: "),
+          createBulletP("Occupancy Reports (utilization rates, available vs. rented inventory ratios).", "• Outbound Flow: "),
+          createBulletP("Utility Reports (macro-level water and electricity consumption statistics).", "• Outbound Flow: "),
+          createBulletP("Maintenance Reports (summary of facility health, open repairs, and maintenance expenditures).", "• Outbound Flow: "),
+          createBulletP("Tenant Information (master directory of active and previous resident profiles).", "• Outbound Flow: "),
+
+          createBodyP("3. Entity: Staff (Nhân viên vận hành)", false, true),
+          createBulletP("Utility Readings (monthly physical meter numbers: old/new electric kWh and water cubic meters).", "• Inbound Flow: "),
+          createBulletP("Payment Confirmation (recording manual over-the-counter cash payments collected on-site).", "• Inbound Flow: "),
+          createBulletP("Maintenance Updates (updating repair status: 'IN_PROGRESS', 'RESOLVED', inspection notes).", "• Inbound Flow: "),
+          createBulletP("Tenant Information (registering temporary residence metadata with local police).", "• Inbound Flow: "),
+          createBulletP("Contract Information (submitting room handover checklists and key return confirmations).", "• Inbound Flow: "),
+          createBulletP("Room List & Room Information (up-to-date inventory status for facility inspections).", "• Outbound Flow: "),
+          createBulletP("Tenant List (resident directory with phone numbers and assigned room numbers).", "• Outbound Flow: "),
+          createBulletP("Contract Information (active lease details for verifying tenant tenancy rights).", "• Outbound Flow: "),
+          createBulletP("Invoice List & Payment Information (status of billed invoices to assist in debt collection).", "• Outbound Flow: "),
+          createBulletP("Maintenance Requests (work orders dispatched to staff detailing room number and reported fault).", "• Outbound Flow: "),
+
+          createBodyP("4. Entity: Payment Gateway (Cổng thanh toán điện tử - VNPay)", false, true),
+          createBulletP("Payment Request (secure checkout order parameters: vnp_TmnCode, vnp_Amount, vnp_TxnRef, vnp_ReturnUrl).", "• Outbound Flow: "),
+          createBulletP("Invoice ID & Amount (exact monetary settlement value in VND).", "• Outbound Flow: "),
+          createBulletP("Transaction Information (order description, customer IP address, and HMAC-SHA512 secure hash).", "• Outbound Flow: "),
+          createBulletP("Payment Status (transaction disposition: 'SUCCESS', 'FAILED', or 'CANCELLED').", "• Inbound Flow: "),
+          createBulletP("Transaction ID (unique banking reference code issued by the national payment switch).", "• Inbound Flow: "),
+          createBulletP("Payment Result (server-to-server IPN webhook payload with response code '00' confirming payment).", "• Inbound Flow: "),
+
+          new Paragraph({ spacing: { before: 120 } }),
+          createBodyP("Table 1.0. System Context Diagram Data Flow Matrix:", false, true),
+          new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            borders: cellBorders,
+            rows: [
+              new TableRow({
+                children: [
+                  createCell("External Entity", true, 20),
+                  createCell("Direction", true, 15),
+                  createCell("Data Flow Name", true, 30),
+                  createCell("Operational Objective", true, 35)
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("Tenant", false, 20, true),
+                  createCell("Tenant -> System"),
+                  createCell("Registration / Login Info"),
+                  createCell("Account authentication and secure session initialization")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("Tenant"),
+                  createCell("Tenant -> System"),
+                  createCell("Room Search & Rental Request"),
+                  createCell("Browsing inventory and reserving available rental units")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("Tenant"),
+                  createCell("System -> Tenant"),
+                  createCell("Contract, Invoices, Payment Result"),
+                  createCell("Online lease signing, monthly billing, and transaction receipts")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("Manager", false, 20, true),
+                  createCell("Manager -> System"),
+                  createCell("Pricing & Service Configurations"),
+                  createCell("Setting rental prices, utility unit costs, and service rates")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("Manager"),
+                  createCell("System -> Manager"),
+                  createCell("Revenue & Occupancy Reports"),
+                  createCell("Macro analytics on business performance and collection rates")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("Staff", false, 20, true),
+                  createCell("Staff -> System"),
+                  createCell("Utility Readings & Cash Confirm"),
+                  createCell("Entering monthly meter numbers and reconciling cash payments")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("Staff"),
+                  createCell("System -> Staff"),
+                  createCell("Maintenance Requests & Room List"),
+                  createCell("Dispatching facility repair tasks and tenant inspection lists")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("Payment Gateway", false, 20, true),
+                  createCell("System -> Gateway"),
+                  createCell("Payment Request & HMAC Hash"),
+                  createCell("Redirecting tenant to secure sandbox gateway with order info")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("Payment Gateway"),
+                  createCell("Gateway -> System"),
+                  createCell("IPN Webhook & Payment Result"),
+                  createCell("Confirming settlement to automatically transition invoice to PAID")
+                ]
+              })
+            ]
+          }),
 
           new Paragraph({ children: [new PageBreak()] }),
 
