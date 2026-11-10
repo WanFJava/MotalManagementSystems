@@ -20,7 +20,7 @@ const {
   ImageRun
 } = require('docx');
 
-const primaryColor = "1F497D"; // FPT / Professional Navy
+const primaryColor = "1F497D"; // FPT Navy
 const secondaryColor = "595959";
 const tableBorderColor = "D3D3D3";
 
@@ -130,7 +130,7 @@ function createBodyP(text, isItalic = false) {
 function createImageParagraph(imgFileName, width, height, captionText) {
   const p = path.join(imgDir, imgFileName);
   if (!fs.existsSync(p)) {
-    return new Paragraph({ text: `[Missing Image: ${imgFileName}]` });
+    return [new Paragraph({ text: `[Missing Image: ${imgFileName}]` })];
   }
 
   const imgBuffer = fs.readFileSync(p);
@@ -182,12 +182,12 @@ function createFigureBox(figureTitle, diagramFileName) {
             children: [
               new Paragraph({
                 alignment: AlignmentType.CENTER,
-                spacing: { before: 180, after: 60 },
+                spacing: { before: 140, after: 50 },
                 children: [
                   new TextRun({
                     text: `[ DIAGRAM: ${diagramFileName} ]`,
                     bold: true,
-                    size: 22,
+                    size: 21,
                     color: primaryColor,
                     font: "Consolas"
                   })
@@ -195,7 +195,7 @@ function createFigureBox(figureTitle, diagramFileName) {
               }),
               new Paragraph({
                 alignment: AlignmentType.CENTER,
-                spacing: { before: 40, after: 60 },
+                spacing: { before: 40, after: 50 },
                 children: [
                   new TextRun({
                     text: `Available in draw.io format at: docs/diagrams/${diagramFileName}`,
@@ -208,7 +208,7 @@ function createFigureBox(figureTitle, diagramFileName) {
               }),
               new Paragraph({
                 alignment: AlignmentType.CENTER,
-                spacing: { before: 40, after: 180 },
+                spacing: { before: 40, after: 140 },
                 children: [
                   new TextRun({
                     text: figureTitle,
@@ -315,42 +315,42 @@ async function buildDocument() {
           // Info Table
           new Table({
             alignment: AlignmentType.CENTER,
-            width: { size: 88, type: WidthType.PERCENTAGE },
+            width: { size: 90, type: WidthType.PERCENTAGE },
             borders: cellBorders,
             rows: [
               new TableRow({
                 children: [
-                  createCell("Role in Project", true, 28),
+                  createCell("Role in Project", true, 26),
                   createCell("Member Name", true, 34),
-                  createCell("Assigned Module", true, 38)
+                  createCell("Assigned Module & Scope", true, 40)
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("Team Leader", false, 28, true),
+                  createCell("Team Leader", false, 26, true),
                   createCell("Quang", false, 34, true),
-                  createCell("Room & Search Management", false, 38)
+                  createCell("Room & Search (5 Sequence Diagrams)", false, 40)
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("Member 2", false, 28),
+                  createCell("Member 2", false, 26),
                   createCell("Phạm Văn Khánh", false, 34),
-                  createCell("User Auth & Tenant KYC", false, 38)
+                  createCell("User Auth & KYC (4 Sequence Diagrams)", false, 40)
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("Member 3", false, 28),
+                  createCell("Member 3", false, 26),
                   createCell("Đức", false, 34),
-                  createCell("Rental Contract Management", false, 38)
+                  createCell("Rental Contract (4 Sequence Diagrams)", false, 40)
                 ]
               }),
               new TableRow({
                 children: [
-                  createCell("Member 4", false, 28),
+                  createCell("Member 4", false, 26),
                   createCell("Nguyễn Văn Mạnh", false, 34),
-                  createCell("Utility, Billing & VNPay Payment", false, 38)
+                  createCell("Utility & VNPay (4 Sequence Diagrams)", false, 40)
                 ]
               })
             ]
@@ -472,8 +472,8 @@ async function buildDocument() {
               new TableRow({
                 children: [
                   createCell("2026-11-10"),
-                  createCell("1.0"),
-                  createCell("Final SDD: High-resolution Architecture diagrams, 4 Module Class Diagrams, 14 Sequence Diagrams"),
+                  createCell("1.1"),
+                  createCell("Added System Context Diagram (DFD Level 0); Expanded to 17 Sequence Diagrams (>= 4 per member)"),
                   createCell("Quang (Lead)"),
                   createCell("Instructor")
                 ]
@@ -486,13 +486,14 @@ async function buildDocument() {
           // Table of Contents Summary
           createHeading1("II. Table of Contents"),
           createBodyP("1. System Design"),
+          createBodyP("   1.0 System Context Diagram (DFD Level 0)"),
           createBodyP("   1.1 System Architecture: 1.1.1 Front-end Architecture, 1.1.2 Back-end Architecture"),
           createBodyP("   1.2 Package Diagram: 1.2.1 Front-end Package Diagram, 1.2.2 Back-end Package Diagram"),
           createBodyP("2. Detailed Design"),
-          createBodyP("   2.1 Module 1: Authentication & Tenant Management (Phạm Văn Khánh)"),
-          createBodyP("   2.2 Module 2: Room & Search Management (Quang - Team Leader)"),
-          createBodyP("   2.3 Module 3: Rental Contract Management (Đức)"),
-          createBodyP("   2.4 Module 4: Utility, Invoice & VNPay Payment (Nguyễn Văn Mạnh)"),
+          createBodyP("   2.1 Module 1: Authentication & Tenant Management (Phạm Văn Khánh - 4 Sequence Diagrams)"),
+          createBodyP("   2.2 Module 2: Room & Search Management (Quang - Team Leader - 5 Sequence Diagrams)"),
+          createBodyP("   2.3 Module 3: Rental Contract Management (Đức - 4 Sequence Diagrams)"),
+          createBodyP("   2.4 Module 4: Utility, Invoice & VNPay Payment (Nguyễn Văn Mạnh - 4 Sequence Diagrams)"),
           createBodyP("3. Database Design"),
           createBodyP("   3.1 System Domain Model / Class Diagram"),
           createBodyP("   3.2 Collection Schemas & Data Dictionary (users, rooms, contracts, invoices...)"),
@@ -501,6 +502,21 @@ async function buildDocument() {
 
           // 1. System Design
           createHeading1("1. System Design"),
+
+          // 1.0 System Context Diagram
+          createHeading2("1.0 System Context Diagram (DFD Level 0)"),
+          createBodyP("The System Context Diagram defines the high-level boundary of the Motel Management System (MMS) and delineates information exchanges with external stakeholders and third-party cloud infrastructure:"),
+          createBodyP("• Tenant / Guest (Mobile & Web): Exchanges authentication credentials, room search queries, rental reservation requests, KYC citizen identification documents, digital contract signatures, and online invoice payment instructions."),
+          createBodyP("• Landlord (Admin Web Portal): Inputs room inventory data, pricing policies, lease creation / extension / termination authorizations, and reviews rental requests alongside revenue analytics."),
+          createBodyP("• Operations Staff (Web & Mobile): Transmits monthly electricity and water meter numbers, registers cash settlements, and monitors assigned room maintenance schedules."),
+          createBodyP("• VNPay Payment Gateway (External API): Receives cryptographic HMAC-SHA512 order parameters and returns server-to-server asynchronous IPN webhooks to settle invoices."),
+          createBodyP("• Cloudinary Storage (CDN Service): Persists and serves media assets including room showcase galleries, tenant citizen IDs, and vector signature PNGs."),
+
+          // INSERT FIGURE 1.0 CONTEXT DIAGRAM IMAGE
+          ...createImageParagraph("Figure_1_0_System_Context_Diagram.png", 580, 460, "Figure 1.0. System Context Diagram (DFD Level 0)"),
+
+          new Paragraph({ children: [new PageBreak()] }),
+
           createHeading2("1.1 System Architecture"),
           createBodyP("The Motel Management System (MMS) adopts an enterprise 3-tier distributed architecture, separating Presentation (Client), Application Logic (NodeJS RESTful API), and Persistent Data Storage (MongoDB cluster & VNPay payment gateway)."),
 
@@ -606,7 +622,7 @@ async function buildDocument() {
           createHeading1("2. Detailed Design"),
 
           // 2.1 Module 1: Khanh
-          createHeading2("2.1 Module 1: Authentication & Tenant Management (Phạm Văn Khánh)"),
+          createHeading2("2.1 Module 1: Authentication & Tenant Management (Phạm Văn Khánh - 4 Sequence Diagrams)"),
           createBodyP("This module manages user identity, secure authentication using JSON Web Tokens, tenant KYC compliance (citizen ID verification), and staff account management."),
           
           createHeading3("2.1.1 Class Diagram - User & Tenant Module"),
@@ -625,10 +641,14 @@ async function buildDocument() {
           createFigureBox("Figure 2.1.4. Update Tenant Profile Sequence Diagram", "UC-M06_Update_Tenant_Profile_SequenceDiagram.drawio"),
           createBodyP("Flow Description: The tenant submits 12-digit Citizen ID (CCCD), hometown, and identity card photographs. Upon validation, isKycDone is flagged true, allowing instant 1-click room rental requests."),
 
+          createHeading3("2.1.5 Manage Staff Accounts Sequence Diagram"),
+          createFigureBox("Figure 2.1.5. Manage Staff Accounts Sequence Diagram", "UC-M15_Manage_Staff_SequenceDiagram.drawio"),
+          createBodyP("Flow Description: Landlord inputs staff details (fullName, phone, role: STAFF). System validates uniqueness, hashes temporary password with Bcrypt, creates user record, and updates staff roster."),
+
           new Paragraph({ children: [new PageBreak()] }),
 
           // 2.2 Module 2: Quang
-          createHeading2("2.2 Module 2: Room & Search Management (Quang - Team Leader)"),
+          createHeading2("2.2 Module 2: Room & Search Management (Quang - Team Leader - 5 Sequence Diagrams)"),
           createBodyP("Responsible for room inventory management, multi-criteria search algorithms, rental request processing, and operational room state transitions."),
 
           createHeading3("2.2.1 Class Diagram - Room Module"),
@@ -658,7 +678,7 @@ async function buildDocument() {
           new Paragraph({ children: [new PageBreak()] }),
 
           // 2.3 Module 3: Duc
-          createHeading2("2.3 Module 3: Rental Contract Management (Đức)"),
+          createHeading2("2.3 Module 3: Rental Contract Management (Đức - 4 Sequence Diagrams)"),
           createBodyP("Manages electronic lease contracts, legally binding terms, online digital signatures, contract extensions, and security deposit liquidations."),
 
           createHeading3("2.3.1 Class Diagram - Contract Module"),
@@ -673,10 +693,18 @@ async function buildDocument() {
           createFigureBox("Figure 2.3.3. Sign Contract Sequence Diagram", "UC-M05_2_Sign_Contract_SequenceDiagram.drawio"),
           createBodyP("Flow Description: Tenant inspects legal terms on mobile, draws signature on touch canvas, and clicks confirm. System verifies user identity, saves digital signature image, and activates contract (status: ACTIVE)."),
 
+          createHeading3("2.3.4 Extend Contract Duration Sequence Diagram"),
+          createFigureBox("Figure 2.3.4. Extend Contract Duration Sequence Diagram", "UC-M05_3_Extend_Contract_SequenceDiagram.drawio"),
+          createBodyP("Flow Description: Landlord or tenant initiates extension. System asserts contract is ACTIVE and newEndDate > currentEndDate, updating lease expiration."),
+
+          createHeading3("2.3.5 Terminate Contract & Refund Sequence Diagram"),
+          createFigureBox("Figure 2.3.5. Terminate Contract Sequence Diagram", "UC-M05_4_Terminate_Contract_SequenceDiagram.drawio"),
+          createBodyP("Flow Description: Landlord liquidates contract. Guard asserts all invoices are settled (UNPAID count = 0), sets contract to TERMINATED, refunds deposit, and releases room status back to AVAILABLE."),
+
           new Paragraph({ children: [new PageBreak()] }),
 
           // 2.4 Module 4: Manh
-          createHeading2("2.4 Module 4: Utility, Invoice & VNPay Payment (Nguyễn Văn Mạnh)"),
+          createHeading2("2.4 Module 4: Utility, Invoice & VNPay Payment (Nguyễn Văn Mạnh - 4 Sequence Diagrams)"),
           createBodyP("Manages monthly utility meter readings, automated billing generation, and direct payment integration with the VNPay Payment Gateway."),
 
           createHeading3("2.4.1 Class Diagram - Billing & Payment Module"),
@@ -687,12 +715,16 @@ async function buildDocument() {
           createFigureBox("Figure 2.4.2. Record Utility Readings Sequence Diagram", "UC-M07_Record_Utility_SequenceDiagram.drawio"),
           createBodyP("Flow Description: Staff inputs new electricity and water readings. Guard condition asserts newReading >= oldReading, computes net consumption, and records utility data for monthly invoicing."),
 
-          createHeading3("2.4.3 Pay Invoice via VNPay Gateway Sequence Diagram"),
-          createFigureBox("Figure 2.4.3. Pay Invoice via VNPay Sequence Diagram", "UC-M09_1_VNPay_Payment_SequenceDiagram.drawio"),
+          createHeading3("2.4.3 Generate Monthly Invoices Sequence Diagram"),
+          createFigureBox("Figure 2.4.3. Generate Monthly Invoices Sequence Diagram", "UC-M08_Generate_Invoice_SequenceDiagram.drawio"),
+          createBodyP("Flow Description: Batch process calculates total room rent + electricity usage + water usage + WiFi/garbage fees across all active contracts, generating monthly invoices staged in UNPAID status."),
+
+          createHeading3("2.4.4 Pay Invoice via VNPay Gateway Sequence Diagram"),
+          createFigureBox("Figure 2.4.4. Pay Invoice via VNPay Sequence Diagram", "UC-M09_1_VNPay_Payment_SequenceDiagram.drawio"),
           createBodyP("Flow Description: Tenant initiates invoice payment. Service constructs VNPay query parameters, generates cryptographic HMAC-SHA512 checksum, and returns redirect URL to VNPay Sandbox."),
 
-          createHeading3("2.4.4 VNPay IPN Callback & Webhook Sequence Diagram"),
-          createFigureBox("Figure 2.4.4. VNPay IPN Webhook Sequence Diagram", "UC-M09_2_VNPay_IPN_Callback_SequenceDiagram.drawio"),
+          createHeading3("2.4.5 VNPay IPN Callback & Webhook Sequence Diagram"),
+          createFigureBox("Figure 2.4.5. VNPay IPN Webhook Sequence Diagram", "UC-M09_2_VNPay_IPN_Callback_SequenceDiagram.drawio"),
           createBodyP("Flow Description: Asynchronous server-to-server webhook from VNPay. System validates secure checksum. If response code is '00', payment record is created, invoice is set to PAID, and confirmation code 00 is returned."),
 
           new Paragraph({ children: [new PageBreak()] }),
@@ -934,7 +966,7 @@ async function buildDocument() {
 
           new Paragraph({ spacing: { before: 240 } }),
           createHeading1("4. Conclusion"),
-          createBodyP("This Software Design Document constitutes the official technical architecture and detailed specifications of the Motel Management System (MMS). All system-level diagrams and module-specific sequence diagrams are fully realized and ready for academic grading and individual defense.")
+          createBodyP("This Software Design Document constitutes the official technical architecture and detailed specifications of the Motel Management System (MMS). All system-level diagrams, context diagrams, and module-specific sequence diagrams are fully realized and ready for academic grading and individual defense.")
         ]
       }
     ]
