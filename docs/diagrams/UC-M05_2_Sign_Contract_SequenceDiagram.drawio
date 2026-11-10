@@ -1,0 +1,205 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="UC-M05.2 Sign Contract" id="uc-m05-2-sign-contract">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1450" pageHeight="1120" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="&lt;b&gt;Figure 2.3.3. Sign Contract Sequence Diagram&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1370" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="lf_tenant" value="Tenant" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="115" y="45" width="30" height="1020" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf_ui" value="«boundary»&lt;br&gt;ContractDetailScreen (Mobile)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
+          <mxGeometry x="305" y="45" width="180" height="1020" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf_controller" value="«boundary»&lt;br&gt;ContractController" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
+          <mxGeometry x="585" y="45" width="170" height="1020" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf_service" value="«control»&lt;br&gt;ContractService" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
+          <mxGeometry x="845" y="45" width="160" height="1020" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf_contract" value="«entity»&lt;br&gt;Contract" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="45" width="140" height="1020" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf_db" value="«database»&lt;br&gt;MongoDB" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
+          <mxGeometry x="1315" y="45" width="120" height="1020" as="geometry"/>
+        </mxCell>
+
+        <!-- Activation Bars -->
+        <mxCell id="bar_T" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_tenant">
+          <mxGeometry x="9" y="100" width="12" height="880" as="geometry"/>
+        </mxCell>
+        <mxCell id="bar_UI" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_ui">
+          <mxGeometry x="84" y="100" width="12" height="880" as="geometry"/>
+        </mxCell>
+        <mxCell id="bar_C" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_controller">
+          <mxGeometry x="79" y="170" width="12" height="770" as="geometry"/>
+        </mxCell>
+        <mxCell id="bar_S" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_service">
+          <mxGeometry x="74" y="230" width="12" height="690" as="geometry"/>
+        </mxCell>
+        <mxCell id="bar_CTR" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_contract">
+          <mxGeometry x="64" y="270" width="12" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="bar_DB_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db">
+          <mxGeometry x="54" y="295" width="12" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="bar_DB_1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db">
+          <mxGeometry x="54" y="695" width="12" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Alt Frame -->
+        <mxCell id="alt_frame" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="1390" height="470" as="geometry"/>
+        </mxCell>
+        <mxCell id="div_alt" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="560" as="sourcePoint"/>
+            <mxPoint x="1430" y="560" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="guard_err" value="[tenantId != user.id or contract.status != &apos;PENDING_SIGN&apos;]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="120" y="440" width="360" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="guard_ok" value="[tenant identity verified &amp; status == &apos;PENDING_SIGN&apos;]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="120" y="562" width="340" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Messages -->
+        <!-- Step 1 -->
+        <mxCell id="msg_1" value="1: open lease contract, review legal clauses &amp; draw signature on touch canvas" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="136" y="150" as="sourcePoint"/>
+            <mxPoint x="389" y="150" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_1b" value="click &quot;Sign Contract&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="136" y="180" as="sourcePoint"/>
+            <mxPoint x="389" y="180" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Step 2 -->
+        <mxCell id="msg_2" value="2: POST /api/contracts/:id/sign (signatureBase64)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="401" y="210" as="sourcePoint"/>
+            <mxPoint x="664" y="210" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Step 3 -->
+        <mxCell id="msg_3a" value="verifyAndSign(id, tenantId, signatureBase64)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="676" y="245" as="sourcePoint"/>
+            <mxPoint x="919" y="245" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_3b" value="3: findById(id)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="931" y="280" as="sourcePoint"/>
+            <mxPoint x="1159" y="280" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_3c" value="db.contracts.findById(id)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1171" y="305" as="sourcePoint"/>
+            <mxPoint x="1369" y="305" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_3d" value="contract document" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1369" y="350" as="sourcePoint"/>
+            <mxPoint x="1171" y="350" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_3e" value="contract" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1159" y="375" as="sourcePoint"/>
+            <mxPoint x="931" y="375" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_3f" value="verifyIdentity &amp; checkStatus(PENDING_SIGN)" style="html=1;align=left;spacingLeft=4;verticalAlign=middle;endArrow=block;endFill=1;rounded=0;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="931" y="405" as="sourcePoint"/>
+            <mxPoint x="931" y="430" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="961" y="405"/>
+              <mxPoint x="961" y="430"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Branch 1: Error -->
+        <mxCell id="msg_err_1" value="throw InvalidSignerException(&quot;Identity mismatch or contract not pending sign&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="919" y="475" as="sourcePoint"/>
+            <mxPoint x="676" y="475" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_err_2" value="403 Forbidden / 400 Bad Request" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="664" y="500" as="sourcePoint"/>
+            <mxPoint x="401" y="500" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_err_3" value="displaySignErrorAlert(&quot;Ký hợp đồng thất bại&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="389" y="525" as="sourcePoint"/>
+            <mxPoint x="136" y="525" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Branch 2: Success (Step 4) -->
+        <mxCell id="msg_4a" value="4: saveSignature(signatureBase64)" style="html=1;align=left;spacingLeft=4;verticalAlign=middle;endArrow=block;endFill=1;rounded=0;fontSize=11;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="931" y="630" as="sourcePoint"/>
+            <mxPoint x="931" y="655" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="961" y="630"/>
+              <mxPoint x="961" y="655"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_4b" value="db.contracts.updateOne({ _id: id }, { $set: { signatureUrl, signedAt: now, status: &apos;ACTIVE&apos; } })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="931" y="700" as="sourcePoint"/>
+            <mxPoint x="1369" y="700" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_4c" value="writeResult (modifiedCount: 1)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1369" y="740" as="sourcePoint"/>
+            <mxPoint x="931" y="740" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_4d" value="signedContract (status: &apos;ACTIVE&apos;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="919" y="780" as="sourcePoint"/>
+            <mxPoint x="676" y="780" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Step 5 -->
+        <mxCell id="msg_5a" value="5: 200 OK (signedContract)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="664" y="820" as="sourcePoint"/>
+            <mxPoint x="401" y="820" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_5b" value="displaySignedConfirmation(&quot;Ký hợp đồng thành công! Hợp đồng đã có hiệu lực (ACTIVE)&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="389" y="860" as="sourcePoint"/>
+            <mxPoint x="136" y="860" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
