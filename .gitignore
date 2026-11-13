@@ -43,3 +43,6 @@ lerna-debug.log*
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Extracted docx temporary files
+yeucau/extracted/

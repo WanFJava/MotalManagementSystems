@@ -34,6 +34,10 @@ const contractSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  landlordCurrentAddress: {
+    type: String,
+    default: ''
+  },
   landlordPhone: {
     type: String,
     default: ''
@@ -49,27 +53,60 @@ const contractSchema = new mongoose.Schema({
     ref: 'User',
     default: null
   },
+  tenant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   tenantName: {
     type: String,
     required: true
-  },
-  tenantDob: {
-    type: Date,
-    default: null
-  },
-  tenantCccd: {
-    type: String,
-    default: ''
-  },
-  tenantAddress: {
-    type: String,
-    default: ''
   },
   tenantPhone: {
     type: String,
     default: ''
   },
+  tenantCccd: {
+    type: String,
+    default: ''
+  },
+  tenantIdentityNumber: {
+    type: String,
+    default: ''
+  },
+  tenantDob: {
+    type: Date,
+    default: null
+  },
+  tenantDateOfBirth: {
+    type: Date,
+    default: null
+  },
+  tenantAddress: {
+    type: String,
+    default: ''
+  },
+  tenantCurrentAddress: {
+    type: String,
+    default: ''
+  },
+  tenantHometown: {
+    type: String,
+    default: ''
+  },
   tenantWorkplace: {
+    type: String,
+    default: ''
+  },
+  tenantGender: {
+    type: String,
+    enum: ['MALE', 'FEMALE', 'OTHER'],
+    default: 'OTHER'
+  },
+  tenantIdentityIssuedDate: {
+    type: Date,
+    default: null
+  },
+  tenantIdentityIssuedPlace: {
     type: String,
     default: ''
   },
@@ -91,17 +128,35 @@ const contractSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  // Chữ ký điện tử & ngày ký của 2 bên
+  landlordSignature: {
+    type: String,
+    default: ''
+  },
+  landlordSignedAt: {
+    type: Date,
+    default: null
+  },
+  tenantSignature: {
+    type: String,
+    default: ''
+  },
+  tenantSignedAt: {
+    type: Date,
+    default: null
+  },
+
   status: {
     type: String,
-    enum: ['DRAFT', 'ACTIVE', 'EXPIRED', 'TERMINATED'],
-    default: 'ACTIVE' // Mặc định là ACTIVE khi lập hợp đồng
+    enum: ['DRAFT', 'WAITING_TENANT_SIGNATURE', 'PENDING_SIGNATURE', 'ACTIVE', 'EXPIRED', 'TERMINATED'],
+    default: 'WAITING_TENANT_SIGNATURE' // Mặc định là chờ khách thuê ký tên online
   }
 }, { 
   collection: 'contracts',
   timestamps: true 
 });
 
-// Đồng bộ giữa roomId và room trước khi lưu
+// Đồng bộ giữa roomId và room và các trường định danh trước khi lưu
 contractSchema.pre('validate', function(next) {
   if (this.roomId && !this.room) {
     this.room = this.roomId;
@@ -111,6 +166,18 @@ contractSchema.pre('validate', function(next) {
   }
   if (!this.roomId && !this.room) {
     return next(new Error('Phải cung cấp roomId hoặc room'));
+  }
+  if (this.tenantIdentityNumber && !this.tenantCccd) {
+    this.tenantCccd = this.tenantIdentityNumber;
+  }
+  if (this.tenantCccd && !this.tenantIdentityNumber) {
+    this.tenantIdentityNumber = this.tenantCccd;
+  }
+  if (this.tenantDateOfBirth && !this.tenantDob) {
+    this.tenantDob = this.tenantDateOfBirth;
+  }
+  if (this.tenantDob && !this.tenantDateOfBirth) {
+    this.tenantDateOfBirth = this.tenantDob;
   }
   next();
 });

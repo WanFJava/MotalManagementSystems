@@ -1,193 +1,52 @@
 <mxfile host="app.diagrams.net">
   <diagram name="UC-M05.1 Create Contract" id="uc-m05-1-create-contract">
-    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1120" math="0" shadow="0">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="920" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-
-        <!-- Title -->
-        <mxCell id="title" value="&lt;b&gt;Figure 2.3.2. Create Contract Sequence Diagram&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="40" y="10" width="1320" height="25" as="geometry"/>
-        </mxCell>
-
-        <!-- Lifelines -->
-        <mxCell id="lf_landlord" value="Landlord" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="115" y="45" width="30" height="1020" as="geometry"/>
-        </mxCell>
-        <mxCell id="lf_ui" value="«boundary»&lt;br&gt;ManageContractsPage" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
-          <mxGeometry x="315" y="45" width="170" height="1020" as="geometry"/>
-        </mxCell>
-        <mxCell id="lf_controller" value="«boundary»&lt;br&gt;ContractController" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
-          <mxGeometry x="615" y="45" width="170" height="1020" as="geometry"/>
-        </mxCell>
-        <mxCell id="lf_contract" value="«entity»&lt;br&gt;Contract" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
-          <mxGeometry x="915" y="45" width="140" height="1020" as="geometry"/>
-        </mxCell>
-        <mxCell id="lf_room" value="«entity»&lt;br&gt;Room" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
-          <mxGeometry x="1115" y="45" width="140" height="1020" as="geometry"/>
-        </mxCell>
-        <mxCell id="lf_db" value="«database»&lt;br&gt;MongoDB" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1">
-          <mxGeometry x="1300" y="45" width="120" height="1020" as="geometry"/>
-        </mxCell>
-
+        <mxCell id="lf_landlord" value="Landlord" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="115" y="40" width="30" height="840" as="geometry"/></mxCell>
+        <mxCell id="lf_ui" value="«boundary»&lt;br&gt;ManageContractsPage" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="315" y="40" width="170" height="840" as="geometry"/></mxCell>
+        <mxCell id="lf_controller" value="«boundary»&lt;br&gt;ContractController" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="615" y="40" width="170" height="840" as="geometry"/></mxCell>
+        <mxCell id="lf_contract" value="«entity»&lt;br&gt;Contract" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="930" y="40" width="140" height="840" as="geometry"/></mxCell>
+        <mxCell id="lf_db" value="«database»&lt;br&gt;MongoDB" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="1170" y="40" width="140" height="840" as="geometry"/></mxCell>
+        
         <!-- Activation Bars -->
-        <mxCell id="bar_L" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_landlord">
-          <mxGeometry x="9" y="100" width="12" height="880" as="geometry"/>
-        </mxCell>
-        <mxCell id="bar_UI" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_ui">
-          <mxGeometry x="79" y="100" width="12" height="880" as="geometry"/>
-        </mxCell>
-        <mxCell id="bar_C" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_controller">
-          <mxGeometry x="79" y="170" width="12" height="770" as="geometry"/>
-        </mxCell>
-        <mxCell id="bar_R_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_room">
-          <mxGeometry x="64" y="250" width="12" height="120" as="geometry"/>
-        </mxCell>
-        <mxCell id="bar_R_1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_room">
-          <mxGeometry x="64" y="700" width="12" height="80" as="geometry"/>
-        </mxCell>
-        <mxCell id="bar_CTR" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_contract">
-          <mxGeometry x="64" y="580" width="12" height="100" as="geometry"/>
-        </mxCell>
-        <mxCell id="bar_DB_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db">
-          <mxGeometry x="54" y="275" width="12" height="70" as="geometry"/>
-        </mxCell>
-        <mxCell id="bar_DB_1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db">
-          <mxGeometry x="54" y="605" width="12" height="190" as="geometry"/>
-        </mxCell>
+        <mxCell id="bar_L_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_landlord"><mxGeometry x="9" y="100" width="12" height="710" as="geometry"/></mxCell>
+        <mxCell id="bar_UI_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_ui"><mxGeometry x="79" y="100" width="12" height="710" as="geometry"/></mxCell>
+        <mxCell id="bar_C_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_controller"><mxGeometry x="79" y="172" width="12" height="610" as="geometry"/></mxCell>
+        <mxCell id="bar_CTR_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_contract"><mxGeometry x="64" y="208" width="12" height="120" as="geometry"/></mxCell>
+        <mxCell id="bar_DB_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db"><mxGeometry x="64" y="244" width="12" height="48" as="geometry"/></mxCell>
+        <mxCell id="bar_CTR_1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_contract"><mxGeometry x="64" y="520" width="12" height="190" as="geometry"/></mxCell>
+        <mxCell id="bar_DB_1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db"><mxGeometry x="64" y="556" width="12" height="120" as="geometry"/></mxCell>
 
         <!-- Alt Frame -->
-        <mxCell id="alt_frame" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;" vertex="1" parent="1">
-          <mxGeometry x="40" y="420" width="1340" height="490" as="geometry"/>
-        </mxCell>
-        <mxCell id="div_alt" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="40" y="540" as="sourcePoint"/>
-            <mxPoint x="1380" y="540" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="guard_err" value="[room is already occupied or not available]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry x="120" y="420" width="280" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="guard_ok" value="[room is available (status == &apos;AVAILABLE&apos;)]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry x="120" y="542" width="280" height="20" as="geometry"/>
-        </mxCell>
+        <mxCell id="alt_outer" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;" vertex="1" parent="1"><mxGeometry x="40" y="350" width="1280" height="440" as="geometry"/></mxCell>
+        <mxCell id="div_0" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="40" y="470" as="sourcePoint"/><mxPoint x="1320" y="470" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="guard_0" value="[room is already occupied or not available]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="142" y="350" width="310" height="20" as="geometry"/></mxCell>
+        <mxCell id="guard_1" value="[room is available (status === &apos;AVAILABLE&apos;)]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="142" y="472" width="290" height="20" as="geometry"/></mxCell>
 
         <!-- Messages -->
-        <!-- Step 1 -->
-        <mxCell id="msg_1" value="1: select approved RentalRequest &amp; input depositAmount, rentalPrice, startDate, endDate" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="136" y="150" as="sourcePoint"/>
-            <mxPoint x="394" y="150" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_1b" value="click &quot;Create Contract&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="136" y="180" as="sourcePoint"/>
-            <mxPoint x="394" y="180" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
+        <mxCell id="msg_0" value="select approved RentalRequest &amp; input deposit, price, start date, end date" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.0;exitDx=0;exitDy=0;entryX=0;entryY=0.0;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_L_0" target="bar_UI_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_1" value="click &quot;Create Contract&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.051;exitDx=0;exitDy=0;entryX=0;entryY=0.051;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_L_0" target="bar_UI_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_2" value="POST /api/contracts (roomId, tenantId, depositAmount, rentalPrice, startDate, endDate)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.101;exitDx=0;exitDy=0;entryX=0;entryY=0.0;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_UI_0" target="bar_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_3" value="verify room availability (roomId)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.059;exitDx=0;exitDy=0;entryX=0;entryY=0.0;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_C_0" target="bar_CTR_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_4" value="db.rooms.findById(roomId)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.30;exitDx=0;exitDy=0;entryX=0;entryY=0.0;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_CTR_0" target="bar_DB_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_5" value="room document" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.60;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_DB_0" target="bar_CTR_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_6" value="room" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.90;exitDx=0;exitDy=0;entryX=1;entryY=0.236;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_CTR_0" target="bar_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>
 
-        <!-- Step 2 -->
-        <mxCell id="msg_2" value="2: POST /api/contracts (roomId, tenantId, depositAmount, rentalPrice, startDate, endDate)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="406" y="210" as="sourcePoint"/>
-            <mxPoint x="694" y="210" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
+        <!-- Branch 1 (Error) -->
+        <mxCell id="msg_7" value="409 Conflict (&quot;Room is already occupied or not available&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.357;exitDx=0;exitDy=0;entryX=1;entryY=0.408;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_C_0" target="bar_UI_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_8" value="show error alert: &quot;Cannot create contract: Room occupied&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.459;exitDx=0;exitDy=0;entryX=1;entryY=0.459;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_UI_0" target="bar_L_0"><mxGeometry relative="1" as="geometry"/></mxCell>
 
-        <!-- Step 3 -->
-        <mxCell id="msg_3" value="3: findById(roomId)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="706" y="290" as="sourcePoint"/>
-            <mxPoint x="1179" y="290" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_3b" value="db.rooms.findById(roomId)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1191" y="315" as="sourcePoint"/>
-            <mxPoint x="1354" y="315" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_3c" value="room document (status, basePrice)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1354" y="360" as="sourcePoint"/>
-            <mxPoint x="1191" y="360" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_3d" value="room" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1179" y="385" as="sourcePoint"/>
-            <mxPoint x="706" y="385" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Step 4 (Alt 1: Error) -->
-        <mxCell id="msg_4a" value="4: 409 Conflict (&quot;Room is already occupied or not available&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="694" y="470" as="sourcePoint"/>
-            <mxPoint x="406" y="470" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_4b" value="displayConflictErrorAlert(&quot;Phòng không khả dụng&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="394" y="505" as="sourcePoint"/>
-            <mxPoint x="136" y="505" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Step 5 (Alt 2: Success) -->
-        <mxCell id="msg_5a" value="5: new Contract({ roomId, tenantId, depositAmount, rentalPrice, status: &apos;PENDING_SIGN&apos; })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="706" y="620" as="sourcePoint"/>
-            <mxPoint x="979" y="620" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_5b" value="db.contracts.insertOne(contractData)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="991" y="645" as="sourcePoint"/>
-            <mxPoint x="1354" y="645" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_5c" value="contract document (status: &apos;PENDING_SIGN&apos;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1354" y="680" as="sourcePoint"/>
-            <mxPoint x="706" y="680" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_5d" value="updateStatus(&apos;RENTED&apos;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="706" y="720" as="sourcePoint"/>
-            <mxPoint x="1179" y="720" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_5e" value="db.rooms.updateOne({ _id: roomId }, { $set: { status: &apos;RENTED&apos; } })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1191" y="745" as="sourcePoint"/>
-            <mxPoint x="1354" y="745" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_5f" value="updatedRoom document" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1354" y="780" as="sourcePoint"/>
-            <mxPoint x="706" y="780" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Step 6 -->
-        <mxCell id="msg_6a" value="6: 201 Created (contract)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="694" y="830" as="sourcePoint"/>
-            <mxPoint x="406" y="830" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_6b" value="refresh contract list &amp; displaySuccessAlert(&quot;Contract created as PENDING_SIGN&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="394" y="870" as="sourcePoint"/>
-            <mxPoint x="136" y="870" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-
+        <!-- Branch 2 (Success) -->
+        <mxCell id="msg_9" value="new Contract({ roomId, tenantId, depositAmount, rentalPrice, status: &apos;PENDING_SIGN&apos; })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.570;exitDx=0;exitDy=0;entryX=0;entryY=0.0;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_C_0" target="bar_CTR_1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_10" value="db.contracts.insertOne(contractDoc)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.189;exitDx=0;exitDy=0;entryX=0;entryY=0.0;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_CTR_1" target="bar_DB_1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_11" value="inserted contract doc (status: &apos;PENDING_SIGN&apos;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.30;exitDx=0;exitDy=0;entryX=1;entryY=0.379;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_DB_1" target="bar_CTR_1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_12" value="db.rooms.updateOne({ _id: roomId }, { $set: { status: &apos;RENTED&apos; } })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.568;exitDx=0;exitDy=0;entryX=0;entryY=0.60;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_CTR_1" target="bar_DB_1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_13" value="room updated to RENTED" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.90;exitDx=0;exitDy=0;entryX=1;entryY=0.758;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_DB_1" target="bar_CTR_1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_14" value="contract instance" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.947;exitDx=0;exitDy=0;entryX=1;entryY=0.866;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_CTR_1" target="bar_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_15" value="201 Created (contract)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.925;exitDx=0;exitDy=0;entryX=1;entryY=0.935;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_C_0" target="bar_UI_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="msg_16" value="refresh contract list &amp; show success alert" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.986;exitDx=0;exitDy=0;entryX=1;entryY=0.986;entryDx=0;entryDy=0;" edge="1" parent="1" source="bar_UI_0" target="bar_L_0"><mxGeometry relative="1" as="geometry"/></mxCell>
       </root>
     </mxGraphModel>
   </diagram>

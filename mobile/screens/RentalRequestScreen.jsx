@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
-import { rentalRequestApi, roomApi } from '../services/api';
+import { rentalRequestApi, roomApi, authApi } from '../services/api';
 
 export default function RentalRequestScreen({ navigation, route }) {
   const [rooms, setRooms] = useState([]);
@@ -23,7 +23,24 @@ export default function RentalRequestScreen({ navigation, route }) {
 
   useEffect(() => {
     loadAvailableRooms();
+    loadProfileForAutoFill();
   }, []);
+
+  const loadProfileForAutoFill = async () => {
+    try {
+      const res = await authApi.getProfile();
+      if (res.data && res.data.success && res.data.data) {
+        const u = res.data.data;
+        if (u.fullName) setTenantName(u.fullName);
+        if (u.phone) setTenantPhone(u.phone);
+        if (u.identityNumber && !note) {
+          setNote(`CCCD: ${u.identityNumber} ${u.address ? `| Đ/c: ${u.address}` : ''}`);
+        }
+      }
+    } catch (err) {
+      // Chưa đăng nhập, bỏ qua auto-fill
+    }
+  };
 
   const loadAvailableRooms = async () => {
     try {

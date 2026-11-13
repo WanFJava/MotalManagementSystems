@@ -20,6 +20,40 @@ const rentalRequestSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  // Thông tin CCCD & định danh bắt buộc của khách thuê
+  identityNumber: {
+    type: String,
+    default: ''
+  },
+  identityIssuedDate: {
+    type: Date,
+    default: null
+  },
+  identityIssuedPlace: {
+    type: String,
+    default: ''
+  },
+  dateOfBirth: {
+    type: Date,
+    default: null
+  },
+  gender: {
+    type: String,
+    enum: ['MALE', 'FEMALE', 'OTHER', ''],
+    default: ''
+  },
+  hometown: {
+    type: String,
+    default: ''
+  },
+  currentAddress: {
+    type: String,
+    default: ''
+  },
+  workplace: {
+    type: String,
+    default: ''
+  },
   requestDate: {
     type: Date,
     default: Date.now
@@ -42,4 +76,3 @@ const rentalRequestSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('RentalRequest', rentalRequestSchema);
-

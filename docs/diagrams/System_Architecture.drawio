@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="System Architecture" id="sys_arch">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Tier 1: Client Tier -->
+        <mxCell id="tier1" value="CLIENT TIER (Presentation Layer)" style="swimlane;startSize=30;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="80" width="1200" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="web_client" value="&lt;b&gt;Web Administration Application&lt;/b&gt;&lt;br&gt;(React 18, Vite, Tailwind CSS, Axios)&lt;br&gt;&lt;i&gt;Target: Landlord &amp; Staff&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="tier1">
+          <mxGeometry x="120" y="55" width="380" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="mob_client" value="&lt;b&gt;Mobile Application&lt;/b&gt;&lt;br&gt;(React Native / Expo, Android SDK, AsyncStorage)&lt;br&gt;&lt;i&gt;Target: Tenants &amp; Guests&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="tier1">
+          <mxGeometry x="680" y="55" width="380" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Tier 2: Backend Tier -->
+        <mxCell id="tier2" value="APPLICATION TIER (Backend RESTful API Layer)" style="swimlane;startSize=30;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="320" width="1200" height="260" as="geometry"/>
+        </mxCell>
+        <mxCell id="api_gw" value="&lt;b&gt;RESTful API Gateway &amp; Middleware&lt;/b&gt;&lt;br&gt;(Express.js, CORS, Helmet, JWT Auth &amp; RBAC Guard)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="tier2">
+          <mxGeometry x="80" y="50" width="1040" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="mod_user" value="&lt;b&gt;User &amp; Auth Module&lt;/b&gt;&lt;br&gt;JWT, Bcrypt, KYC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="tier2">
+          <mxGeometry x="80" y="130" width="220" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="mod_room" value="&lt;b&gt;Room Module&lt;/b&gt;&lt;br&gt;Room CRUD, Search, Rental Request" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="tier2">
+          <mxGeometry x="350" y="130" width="230" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="mod_contract" value="&lt;b&gt;Contract Module&lt;/b&gt;&lt;br&gt;Digital Contract, Sign, Extend, Terminate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="tier2">
+          <mxGeometry x="630" y="130" width="240" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="mod_billing" value="&lt;b&gt;Billing &amp; Payment Module&lt;/b&gt;&lt;br&gt;Utility Meter, Invoice, VNPay Gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="tier2">
+          <mxGeometry x="910" y="130" width="210" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Tier 3: Data Tier & External Services -->
+        <mxCell id="tier3" value="DATA &amp; EXTERNAL SERVICES TIER" style="swimlane;startSize=30;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="640" width="1200" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="db_mongo" value="&lt;b&gt;Primary Database&lt;/b&gt;&lt;br&gt;MongoDB (Mongoose ODM)&lt;br&gt;Collections: users, rooms, contracts, invoices, utilities, payment_transactions" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="tier3">
+          <mxGeometry x="150" y="45" width="450" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext_vnpay" value="&lt;b&gt;External Payment Gateway&lt;/b&gt;&lt;br&gt;VNPay Sandbox API&lt;br&gt;(HMAC-SHA512 Signature &amp; IPN Webhook)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="tier3">
+          <mxGeometry x="720" y="55" width="380" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Connectors -->
+        <mxCell id="c1" value="HTTPS / REST JSON" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeWidth=2;" edge="1" parent="1" source="web_client" target="api_gw"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2" value="HTTPS / REST JSON" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeWidth=2;" edge="1" parent="1" source="mob_client" target="api_gw"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3" value="Mongoose ODM" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeWidth=2;" edge="1" parent="1" source="mod_room" target="db_mongo"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4" value="Secure Webhook / API" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeWidth=2;" edge="1" parent="1" source="mod_billing" target="ext_vnpay"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

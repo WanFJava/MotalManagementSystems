@@ -18,33 +18,128 @@ const api = axios.create({
   },
 });
 
+export const roomApi = {
+  getRooms: (params) => api.get('/rooms', { params }),
+  getRoomById: (id) => api.get(`/rooms/${id}`),
+  searchRooms: (params) => api.get('/rooms/search', { params }),
+  createRoom: (data) => api.post('/rooms', data),
+  updateRoom: (id, data) => api.put(`/rooms/${id}`, data),
+  deleteRoom: (id) => api.delete(`/rooms/${id}`),
+  submitRentalRequest: (id, data) => api.post(`/rooms/${id}/rental-request`, data),
+};
+
 export const rentalRequestApi = {
-  // Gửi yêu cầu thuê phòng
   createRequest: (data) => api.post('/rental-requests', data),
-  // Lấy danh sách yêu cầu
   getRequests: (params) => api.get('/rental-requests', { params }),
-  // Chi tiết yêu cầu
   getRequestById: (id) => api.get(`/rental-requests/${id}`),
-  // Duyệt/từ chối yêu cầu
   updateStatus: (id, status) => api.put(`/rental-requests/${id}`, { status }),
 };
 
 export const contractApi = {
-  // Lập hợp đồng mới
   createContract: (data) => api.post('/contracts', data),
-  // Lấy danh sách hợp đồng
-  getContracts: () => api.get('/contracts'),
-  // Chi tiết hợp đồng
+  getContracts: (params) => api.get('/contracts', { params }),
   getContractById: (id) => api.get(`/contracts/${id}`),
-  // Gia hạn hợp đồng
   extendContract: (id, endDate) => api.put(`/contracts/${id}/extend`, { endDate }),
-  // Thanh lý hợp đồng
   terminateContract: (id) => api.put(`/contracts/${id}/terminate`),
+  signContract: (id, data) => api.put(`/contracts/${id}/sign`, data),
 };
 
-export const roomApi = {
-  getRooms: () => api.get('/rooms'),
+let _currentUser = null;
+
+export const setCurrentUserStore = (user) => {
+  _currentUser = user;
+};
+
+export const getCurrentUserStore = () => {
+  return _currentUser;
+};
+
+export const setAuthToken = (token) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+  }
+};
+
+export const authApi = {
+  // Đăng ký tài khoản (UC01 / TC_USER_01)
+  register: (data) => api.post('/auth/register', data),
+  // Đăng nhập hệ thống (UC01 / TC_USER_02)
+  login: (data) => api.post('/auth/login', data),
+  // Xem hồ sơ cá nhân (UC01 / UC06)
+  getProfile: () => api.get('/users/profile'),
+  // Cập nhật hồ sơ cá nhân (TC_USER_03)
+  updateProfile: (data) => api.put('/users/profile', data),
+};
+
+export const userApi = {
+  // Danh sách khách thuê (UC06)
+  getTenants: (params) => api.get('/users/tenants', { params }),
+  // Cập nhật hồ sơ CCCD khách thuê (UC06 / TC_USER_03)
+  updateTenantProfile: (id, data) => api.put(`/users/${id}/tenant-profile`, data),
+  // Danh sách nhân viên (UC15)
+  getStaff: (params) => api.get('/users/staff', { params }),
+  // Thêm nhân viên mới (UC15)
+  createStaff: (data) => api.post('/users/staff', data),
+  // Khóa / mở khóa tài khoản (TC_USER_04)
+  toggleStatus: (id, isActive) => api.put(`/users/${id}/status`, { isActive }),
+  // Chi tiết người dùng theo ID
+  getUserById: (id) => api.get(`/users/${id}`),
+};
+
+// ==========================================
+// CÁC HÀM API PHỤ TRÁCH BỞI MẠNH (THÀNH VIÊN 4)
+// ==========================================
+
+export const getRooms = async () => {
+  const res = await api.get('/rooms');
+  return res.data?.data || [];
+};
+
+export const getUtilities = async (params = {}) => {
+  const res = await api.get('/utilities', { params });
+  return res.data?.data || [];
+};
+
+export const getUtilityByRoom = async (roomId) => {
+  const res = await api.get(`/utilities/${roomId}`);
+  return res.data?.data;
+};
+
+export const recordUtility = async (data) => {
+  const res = await api.post('/utilities', data);
+  return res.data;
+};
+
+export const generateInvoice = async (data) => {
+  const res = await api.post('/invoices/generate', data);
+  return res.data;
+};
+
+export const getInvoices = async (params = {}) => {
+  const res = await api.get('/invoices', { params });
+  return res.data?.data || [];
+};
+
+export const getInvoiceById = async (id) => {
+  const res = await api.get(`/invoices/${id}`);
+  return res.data?.data;
+};
+
+export const createPaymentUrl = async (invoiceId) => {
+  const res = await api.post('/payment/create-payment-url', { invoiceId });
+  return res.data;
+};
+
+export const payCash = async (invoiceId, note) => {
+  const res = await api.put(`/invoices/${invoiceId}/payment`, { note });
+  return res.data;
+};
+
+export const getPaymentTransactions = async () => {
+  const res = await api.get('/payment/transactions');
+  return res.data?.data || [];
 };
 
 export default api;
-

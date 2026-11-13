@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { rentalRequestClientService } from '../services/rentalRequestClientService';
+import CccdDetailModal from '../components/CccdDetailModal';
 
 export default function ManageRentalRequestsScreen({ onNotify, onNavigateToCreateContract }) {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [actionLoadingId, setActionLoadingId] = useState(null);
+  const [viewingCccdReq, setViewingCccdReq] = useState(null);
 
   const fetchRequests = async () => {
     try {
@@ -61,13 +63,16 @@ export default function ManageRentalRequestsScreen({ onNotify, onNavigateToCreat
 
   return (
     <div style={{ padding: '24px 0' }}>
+      {/* Modal xem thông tin CCCD */}
+      <CccdDetailModal request={viewingCccdReq} onClose={() => setViewingCccdReq(null)} />
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
         <div>
           <h2 style={{ margin: '0 0 4px 0', color: '#1e293b', fontSize: '24px' }}>
             📋 Quản Lý Yêu Cầu Thuê Phòng
           </h2>
           <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>
-            Xem xét, duyệt hoặc từ chối các yêu cầu giữ phòng của khách thuê
+            Xem xét, kiểm tra CCCD, duyệt hoặc từ chối các yêu cầu giữ phòng của khách thuê
           </p>
         </div>
 
@@ -135,8 +140,8 @@ export default function ManageRentalRequestsScreen({ onNotify, onNavigateToCreat
               <tr style={{ backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0', textAlign: 'left', color: '#475569' }}>
                 <th style={{ padding: '14px 16px' }}>Phòng</th>
                 <th style={{ padding: '14px 16px' }}>Khách thuê</th>
+                <th style={{ padding: '14px 16px' }}>Định danh CCCD</th>
                 <th style={{ padding: '14px 16px' }}>Số điện thoại</th>
-                <th style={{ padding: '14px 16px' }}>Ngày gửi</th>
                 <th style={{ padding: '14px 16px' }}>Dự kiến vào ở</th>
                 <th style={{ padding: '14px 16px' }}>Ghi chú</th>
                 <th style={{ padding: '14px 16px' }}>Trạng thái</th>
@@ -161,16 +166,39 @@ export default function ManageRentalRequestsScreen({ onNotify, onNavigateToCreat
                     <td style={{ padding: '14px 16px', fontWeight: '600', color: '#0f172a' }}>
                       {req.tenantName}
                     </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontWeight: '700', color: '#1e3a8a', fontSize: '13px' }}>
+                          {req.identityNumber || 'Chưa cập nhật'}
+                        </span>
+                        <button
+                          onClick={() => setViewingCccdReq(req)}
+                          title="Xem chi tiết hồ sơ CCCD"
+                          style={{
+                            backgroundColor: '#eff6ff',
+                            color: '#2563eb',
+                            border: '1px solid #bfdbfe',
+                            borderRadius: '6px',
+                            padding: '3px 8px',
+                            fontSize: '11px',
+                            fontWeight: '700',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          🪪 Xem CCCD
+                        </button>
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                        Quê: {req.hometown || 'Chưa rõ'}
+                      </div>
+                    </td>
                     <td style={{ padding: '14px 16px', color: '#334155' }}>
                       {req.tenantPhone || '---'}
                     </td>
                     <td style={{ padding: '14px 16px', color: '#64748b', fontSize: '13px' }}>
-                      {req.requestDate ? new Date(req.requestDate).toLocaleDateString('vi-VN') : '---'}
-                    </td>
-                    <td style={{ padding: '14px 16px', color: '#64748b', fontSize: '13px' }}>
                       {req.expectedMoveInDate ? new Date(req.expectedMoveInDate).toLocaleDateString('vi-VN') : '---'}
                     </td>
-                    <td style={{ padding: '14px 16px', color: '#64748b', fontSize: '13px', maxWidth: '200px' }}>
+                    <td style={{ padding: '14px 16px', color: '#64748b', fontSize: '13px', maxWidth: '180px' }}>
                       {req.note || '---'}
                     </td>
                     <td style={{ padding: '14px 16px' }}>
@@ -228,7 +256,18 @@ export default function ManageRentalRequestsScreen({ onNotify, onNavigateToCreat
                               onNavigateToCreateContract({
                                 roomId: room._id,
                                 roomNumber: room.roomNumber,
+                                tenantId: req.userId?._id || req.userId,
                                 tenantName: req.tenantName,
+                                tenantPhone: req.tenantPhone,
+                                tenantIdentityNumber: req.identityNumber || req.userId?.identityNumber || '',
+                                tenantCccd: req.identityNumber || req.userId?.identityNumber || '',
+                                tenantDob: req.dateOfBirth || req.userId?.dateOfBirth || '',
+                                tenantGender: req.gender || req.userId?.gender || 'MALE',
+                                tenantHometown: req.hometown || req.userId?.hometown || '',
+                                tenantAddress: req.hometown || req.address || req.userId?.address || req.userId?.hometown || '',
+                                tenantCurrentAddress: req.currentAddress || req.userId?.currentAddress || '',
+                                tenantIdentityIssuedDate: req.identityIssuedDate || req.userId?.identityIssuedDate || '',
+                                tenantIdentityIssuedPlace: req.identityIssuedPlace || req.userId?.identityIssuedPlace || '',
                                 rentalPrice: room.basePrice
                               });
                             }
@@ -241,7 +280,10 @@ export default function ManageRentalRequestsScreen({ onNotify, onNavigateToCreat
                             borderRadius: '6px',
                             fontSize: '12px',
                             fontWeight: '600',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
                           📄 Lập hợp đồng
@@ -260,4 +302,3 @@ export default function ManageRentalRequestsScreen({ onNotify, onNavigateToCreat
     </div>
   );
 }
-

@@ -211,7 +211,7 @@ class RoomService {
       throw new Error(`Phòng ${room.roomNumber} hiện không còn trống để gửi yêu cầu thuê!`);
     }
 
-    const { fullName, phone, email, moveInDate, note, tenantName, tenantPhone } = requestData;
+    const { fullName, phone, email, moveInDate, note, tenantName, tenantPhone, identityNumber, userId } = requestData;
     const finalTenantName = fullName || tenantName;
     const finalPhone = phone || tenantPhone;
 
@@ -219,11 +219,13 @@ class RoomService {
       throw new Error('Vui lòng cung cấp đầy đủ Họ tên và Số điện thoại liên hệ!');
     }
 
-    // Lưu thực tế vào collection RentalRequest
+    // Lưu thực tế vào collection RentalRequest kèm CCCD
     const newRequest = new RentalRequest({
+      userId: userId || null,
       roomId: room._id,
       tenantName: finalTenantName,
       tenantPhone: finalPhone,
+      identityNumber: identityNumber || '',
       expectedMoveInDate: moveInDate ? new Date(moveInDate) : null,
       note: note || (email ? `Email: ${email}` : ''),
       status: 'PENDING'
@@ -237,7 +239,7 @@ class RoomService {
         roomNumber: room.roomNumber,
         basePrice: room.basePrice
       },
-      tenant: { fullName: finalTenantName, phone: finalPhone, email, moveInDate, note },
+      tenant: { fullName: finalTenantName, phone: finalPhone, email, identityNumber, moveInDate, note },
       status: 'PENDING',
       message: `Đã tiếp nhận yêu cầu thuê phòng ${room.roomNumber}. Quản lý sẽ sớm liên hệ xác nhận!`
     };
