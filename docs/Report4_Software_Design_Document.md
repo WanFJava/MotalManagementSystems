@@ -28,11 +28,14 @@
 | 2026-10-31 | 0.5 | Domain Class Diagram, ERD and Database Schemas design | Team | Mentor |
 | 2026-11-04 | 0.8 | Complete Module-level API implementation & Sequence drafts | All Members | Instructor |
 | 2026-11-10 | 1.0 | Full SDD assembly: Architecture, Package Diagrams, Module Class Diagrams, and 14 Sequence Diagrams | Leader Quang | Instructor |
+| 2026-11-13 | 1.2 | Integrated Context Diagram and UML System Use Case Diagram with 17 Sequence Diagrams | Leader Quang | Instructor |
 
 ---
 
 ## Table of Contents
 1. [1. System Design](#1-system-design)  
+   1.0 [System Context Diagram (DFD Level 0)](#10-system-context-diagram-dfd-level-0)  
+   1.0.1 [System Use Case Diagram (UML Use Case Model)](#101-system-use-case-diagram-uml-use-case-model)  
    1.1 [System Architecture](#11-system-architecture)  
    &nbsp;&nbsp;&nbsp;&nbsp;1.1.1 [Front-end Architecture](#111-front-end-architecture)  
    &nbsp;&nbsp;&nbsp;&nbsp;1.1.2 [Back-end Architecture](#112-back-end-architecture)  
@@ -45,6 +48,7 @@
    &nbsp;&nbsp;&nbsp;&nbsp;2.1.2 [Sign Up (Register) Sequence Diagram](#212-sign-up-register-sequence-diagram)  
    &nbsp;&nbsp;&nbsp;&nbsp;2.1.3 [Sign In (Login) Sequence Diagram](#213-sign-in-login-sequence-diagram)  
    &nbsp;&nbsp;&nbsp;&nbsp;2.1.4 [Update Tenant Profile (KYC) Sequence Diagram](#214-update-tenant-profile-kyc-sequence-diagram)  
+   &nbsp;&nbsp;&nbsp;&nbsp;2.1.5 [Manage Staff Accounts Sequence Diagram](#215-manage-staff-accounts-sequence-diagram)  
    2.2 [Module 2: Room & Search Management (Quang)](#22-module-2-room--search-management-quang)  
    &nbsp;&nbsp;&nbsp;&nbsp;2.2.1 [Class Diagram](#221-class-diagram)  
    &nbsp;&nbsp;&nbsp;&nbsp;2.2.2 [Search & Filter Rooms Sequence Diagram](#222-search--filter-rooms-sequence-diagram)  
@@ -56,11 +60,14 @@
    &nbsp;&nbsp;&nbsp;&nbsp;2.3.1 [Class Diagram](#231-class-diagram)  
    &nbsp;&nbsp;&nbsp;&nbsp;2.3.2 [Create Contract Sequence Diagram](#232-create-contract-sequence-diagram)  
    &nbsp;&nbsp;&nbsp;&nbsp;2.3.3 [Tenant Sign Contract Online Sequence Diagram](#233-tenant-sign-contract-online-sequence-diagram)  
+   &nbsp;&nbsp;&nbsp;&nbsp;2.3.4 [Terminate Contract Sequence Diagram](#234-terminate-contract-sequence-diagram)  
+   &nbsp;&nbsp;&nbsp;&nbsp;2.3.5 [Extend Contract Sequence Diagram](#235-extend-contract-sequence-diagram)  
    2.4 [Module 4: Utility, Invoice & VNPay Payment (Mạnh)](#24-module-4-utility-invoice--vnpay-payment-mạnh)  
    &nbsp;&nbsp;&nbsp;&nbsp;2.4.1 [Class Diagram](#241-class-diagram)  
    &nbsp;&nbsp;&nbsp;&nbsp;2.4.2 [Record Utility Readings Sequence Diagram](#242-record-utility-readings-sequence-diagram)  
-   &nbsp;&nbsp;&nbsp;&nbsp;2.4.3 [Pay Invoice via VNPay Gateway Sequence Diagram](#243-pay-invoice-via-vnpay-gateway-sequence-diagram)  
-   &nbsp;&nbsp;&nbsp;&nbsp;2.4.4 [VNPay IPN Callback & Webhook Sequence Diagram](#244-vnpay-ipn-callback--webhook-sequence-diagram)  
+   &nbsp;&nbsp;&nbsp;&nbsp;2.4.3 [Generate Monthly Invoices Sequence Diagram](#243-generate-monthly-invoices-sequence-diagram)  
+   &nbsp;&nbsp;&nbsp;&nbsp;2.4.4 [Pay Invoice via VNPay Gateway Sequence Diagram](#244-pay-invoice-via-vnpay-gateway-sequence-diagram)  
+   &nbsp;&nbsp;&nbsp;&nbsp;2.4.5 [VNPay IPN Callback & Webhook Sequence Diagram](#245-vnpay-ipn-callback--webhook-sequence-diagram)  
 3. [3. Database Design](#3-database-design)  
    3.1 [System Domain Model / Class Diagram](#31-system-domain-model--class-diagram)  
    3.2 [Data Dictionary & Collection Schemas](#32-data-dictionary--collection-schemas)  
@@ -68,6 +75,42 @@
 ---
 
 # 1. System Design
+
+## 1.0 System Context Diagram (DFD Level 0)
+
+The System Context Diagram (Context-level Data Flow Diagram - DFD Level 0) models the highest-level operational boundary of the Motel Management System (Process 0: Motel Management Systems). It visualizes all information flows exchanged between the core software engine and the four primary external entities (terminators): Tenant, Manager, Staff, and the external Payment Gateway.
+
+![Figure 1.0. System Context Diagram (DFD Level 0)](./diagram_images/Figure_1_0_System_Context_Diagram.png)
+
+### Inbound & Outbound Data Flows by Entity:
+- **Tenant:**
+  - *Inbound Flows:* Registration Information, Login Information, Room Search Criteria, Rental Request, Payment Request, Maintenance Request, Feedback / Complaint.
+  - *Outbound Flows:* Contract, Invoice, Payment Result, Notifications, Room Information, Maintenance Status.
+- **Staff:**
+  - *Inbound Flows:* Maintenance Updates, Payment Confirmation, Tenant Information, Contract Information, Utility Readings.
+  - *Outbound Flows:* Maintenance Requests, Payment Information, Invoice List, Contract Information, Tenant List, Room List, Room Information, Utility Reports.
+- **Manager:**
+  - *Inbound Flows:* Report Requests, Service Configuration, Pricing Configuration, Contract Management, Staff Management, Tenant Management.
+  - *Outbound Flows:* Tenant Information, Revenue Reports, Payment Reports, Occupancy Reports, Maintenance Reports.
+- **Payment Gateway (VNPay):**
+  - *Outbound Flows (System to Gateway):* Payment Request, Invoice ID, Amount, Transaction Information.
+  - *Inbound Flows (Gateway to System):* Payment Result, Transaction ID, Payment Status.
+
+---
+
+## 1.0.1 System Use Case Diagram (UML Use Case Model)
+
+The System Use Case Diagram provides a comprehensive functional blueprint of the Motel Management System (MMS). It models the behavioral boundaries across five integrated subsystems: Authentication & User Management, Room Inventory & Rental, Rental Contract Management, Utility & Billing, and System Analytics. The diagram specifies all primary actor associations, inheritance hierarchies (Manager inherits all Staff capabilities), and inter-use-case dependencies (`<<include>>` and `<<extend>>`):
+
+![Figure 1.0.1. System Use Case Diagram](./diagram_images/Figure_0_System_UseCase_Diagram.png)
+
+### Summary of Key Use Case Relationships:
+- **Actor Inheritance:** Manager generalizes (inherits) Staff, granting property owners full operational permissions while adding exclusive analytical, reporting, and staff provisioning controls.
+- **`<<include>>` Dependency (Lease):** Create Contract includes Manage Rooms to automatically synchronize room status to 'RENTED' upon lease execution.
+- **`<<include>>` Dependency (Payment):** Pay Invoice via VNPay includes Process VNPay IPN to asynchronously verify merchant checksum and settle invoices upon banking confirmation.
+- **`<<extend>>` Dependency (KYC):** Request Rental extends Update Profile (KYC), enabling pre-verified tenants with validated citizen ID credentials to book rooms with one-touch efficiency.
+
+---
 
 ## 1.1 System Architecture
 

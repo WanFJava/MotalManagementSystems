@@ -484,7 +484,16 @@ async function buildDocument() {
                 children: [
                   createCell("2026-11-10"),
                   createCell("1.0"),
-                  createCell("Completed SDD: High-resolution diagrams, 4 Module Class Diagrams, 17 Sequence Diagrams"),
+                  createCell("Completed SDD: Context Diagram, 4 Module Class Diagrams, 17 Sequence Diagrams"),
+                  createCell("Quang (Lead)"),
+                  createCell("Instructor")
+                ]
+              }),
+              new TableRow({
+                children: [
+                  createCell("2026-11-13"),
+                  createCell("1.2"),
+                  createCell("Integrated System Use Case Diagram (UML) with full actor-subsystem associations"),
                   createCell("Quang (Lead)"),
                   createCell("Instructor")
                 ]
@@ -499,6 +508,7 @@ async function buildDocument() {
           createBodyP("I. Record of Changes"),
           createBodyP("1. System Design"),
           createBulletP("1.0 System Context Diagram (DFD Level 0)"),
+          createBulletP("1.0.1 System Use Case Diagram (UML Use Case Model)"),
           createBulletP("1.1 System Architecture"),
           createBulletP("   1.1.1 Front-end Architecture"),
           createBulletP("   1.1.2 Back-end Architecture"),
@@ -540,11 +550,11 @@ async function buildDocument() {
           // 1. System Design
           createHeading1("1. System Design"),
 
-          // 1.0 System Context Diagram (DFD Level 0) - Fully rewritten to match user diagram
+          // 1.0 System Context Diagram (DFD Level 0)
           createHeading2("1.0 System Context Diagram (DFD Level 0)"),
           createBodyP("The System Context Diagram (Context-level Data Flow Diagram - DFD Level 0) models the highest-level operational boundary of the Motel Management System (Process 0: Motel Management Systems). It visualizes all information flows exchanged between the core software engine and the four primary external entities (terminators): Tenant, Manager, Staff, and the external Payment Gateway."),
 
-          // INSERT FIGURE 1.0 CONTEXT DIAGRAM IMAGE (Exact diagram from user)
+          // INSERT FIGURE 1.0 CONTEXT DIAGRAM IMAGE
           ...createImageParagraph("Figure_1_0_System_Context_Diagram.png", 590, 330, "Figure 1.0. System Context Diagram (DFD Level 0)"),
 
           new Paragraph({ spacing: { before: 100 } }),
@@ -599,94 +609,20 @@ async function buildDocument() {
           createBulletP("Transaction ID (unique banking reference code issued by the national payment switch).", "• Inbound Flow: "),
           createBulletP("Payment Result (server-to-server IPN webhook payload with response code '00' confirming payment).", "• Inbound Flow: "),
 
-          new Paragraph({ spacing: { before: 120 } }),
-          createBodyP("Table 1.0. System Context Diagram Data Flow Matrix:", false, true),
-          new Table({
-            width: { size: 100, type: WidthType.PERCENTAGE },
-            borders: cellBorders,
-            rows: [
-              new TableRow({
-                children: [
-                  createCell("External Entity", true, 20),
-                  createCell("Direction", true, 15),
-                  createCell("Data Flow Name", true, 30),
-                  createCell("Operational Objective", true, 35)
-                ]
-              }),
-              new TableRow({
-                children: [
-                  createCell("Tenant", false, 20, true),
-                  createCell("Tenant -> System"),
-                  createCell("Registration / Login Info"),
-                  createCell("Account authentication and secure session initialization")
-                ]
-              }),
-              new TableRow({
-                children: [
-                  createCell("Tenant"),
-                  createCell("Tenant -> System"),
-                  createCell("Room Search & Rental Request"),
-                  createCell("Browsing inventory and reserving available rental units")
-                ]
-              }),
-              new TableRow({
-                children: [
-                  createCell("Tenant"),
-                  createCell("System -> Tenant"),
-                  createCell("Contract, Invoices, Payment Result"),
-                  createCell("Online lease signing, monthly billing, and transaction receipts")
-                ]
-              }),
-              new TableRow({
-                children: [
-                  createCell("Manager", false, 20, true),
-                  createCell("Manager -> System"),
-                  createCell("Pricing & Service Configurations"),
-                  createCell("Setting rental prices, utility unit costs, and service rates")
-                ]
-              }),
-              new TableRow({
-                children: [
-                  createCell("Manager"),
-                  createCell("System -> Manager"),
-                  createCell("Revenue & Occupancy Reports"),
-                  createCell("Macro analytics on business performance and collection rates")
-                ]
-              }),
-              new TableRow({
-                children: [
-                  createCell("Staff", false, 20, true),
-                  createCell("Staff -> System"),
-                  createCell("Utility Readings & Cash Confirm"),
-                  createCell("Entering monthly meter numbers and reconciling cash payments")
-                ]
-              }),
-              new TableRow({
-                children: [
-                  createCell("Staff"),
-                  createCell("System -> Staff"),
-                  createCell("Maintenance Requests & Room List"),
-                  createCell("Dispatching facility repair tasks and tenant inspection lists")
-                ]
-              }),
-              new TableRow({
-                children: [
-                  createCell("Payment Gateway", false, 20, true),
-                  createCell("System -> Gateway"),
-                  createCell("Payment Request & HMAC Hash"),
-                  createCell("Redirecting tenant to secure sandbox gateway with order info")
-                ]
-              }),
-              new TableRow({
-                children: [
-                  createCell("Payment Gateway"),
-                  createCell("Gateway -> System"),
-                  createCell("IPN Webhook & Payment Result"),
-                  createCell("Confirming settlement to automatically transition invoice to PAID")
-                ]
-              })
-            ]
-          }),
+          new Paragraph({ children: [new PageBreak()] }),
+
+          // 1.0.1 System Use Case Diagram (NEW!)
+          createHeading2("1.0.1 System Use Case Diagram (UML Use Case Model)"),
+          createBodyP("The System Use Case Diagram provides a comprehensive functional blueprint of the Motel Management System (MMS). It models the behavioral boundaries across five integrated subsystems: Authentication & User Management, Room Inventory & Rental, Rental Contract Management, Utility & Billing, and System Analytics. The diagram specifies all primary actor associations, inheritance hierarchies (Manager inherits all Staff capabilities), and inter-use-case dependencies (<<include>> and <<extend>>):"),
+
+          // INSERT FIGURE 0 USE CASE DIAGRAM IMAGE
+          ...createImageParagraph("Figure_0_System_UseCase_Diagram.png", 580, 435, "Figure 1.0.1. System Use Case Diagram"),
+
+          createBodyP("Summary of Key Use Case Relationships:"),
+          createBulletP("Manager generalizes (inherits) Staff, granting property owners full operational permissions while adding exclusive analytical, reporting, and staff provisioning controls.", "• Actor Inheritance: "),
+          createBulletP("Create Contract includes Manage Rooms to automatically synchronize room status to 'RENTED' upon lease execution.", "• <<include>> Dependency (Lease): "),
+          createBulletP("Pay Invoice via VNPay includes Process VNPay IPN to asynchronously verify merchant checksum and settle invoices upon banking confirmation.", "• <<include>> Dependency (Payment): "),
+          createBulletP("Request Rental extends Update Profile (KYC), enabling pre-verified tenants with validated citizen ID credentials to book rooms with one-touch efficiency.", "• <<extend>> Dependency (KYC): "),
 
           new Paragraph({ children: [new PageBreak()] }),
 
