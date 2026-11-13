@@ -1,197 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
   <diagram name="UC-M03 Request Rental" id="uc-m03-request-rental">
-    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1300" math="0" shadow="0">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1300" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- Actor -->
         <mxCell id="lf_actor" value="Customer" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="50" y="40" width="30" height="1150" as="geometry"/>
+          <mxGeometry x="55" y="40" width="30" height="1150" as="geometry"/>
         </mxCell>
         <mxCell id="lf_0" value="&amp;laquo;user interaction&amp;raquo;&lt;br&gt;&lt;b&gt;Rental Booking View&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="140" y="40" width="160" height="1150" as="geometry"/>
+          <mxGeometry x="150" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
         <mxCell id="lf_1" value="&amp;laquo;control&amp;raquo;&lt;br&gt;&lt;b&gt;RoomController&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="330" y="40" width="160" height="1150" as="geometry"/>
+          <mxGeometry x="360" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
         <mxCell id="lf_2" value="&amp;laquo;service&amp;raquo;&lt;br&gt;&lt;b&gt;RoomService&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="520" y="40" width="160" height="1150" as="geometry"/>
+          <mxGeometry x="590" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
-        <mxCell id="lf_3" value="&amp;laquo;repository&amp;raquo;&lt;br&gt;&lt;b&gt;RoomRepository&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="710" y="40" width="160" height="1150" as="geometry"/>
+        <mxCell id="lf_3" value="&amp;laquo;model&amp;raquo;&lt;br&gt;&lt;b&gt;Room&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="830" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
-        <mxCell id="lf_4" value="&amp;laquo;repository&amp;raquo;&lt;br&gt;&lt;b&gt;RentalRequestRepository&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="910" y="40" width="160" height="1150" as="geometry"/>
+        <mxCell id="lf_4" value="&amp;laquo;model&amp;raquo;&lt;br&gt;&lt;b&gt;RentalRequest&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
-        <mxCell id="lf_5" value="&amp;laquo;model&amp;raquo;&lt;br&gt;&lt;b&gt;Room&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="1110" y="40" width="160" height="1150" as="geometry"/>
-        </mxCell>
-        <mxCell id="lf_6" value="&amp;laquo;model&amp;raquo;&lt;br&gt;&lt;b&gt;RentalRequest&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="1310" y="40" width="160" height="1150" as="geometry"/>
-        </mxCell>
-        <mxCell id="lf_7" value="&amp;laquo;database&amp;raquo;&lt;br&gt;&lt;b&gt;MongoDB&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
-          <mxGeometry x="1510" y="40" width="160" height="1150" as="geometry"/>
+        <mxCell id="lf_5" value="&amp;laquo;database&amp;raquo;&lt;br&gt;&lt;b&gt;MongoDB&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
         <mxCell id="msg_0" value="1: requestRentalBooking(roomId, checkIn, checkOut)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="65" y="130" as="sourcePoint"/>
-            <mxPoint x="220" y="130" as="targetPoint"/>
+            <mxPoint x="70" y="130" as="sourcePoint"/>
+            <mxPoint x="230" y="130" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="msg_1" value="2: POST /api/rooms/rental-booking" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="220" y="170" as="sourcePoint"/>
-            <mxPoint x="410" y="170" as="targetPoint"/>
+            <mxPoint x="230" y="170" as="sourcePoint"/>
+            <mxPoint x="440" y="170" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="msg_2" value="3: checkRoomAvailable(roomId, checkIn, checkOut)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="410" y="210" as="sourcePoint"/>
-            <mxPoint x="600" y="210" as="targetPoint"/>
+            <mxPoint x="440" y="210" as="sourcePoint"/>
+            <mxPoint x="670" y="210" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="msg_3" value="4: findById(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="600" y="250" as="sourcePoint"/>
-            <mxPoint x="790" y="250" as="targetPoint"/>
+            <mxPoint x="670" y="250" as="sourcePoint"/>
+            <mxPoint x="910" y="250" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_4" value="5: findById(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_4" value="5: db.rooms.findOne({ _id: roomId })" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="790" y="290" as="sourcePoint"/>
-            <mxPoint x="1190" y="290" as="targetPoint"/>
+            <mxPoint x="910" y="290" as="sourcePoint"/>
+            <mxPoint x="1400" y="290" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_5" value="6: db.rooms.findOne({ _id: roomId })" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_5" value="6: room document (BSON)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1190" y="320" as="sourcePoint"/>
-            <mxPoint x="1590" y="320" as="targetPoint"/>
+            <mxPoint x="1400" y="320" as="sourcePoint"/>
+            <mxPoint x="910" y="320" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_6" value="7: room document" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_6" value="7: Room entity instance" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1590" y="350" as="sourcePoint"/>
-            <mxPoint x="1190" y="350" as="targetPoint"/>
+            <mxPoint x="910" y="350" as="sourcePoint"/>
+            <mxPoint x="670" y="350" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_7" value="8: Room entity instance" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_7" value="8: available = true" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1190" y="370" as="sourcePoint"/>
-            <mxPoint x="790" y="370" as="targetPoint"/>
+            <mxPoint x="670" y="440" as="sourcePoint"/>
+            <mxPoint x="440" y="440" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_8" value="9: return room" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_8" value="9: generateNewBooking(customerId, roomId, checkIn, checkOut)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="790" y="390" as="sourcePoint"/>
-            <mxPoint x="600" y="390" as="targetPoint"/>
+            <mxPoint x="440" y="480" as="sourcePoint"/>
+            <mxPoint x="670" y="480" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_9" value="10: available = true" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_9" value="10: «create» new RentalRequest(dto, PENDING)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="600" y="440" as="sourcePoint"/>
-            <mxPoint x="410" y="440" as="targetPoint"/>
+            <mxPoint x="670" y="520" as="sourcePoint"/>
+            <mxPoint x="1150" y="520" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_10" value="11: generateNewBooking(customerId, roomId, checkIn, checkOut)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_10" value="11: db.rentalRequests.insertOne(requestDoc)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="410" y="480" as="sourcePoint"/>
-            <mxPoint x="600" y="480" as="targetPoint"/>
+            <mxPoint x="1150" y="560" as="sourcePoint"/>
+            <mxPoint x="1400" y="560" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_11" value="12: createRentalRequest(dto)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_11" value="12: inserted ack with _id" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="600" y="520" as="sourcePoint"/>
-            <mxPoint x="990" y="520" as="targetPoint"/>
+            <mxPoint x="1400" y="590" as="sourcePoint"/>
+            <mxPoint x="1150" y="590" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_12" value="13: «create» new RentalRequest(dto, PENDING)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_12" value="13: saved RentalRequest entity" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="990" y="550" as="sourcePoint"/>
-            <mxPoint x="1390" y="550" as="targetPoint"/>
+            <mxPoint x="1150" y="620" as="sourcePoint"/>
+            <mxPoint x="670" y="620" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_13" value="14: db.rentalRequests.insertOne(requestDoc)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_13" value="14: updateStatus(roomId, RESERVED)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1390" y="590" as="sourcePoint"/>
-            <mxPoint x="1590" y="590" as="targetPoint"/>
+            <mxPoint x="670" y="660" as="sourcePoint"/>
+            <mxPoint x="910" y="660" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_14" value="15: inserted acknowledge &amp; _id" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_14" value="15: db.rooms.updateOne({ _id: roomId }, { $set: { status: RESERVED } })" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1590" y="620" as="sourcePoint"/>
-            <mxPoint x="1390" y="620" as="targetPoint"/>
+            <mxPoint x="910" y="700" as="sourcePoint"/>
+            <mxPoint x="1400" y="700" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_15" value="16: RentalRequest saved entity" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_15" value="16: update response OK" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1390" y="650" as="sourcePoint"/>
-            <mxPoint x="990" y="650" as="targetPoint"/>
+            <mxPoint x="1400" y="730" as="sourcePoint"/>
+            <mxPoint x="910" y="730" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_16" value="17: updateRoomStatus(roomId, RESERVED)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_16" value="17: confirmBooking(trackingId)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="600" y="690" as="sourcePoint"/>
-            <mxPoint x="790" y="690" as="targetPoint"/>
+            <mxPoint x="440" y="770" as="sourcePoint"/>
+            <mxPoint x="230" y="770" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_17" value="18: db.rooms.updateOne({ _id: roomId }, { $set: { status: RESERVED } })" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_17" value="18: Rental Booking Confirmed" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="790" y="730" as="sourcePoint"/>
-            <mxPoint x="1590" y="730" as="targetPoint"/>
+            <mxPoint x="230" y="800" as="sourcePoint"/>
+            <mxPoint x="70" y="800" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_18" value="19: update response OK" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_18" value="19: available = false" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1590" y="760" as="sourcePoint"/>
-            <mxPoint x="790" y="760" as="targetPoint"/>
+            <mxPoint x="670" y="900" as="sourcePoint"/>
+            <mxPoint x="440" y="900" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_19" value="20: confirmBooking(trackingId)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_19" value="20: 400 Bad Request (&quot;Room is unavailable&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="410" y="800" as="sourcePoint"/>
-            <mxPoint x="220" y="800" as="targetPoint"/>
+            <mxPoint x="440" y="940" as="sourcePoint"/>
+            <mxPoint x="230" y="940" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_20" value="21: Rental Booking Confirmed" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_20" value="21: showBookingErrorToast(&quot;Room not available&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="220" y="830" as="sourcePoint"/>
-            <mxPoint x="65" y="830" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_21" value="22: available = false" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="600" y="920" as="sourcePoint"/>
-            <mxPoint x="410" y="920" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_22" value="23: 400 Bad Request (&quot;Room is unavailable&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="410" y="960" as="sourcePoint"/>
-            <mxPoint x="220" y="960" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_23" value="24: showBookingErrorToast(&quot;Room not available&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="220" y="1000" as="sourcePoint"/>
-            <mxPoint x="65" y="1000" as="targetPoint"/>
+            <mxPoint x="230" y="980" as="sourcePoint"/>
+            <mxPoint x="70" y="980" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="alt_frame" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="30" y="380" width="1680" height="680" as="geometry"/>
+          <mxGeometry x="35" y="380" width="1480" height="670" as="geometry"/>
         </mxCell>
         <mxCell id="lbl_guard_true" value="[available: room.status == AVAILABLE]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="410" width="220" height="20" as="geometry"/>
+          <mxGeometry x="45" y="410" width="240" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="alt_divider" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="30" y="870" as="sourcePoint"/>
-            <mxPoint x="1710" y="870" as="targetPoint"/>
+            <mxPoint x="35" y="860" as="sourcePoint"/>
+            <mxPoint x="1515" y="860" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="lbl_guard_false" value="[unavailable: room.status != AVAILABLE]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="880" width="220" height="20" as="geometry"/>
+          <mxGeometry x="45" y="870" width="240" height="20" as="geometry"/>
         </mxCell>
       </root>
     </mxGraphModel>

@@ -320,27 +320,23 @@ The Class Diagram for Module 2 adopts the enterprise Repository and Service arch
 ![Figure 2.2.2. Search & Filter Rooms Sequence Diagram](./diagram_images/Figure_2_2_2_Search_Room_Sequence.png)
 
 - **Actor:** Customer / Tenant.
-- **Lifelines:** `Customer` -> `«user interaction» Room Search View` -> `«control» RoomController` -> `«service» RoomService` -> `«repository» RoomRepository` -> `«model» Room` -> `«database» MongoDB`.
+- **Lifelines:** `Customer` -> `«user interaction» Room Search View` -> `«control» RoomController` -> `«service» RoomService` -> `«model» Room` -> `«database» MongoDB`.
 - **Step-by-step Flow:**
   1. `1: enterSearchCriteria(keyword, priceMin, priceMax, roomType)` into Room Search View.
   2. `2: GET /api/rooms/search?keyword=...&priceMin=...` sent to RoomController.
   3. `3: searchRoom(searchCriteria)` forwarded to RoomService.
-  4. `4: findAvailableRoom(criteria)` called on RoomRepository.
-  5. `5: find(queryCriteria)` invoked on Room Model.
-  6. `6: db.rooms.find({ status: AVAILABLE, price: { $gte, $lte } })` executed against MongoDB.
-  7. `7: room documents cursor` returned from MongoDB to Room Model.
-  8. `8: List<Room> hydrated entities` instantiated and returned to RoomRepository.
-  9. `9: return List<Room>` passed to RoomService.
-  10. `alt [rooms.size() > 0]`:
-      - `10: hasResults = true`
-      - `11: formatRoomCards(rooms)`
-      - `12: return 200 OK (rooms array)`
-      - `13: renderRoomList(rooms)`
-      - `14: displayRoomCards(results)`
-  11. `alt [rooms.isEmpty()]`:
-      - `15: hasResults = false`
-      - `16: return 200 OK (empty array)`
-      - `17: displayEmptyPlaceholder("No matching rooms found")`
+  4. `4: find(queryCriteria)` invoked on Room Model.
+  5. `5: db.rooms.find({ status: AVAILABLE, price: { $gte, $lte } })` executed against MongoDB.
+  6. `6: room documents cursor` returned from MongoDB to Room Model.
+  7. `7: List<Room> hydrated entities` instantiated and returned directly to RoomService.
+  8. `alt [rooms.length > 0 (Results Found)]`:
+     - `8: return 200 OK (List<Room>)`
+     - `9: renderRoomResults(roomList)`
+     - `10: displaySearchResults(roomCards)`
+  9. `alt [rooms.length == 0 (No Matches)]`:
+     - `11: return 200 OK (empty list [])`
+     - `12: renderEmptyState()`
+     - `13: displayNoResultsFoundMessage()`
 
 ---
 
@@ -351,34 +347,33 @@ The Class Diagram for Module 2 adopts the enterprise Repository and Service arch
 ![Figure 2.2.3. Request Rental / Booking Sequence Diagram](./diagram_images/Figure_2_2_3_Request_Rental_Sequence.png)
 
 - **Actor:** Customer / Tenant.
-- **Lifelines:** `Customer` -> `«user interaction» Rental Booking View` -> `«control» RoomController` -> `«service» RoomService` -> `«repository» RoomRepository` -> `«repository» RentalRequestRepo` -> `«model» Room` -> `«model» RentalRequest` -> `«database» MongoDB`.
+- **Lifelines:** `Customer` -> `«user interaction» Rental Booking View` -> `«control» RoomController` -> `«service» RoomService` -> `«model» Room` -> `«model» RentalRequest` -> `«database» MongoDB`.
 - **Step-by-step Flow:**
   1. `1: requestRentalBooking(roomId, checkIn, checkOut)` submitted on Rental Booking View.
   2. `2: POST /api/rooms/rental-booking` sent to RoomController.
   3. `3: checkRoomAvailable(roomId, checkIn, checkOut)` validated by RoomService.
-  4. `4: findById(roomId)` called on RoomRepository.
-  5. `5: findById(roomId)` called on Room Model.
-  6. `6: db.rooms.findOne({ _id: roomId })` executed against MongoDB.
-  7. `7: room document (BSON)` returned from MongoDB to Room Model.
-  8. `8: Room hydrated entity` returned to RoomRepository.
-  9. `9: return Room` passed to RoomService.
-  10. `alt [available: room.status == AVAILABLE]`:
-      - `10: available = true`
-      - `11: generateNewBooking(customerId, roomId, checkIn, checkOut)`
-      - `12: createRentalRequest(dto)` dispatched to RentalRequestRepo
-      - `13: «create» new RentalRequest(dto, PENDING)` on RentalRequest Model
-      - `14: db.rentalRequests.insertOne(requestDoc)` executed in MongoDB
-      - `15: inserted ack with _id` returned by MongoDB
-      - `16: saved RentalRequest` entity returned to RentalRequestRepo
-      - `17: updateRoomStatus(roomId, RESERVED)` requested on RoomRepository
-      - `18: db.rooms.updateOne({ _id: roomId }, { $set: { status: RESERVED } })` executed in MongoDB
-      - `19: update response OK` acknowledged by MongoDB
-      - `20: confirmBooking(trackingId)` returned to UI
-      - `21: Rental Booking Confirmed` displayed to Customer.
-  11. `alt [unavailable: room.status != AVAILABLE]`:
-      - `22: available = false`
-      - `23: 400 Bad Request ("Room is unavailable")`
-      - `24: showBookingErrorToast("Room not available")`
+  4. `4: findById(roomId)` called on Room Model.
+  5. `5: db.rooms.findOne({ _id: roomId })` executed against MongoDB.
+  6. `6: room document (BSON)` returned from MongoDB to Room Model.
+  7. `7: Room hydrated entity` returned directly to RoomService.
+  8. `alt [available: room.status == AVAILABLE]`:
+     - `8: available = true`
+     - `9: generateNewBooking(customerId, roomId, checkIn, checkOut)`
+     - `10: «create» new RentalRequest(dto, PENDING)` on RentalRequest Model
+     - `11: db.rentalRequests.insertOne(requestDoc)` executed in MongoDB
+     - `12: inserted ack with _id` returned by MongoDB
+     - `13: saved RentalRequest entity` returned to RoomService
+     - `14: updateStatus(roomId, RESERVED)` requested on Room Model
+     - `15: db.rooms.updateOne({ _id: roomId }, { $set: { status: RESERVED } })` executed in MongoDB
+     - `16: update response OK` acknowledged by MongoDB
+     - `17: updated Room entity` returned to RoomService
+     - `18: return 201 Created (RentalRequest)`
+     - `19: confirmBooking(trackingId)` returned to UI
+     - `20: Rental Booking Confirmed` displayed to Customer.
+  9. `alt [unavailable: room.status != AVAILABLE]`:
+     - `21: available = false`
+     - `22: 400 Bad Request ("Room is unavailable")`
+     - `23: showBookingErrorToast("Room not available")`
 
 ---
 
@@ -389,30 +384,28 @@ The Class Diagram for Module 2 adopts the enterprise Repository and Service arch
 ![Figure 2.2.4. Create Room Sequence Diagram](./diagram_images/Figure_2_2_4_Create_Room_Sequence.png)
 
 - **Actor:** Staff / Property Manager.
-- **Lifelines:** `Staff` -> `«user interaction» Create Room View` -> `«control» RoomController` -> `«service» RoomService` -> `«repository» RoomRepository` -> `«model» Room` -> `«database» MongoDB`.
+- **Lifelines:** `Staff` -> `«user interaction» Create Room View` -> `«control» RoomController` -> `«service» RoomService` -> `«model» Room` -> `«database» MongoDB`.
 - **Step-by-step Flow:**
   1. `1: inputRoomDetails(roomNumber, type, price, area)` on Create Room View.
   2. `2: POST /api/rooms` sent to RoomController.
-  3. `3: createRoom(createRoomDTO)` delegated to RoomService.
-  4. `4: findByRoomNumber(roomNumber)` called on RoomRepository.
-  5. `5: findOne({ roomNumber })` checked via Room Model.
-  6. `6: db.rooms.findOne({ roomNumber })` executed in MongoDB.
-  7. `7: null or existing document` returned from MongoDB.
-  8. `8: return existingRoom` passed to RoomService.
-  9. `alt [existingRoom == null (Unique)]`:
-      - `9: isValid = true`
-      - `10: «create» new Room(roomNumber, type, price, AVAILABLE)` on Room Model
-      - `11: save(newRoom)` requested on RoomRepository
-      - `12: db.rooms.insertOne(newRoomDoc)` executed in MongoDB
-      - `13: inserted ack with _id` confirmed by MongoDB
-      - `14: saved Room entity` returned
-      - `15: return 201 Created (Room)`
-      - `16: displaySuccessToast("Room created successfully")`
-      - `17: showRoomCreated()`
-  10. `alt [existingRoom != null (Duplicate)]`:
-      - `18: isValid = false`
-      - `19: return 409 Conflict ("Room number already exists")`
-      - `20: displayValidationError("Duplicate room number")`
+  3. `3: createRoom(createRoomDTO)` validated by RoomService.
+  4. `4: findOne({ roomNumber })` called directly on Room Model.
+  5. `5: db.rooms.findOne({ roomNumber })` executed in MongoDB.
+  6. `6: null or existing document` returned to Room Model.
+  7. `7: return existingRoom` returned to RoomService.
+  8. `alt [existingRoom == null (Unique)]`:
+     - `8: isValid = true`
+     - `9: «create» new Room(roomNumber, type, price, AVAILABLE)` on Room Model
+     - `10: db.rooms.insertOne(newRoomDoc)` executed in MongoDB
+     - `11: inserted ack with _id` returned by MongoDB
+     - `12: saved Room entity` acknowledged to RoomService
+     - `13: return 201 Created (Room)` sent to RoomController
+     - `14: displaySuccessToast("Room created successfully")`
+     - `15: showRoomCreated()`
+  9. `alt [existingRoom != null (Duplicate)]`:
+     - `16: isValid = false`
+     - `17: return 409 Conflict ("Room number already exists")`
+     - `18: displayValidationError("Duplicate room number")`
 
 ---
 
@@ -423,30 +416,28 @@ The Class Diagram for Module 2 adopts the enterprise Repository and Service arch
 ![Figure 2.2.5. Update Room Info Sequence Diagram](./diagram_images/Figure_2_2_5_Update_Room_Sequence.png)
 
 - **Actor:** Staff / Property Manager.
-- **Lifelines:** `Staff` -> `«user interaction» Edit Room View` -> `«control» RoomController` -> `«service» RoomService` -> `«repository» RoomRepository` -> `«model» Room` -> `«database» MongoDB`.
+- **Lifelines:** `Staff` -> `«user interaction» Edit Room View` -> `«control» RoomController` -> `«service» RoomService` -> `«model» Room` -> `«database» MongoDB`.
 - **Step-by-step Flow:**
-  1. `1: modifyRoomInfo(roomId, newPrice, newType, newStatus)` submitted on Edit Room View.
+  1. `1: modifyRoomInfo(roomId, newPrice, newType, newStatus)` on Edit Room View.
   2. `2: PUT /api/rooms/{id}` dispatched to RoomController.
-  3. `3: updateRoom(roomId, updateRoomDTO)` delegated to RoomService.
-  4. `4: findById(roomId)` called on RoomRepository.
-  5. `5: findById(roomId)` called on Room Model.
-  6. `6: db.rooms.findById(roomId)` executed in MongoDB.
-  7. `7: room document` returned from MongoDB.
-  8. `8: Room entity instance` returned to RoomRepository and Service.
-  9. `alt [room != null]`:
-      - `9: isFound = true`
-      - `10: updateAttributes(price, type, status)` on Room Model
-      - `11: save(room)` via RoomRepository
-      - `12: db.rooms.updateOne({ _id: roomId }, { $set: updateFields })` executed in MongoDB
-      - `13: update acknowledgment` returned by MongoDB
-      - `14: updated Room entity` returned
-      - `15: return 200 OK (updatedRoom)`
-      - `16: displaySuccessToast("Room updated successfully")`
-      - `17: showUpdatedRoomDetails()`
-  10. `alt [room == null]`:
-      - `18: isFound = false`
-      - `19: return 404 Not Found ("Room does not exist")`
-      - `20: displayErrorMessage("Room not found")`
+  3. `3: updateRoom(roomId, updateRoomDTO)` forwarded to RoomService.
+  4. `4: findById(roomId)` called on Room Model.
+  5. `5: db.rooms.findById(roomId)` executed against MongoDB.
+  6. `6: room document` returned from MongoDB.
+  7. `7: Room entity instance` returned directly to RoomService.
+  8. `alt [room != null]`:
+     - `8: isFound = true`
+     - `9: updateAttributes(price, type, status)`
+     - `10: db.rooms.updateOne({ _id: roomId }, { $set: updateFields })` executed in MongoDB
+     - `11: update acknowledgment` returned by MongoDB
+     - `12: updated Room entity` returned to RoomService
+     - `13: return 200 OK (updatedRoom)` sent to RoomController
+     - `14: displaySuccessToast("Room updated successfully")`
+     - `15: showUpdatedRoomDetails()`
+  9. `alt [room == null]`:
+     - `16: isFound = false`
+     - `17: return 404 Not Found ("Room does not exist")`
+     - `18: displayErrorMessage("Room not found")`
 
 ---
 
@@ -457,50 +448,28 @@ The Class Diagram for Module 2 adopts the enterprise Repository and Service arch
 ![Figure 2.2.6. Delete Room Sequence Diagram](./diagram_images/Figure_2_2_6_Delete_Room_Sequence.png)
 
 - **Actor:** Staff / Property Manager.
-- **Lifelines:** `Staff` -> `«user interaction» Room List View` -> `«control» RoomController` -> `«service» RoomService` -> `«repository» RoomRepository` -> `«model» Room` -> `«database» MongoDB`.
+- **Lifelines:** `Staff` -> `«user interaction» Room List View` -> `«control» RoomController` -> `«service» RoomService` -> `«model» Room` -> `«database» MongoDB`.
 - **Step-by-step Flow:**
   1. `1: requestDeleteRoom(roomId)` clicked on Room List View.
-  2. `2: DELETE /api/rooms/{id}` dispatched to RoomController.
-  3. `3: deleteRoom(roomId)` delegated to RoomService.
-  4. `4: findById(roomId)` called on RoomRepository.
-  5. `5: findById(roomId)` on Room Model.
-  6. `6: db.rooms.findById(roomId)` executed in MongoDB.
-  7. `7: room document with status` returned from MongoDB.
-  8. `8: Room entity instance` returned to RoomRepository and Service.
-  9. `alt [room.status != RENTED]`:
-      - `9: canDelete = true`
-      - `10: deleteById(roomId)` on RoomRepository
-      - `11: db.rooms.deleteOne({ _id: roomId })` executed in MongoDB
-      - `12: delete result { deletedCount: 1 }` confirmed by MongoDB
-      - `13: return deleteStatus = true`
-      - `14: return 200 OK ("Room deleted successfully")`
-      - `15: refreshRoomTable("Room deleted")`
-      - `16: displayDeleteConfirmation()`
-  10. `alt [room.status == RENTED]`:
-      - `17: canDelete = false`
-      - `18: return 400 Bad Request ("Cannot delete occupied room under lease")`
-      - `19: displayWarningAlert("Cannot delete room currently rented")`
-
----
-- **Step-by-step Flow:**
-  1. `1: requestDeleteRoom(roomId)` clicked on Room List View.
-  2. `2: DELETE /api/rooms/{id}` dispatched to RoomController.
-  3. `3: deleteRoom(roomId)` delegated to RoomService.
-  4. `4: findById(roomId)` called on RoomRepository.
-  5. `5: load(roomId)` checked on database.
-  6. `6: Room entity` returned.
-  7. `7: return room` to RoomService.
+  2. `2: DELETE /api/rooms/{id}` sent to RoomController.
+  3. `3: deleteRoom(roomId)` requested from RoomService.
+  4. `4: findById(roomId)` called directly on Room Model.
+  5. `5: db.rooms.findById(roomId)` executed in MongoDB.
+  6. `6: room document with status` returned to Room Model.
+  7. `7: Room entity instance` returned directly to RoomService.
   8. `alt [room.status != RENTED]`:
      - `8: canDelete = true`
-     - `9: deleteById(roomId)` on RoomRepository
-     - `10: confirm delete`
-     - `11: return 200 OK ("Room deleted successfully")`
-     - `12: refreshRoomTable("Room deleted")`
-     - `13: displayDeleteConfirmation()`
+     - `9: deleteById(roomId)` called on Room Model
+     - `10: db.rooms.deleteOne({ _id: roomId })` executed in MongoDB
+     - `11: delete result { deletedCount: 1 }` returned by MongoDB
+     - `12: return deleteStatus = true` passed to RoomService
+     - `13: return 200 OK ("Room deleted successfully")` sent to RoomController
+     - `14: refreshRoomTable("Room deleted")`
+     - `15: displayDeleteConfirmation()`
   9. `alt [room.status == RENTED]`:
-     - `14: canDelete = false`
-     - `15: return 400 Bad Request ("Cannot delete occupied room under lease")`
-     - `16: displayWarningAlert("Cannot delete room currently rented")`
+     - `16: canDelete = false`
+     - `17: return 400 Bad Request ("Cannot delete occupied room under lease")`
+     - `18: displayWarningAlert("Cannot delete room currently rented")`
 
 ---
 

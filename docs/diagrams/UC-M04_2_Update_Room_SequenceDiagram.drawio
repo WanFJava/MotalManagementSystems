@@ -1,167 +1,152 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
   <diagram name="UC-M04.2 Update Room" id="uc-m04-2-update-room">
-    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1300" math="0" shadow="0">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1300" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- Actor -->
         <mxCell id="lf_actor" value="Staff" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="50" y="40" width="30" height="1150" as="geometry"/>
+          <mxGeometry x="55" y="40" width="30" height="1150" as="geometry"/>
         </mxCell>
         <mxCell id="lf_0" value="&amp;laquo;user interaction&amp;raquo;&lt;br&gt;&lt;b&gt;Edit Room View&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="170" y="40" width="160" height="1150" as="geometry"/>
+          <mxGeometry x="180" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
         <mxCell id="lf_1" value="&amp;laquo;control&amp;raquo;&lt;br&gt;&lt;b&gt;RoomController&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="420" y="40" width="160" height="1150" as="geometry"/>
+          <mxGeometry x="440" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
         <mxCell id="lf_2" value="&amp;laquo;service&amp;raquo;&lt;br&gt;&lt;b&gt;RoomService&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="670" y="40" width="160" height="1150" as="geometry"/>
+          <mxGeometry x="700" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
-        <mxCell id="lf_3" value="&amp;laquo;repository&amp;raquo;&lt;br&gt;&lt;b&gt;RoomRepository&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="920" y="40" width="160" height="1150" as="geometry"/>
+        <mxCell id="lf_3" value="&amp;laquo;model&amp;raquo;&lt;br&gt;&lt;b&gt;Room&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="960" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
-        <mxCell id="lf_4" value="&amp;laquo;model&amp;raquo;&lt;br&gt;&lt;b&gt;Room&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="1170" y="40" width="160" height="1150" as="geometry"/>
-        </mxCell>
-        <mxCell id="lf_5" value="&amp;laquo;database&amp;raquo;&lt;br&gt;&lt;b&gt;MongoDB&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
-          <mxGeometry x="1420" y="40" width="160" height="1150" as="geometry"/>
+        <mxCell id="lf_4" value="&amp;laquo;database&amp;raquo;&lt;br&gt;&lt;b&gt;MongoDB&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
         <mxCell id="msg_0" value="1: modifyRoomInfo(roomId, newPrice, newType, newStatus)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="65" y="130" as="sourcePoint"/>
-            <mxPoint x="250" y="130" as="targetPoint"/>
+            <mxPoint x="70" y="130" as="sourcePoint"/>
+            <mxPoint x="260" y="130" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="msg_1" value="2: PUT /api/rooms/{id}" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="250" y="170" as="sourcePoint"/>
-            <mxPoint x="500" y="170" as="targetPoint"/>
+            <mxPoint x="260" y="170" as="sourcePoint"/>
+            <mxPoint x="520" y="170" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="msg_2" value="3: updateRoom(roomId, updateRoomDTO)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="500" y="210" as="sourcePoint"/>
-            <mxPoint x="750" y="210" as="targetPoint"/>
+            <mxPoint x="520" y="210" as="sourcePoint"/>
+            <mxPoint x="780" y="210" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="msg_3" value="4: findById(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="750" y="250" as="sourcePoint"/>
-            <mxPoint x="1000" y="250" as="targetPoint"/>
+            <mxPoint x="780" y="250" as="sourcePoint"/>
+            <mxPoint x="1040" y="250" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_4" value="5: findById(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_4" value="5: db.rooms.findById(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1000" y="290" as="sourcePoint"/>
-            <mxPoint x="1250" y="290" as="targetPoint"/>
+            <mxPoint x="1040" y="290" as="sourcePoint"/>
+            <mxPoint x="1300" y="290" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_5" value="6: db.rooms.findById(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_5" value="6: room document" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1250" y="320" as="sourcePoint"/>
-            <mxPoint x="1500" y="320" as="targetPoint"/>
+            <mxPoint x="1300" y="320" as="sourcePoint"/>
+            <mxPoint x="1040" y="320" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_6" value="7: room document" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_6" value="7: Room entity instance" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1500" y="350" as="sourcePoint"/>
-            <mxPoint x="1250" y="350" as="targetPoint"/>
+            <mxPoint x="1040" y="350" as="sourcePoint"/>
+            <mxPoint x="780" y="350" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_7" value="8: Room entity instance" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_7" value="8: isFound = true" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1250" y="380" as="sourcePoint"/>
-            <mxPoint x="750" y="380" as="targetPoint"/>
+            <mxPoint x="780" y="440" as="sourcePoint"/>
+            <mxPoint x="520" y="440" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_8" value="9: isFound = true" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_8" value="9: updateAttributes(price, type, status)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="750" y="440" as="sourcePoint"/>
-            <mxPoint x="500" y="440" as="targetPoint"/>
+            <mxPoint x="780" y="480" as="sourcePoint"/>
+            <mxPoint x="1040" y="480" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_9" value="10: updateAttributes(price, type, status)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_9" value="10: db.rooms.updateOne({ _id: roomId }, { $set: updateFields })" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="750" y="480" as="sourcePoint"/>
-            <mxPoint x="1250" y="480" as="targetPoint"/>
+            <mxPoint x="1040" y="520" as="sourcePoint"/>
+            <mxPoint x="1300" y="520" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_10" value="11: save(room)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_10" value="11: update acknowledgment" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="750" y="520" as="sourcePoint"/>
-            <mxPoint x="1000" y="520" as="targetPoint"/>
+            <mxPoint x="1300" y="550" as="sourcePoint"/>
+            <mxPoint x="1040" y="550" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_11" value="12: db.rooms.updateOne({ _id: roomId }, { $set: updateFields })" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_11" value="12: updated Room entity" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1000" y="560" as="sourcePoint"/>
-            <mxPoint x="1500" y="560" as="targetPoint"/>
+            <mxPoint x="1040" y="580" as="sourcePoint"/>
+            <mxPoint x="780" y="580" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_12" value="13: update acknowledgment" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_12" value="13: return 200 OK (updatedRoom)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1500" y="590" as="sourcePoint"/>
-            <mxPoint x="1000" y="590" as="targetPoint"/>
+            <mxPoint x="780" y="610" as="sourcePoint"/>
+            <mxPoint x="520" y="610" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_13" value="14: updated Room entity" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_13" value="14: displaySuccessToast(&quot;Room updated successfully&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1000" y="620" as="sourcePoint"/>
-            <mxPoint x="750" y="620" as="targetPoint"/>
+            <mxPoint x="520" y="640" as="sourcePoint"/>
+            <mxPoint x="260" y="640" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_14" value="15: return 200 OK (updatedRoom)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_14" value="15: showUpdatedRoomDetails()" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="750" y="650" as="sourcePoint"/>
-            <mxPoint x="500" y="650" as="targetPoint"/>
+            <mxPoint x="260" y="670" as="sourcePoint"/>
+            <mxPoint x="70" y="670" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_15" value="16: displaySuccessToast(&quot;Room updated successfully&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_15" value="16: isFound = false" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="500" y="690" as="sourcePoint"/>
-            <mxPoint x="250" y="690" as="targetPoint"/>
+            <mxPoint x="780" y="900" as="sourcePoint"/>
+            <mxPoint x="520" y="900" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_16" value="17: showUpdatedRoomDetails()" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_16" value="17: return 404 Not Found (&quot;Room does not exist&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="250" y="730" as="sourcePoint"/>
-            <mxPoint x="65" y="730" as="targetPoint"/>
+            <mxPoint x="520" y="940" as="sourcePoint"/>
+            <mxPoint x="260" y="940" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="msg_17" value="18: isFound = false" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_17" value="18: displayErrorMessage(&quot;Room not found&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="750" y="920" as="sourcePoint"/>
-            <mxPoint x="500" y="920" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_18" value="19: return 404 Not Found (&quot;Room does not exist&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="500" y="960" as="sourcePoint"/>
-            <mxPoint x="250" y="960" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="msg_19" value="20: displayErrorMessage(&quot;Room not found&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="250" y="1000" as="sourcePoint"/>
-            <mxPoint x="65" y="1000" as="targetPoint"/>
+            <mxPoint x="260" y="980" as="sourcePoint"/>
+            <mxPoint x="70" y="980" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="alt_frame" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="30" y="380" width="1680" height="680" as="geometry"/>
+          <mxGeometry x="35" y="380" width="1480" height="670" as="geometry"/>
         </mxCell>
         <mxCell id="lbl_guard_true" value="[room != null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="410" width="220" height="20" as="geometry"/>
+          <mxGeometry x="45" y="410" width="240" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="alt_divider" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="30" y="870" as="sourcePoint"/>
-            <mxPoint x="1710" y="870" as="targetPoint"/>
+            <mxPoint x="35" y="860" as="sourcePoint"/>
+            <mxPoint x="1515" y="860" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="lbl_guard_false" value="[room == null]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="880" width="220" height="20" as="geometry"/>
+          <mxGeometry x="45" y="870" width="240" height="20" as="geometry"/>
         </mxCell>
       </root>
     </mxGraphModel>

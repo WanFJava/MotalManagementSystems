@@ -35,7 +35,7 @@ function saveDiagram(fileName, xmlContent) {
 }
 
 // -----------------------------------------------------------------------------
-// 1. CLASS DIAGRAM (Unchanged structure, cleanly aligned)
+// 1. CLASS DIAGRAM (Unchanged)
 // -----------------------------------------------------------------------------
 function generateClassDiagram() {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -144,20 +144,21 @@ function generateClassDiagram() {
 }
 
 // -----------------------------------------------------------------------------
-// Generic Sequence XML Builder with «model» and «database» MongoDB
+// Generic Sequence XML Builder: NO REPOSITORY
+// Lifelines: Actor -> «user interaction» UI -> «control» Controller -> «service» Service -> «model» Model -> «database» MongoDB
 // -----------------------------------------------------------------------------
 function buildSequenceXml(diagramName, diagramId, actorName, lifelines, altGuardTrue, altGuardFalse, messages) {
   let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
   <diagram name="${diagramName}" id="${diagramId}">
-    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1300" math="0" shadow="0">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1300" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- Actor -->
         <mxCell id="lf_actor" value="${actorName}" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="50" y="40" width="30" height="1150" as="geometry"/>
+          <mxGeometry x="55" y="40" width="30" height="1150" as="geometry"/>
         </mxCell>`;
 
   lifelines.forEach((ll, idx) => {
@@ -191,19 +192,19 @@ function buildSequenceXml(diagramName, diagramId, actorName, lifelines, altGuard
   if (altGuardTrue) {
     xml += `
         <mxCell id="alt_frame" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="30" y="380" width="1680" height="680" as="geometry"/>
+          <mxGeometry x="35" y="380" width="1480" height="670" as="geometry"/>
         </mxCell>
         <mxCell id="lbl_guard_true" value="[${escapeXml(altGuardTrue)}]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="410" width="220" height="20" as="geometry"/>
+          <mxGeometry x="45" y="410" width="240" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="alt_divider" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="30" y="870" as="sourcePoint"/>
-            <mxPoint x="1710" y="870" as="targetPoint"/>
+            <mxPoint x="35" y="860" as="sourcePoint"/>
+            <mxPoint x="1515" y="860" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="lbl_guard_false" value="[${escapeXml(altGuardFalse)}]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="880" width="220" height="20" as="geometry"/>
+          <mxGeometry x="45" y="870" width="240" height="20" as="geometry"/>
         </mxCell>`;
   }
 
@@ -218,49 +219,44 @@ function buildSequenceXml(diagramName, diagramId, actorName, lifelines, altGuard
 
 // -----------------------------------------------------------------------------
 // Sequence Diagram 1: UC-M03 Request Rental (Booking)
-// Lifelines: Customer -> UI -> Controller -> Service -> RoomRepo -> RentalRequestRepo -> Model: Room -> Model: RentalRequest -> Database: MongoDB
+// Lifelines: Customer -> UI -> Controller -> Service -> Model: Room -> Model: RentalRequest -> Database: MongoDB
 // -----------------------------------------------------------------------------
 function generateUCM03() {
   const lifelines = [
-    { x: 220, stereo: 'user interaction', name: 'Rental Booking View' },
-    { x: 410, stereo: 'control', name: 'RoomController' },
-    { x: 600, stereo: 'service', name: 'RoomService' },
-    { x: 790, stereo: 'repository', name: 'RoomRepository' },
-    { x: 990, stereo: 'repository', name: 'RentalRequestRepository' },
-    { x: 1190, stereo: 'model', name: 'Room' },
-    { x: 1390, stereo: 'model', name: 'RentalRequest' },
-    { x: 1590, stereo: 'database', name: 'MongoDB' }
+    { x: 230, stereo: 'user interaction', name: 'Rental Booking View' },
+    { x: 440, stereo: 'control', name: 'RoomController' },
+    { x: 670, stereo: 'service', name: 'RoomService' },
+    { x: 910, stereo: 'model', name: 'Room' },
+    { x: 1150, stereo: 'model', name: 'RentalRequest' },
+    { x: 1400, stereo: 'database', name: 'MongoDB' }
   ];
 
   const msgs = [
-    { num: '1', text: 'requestRentalBooking(roomId, checkIn, checkOut)', fromX: 65, toX: 220, y: 130 },
-    { num: '2', text: 'POST /api/rooms/rental-booking', fromX: 220, toX: 410, y: 170 },
-    { num: '3', text: 'checkRoomAvailable(roomId, checkIn, checkOut)', fromX: 410, toX: 600, y: 210 },
-    { num: '4', text: 'findById(roomId)', fromX: 600, toX: 790, y: 250 },
-    { num: '5', text: 'findById(roomId)', fromX: 790, toX: 1190, y: 290 },
-    { num: '6', text: 'db.rooms.findOne({ _id: roomId })', fromX: 1190, toX: 1590, y: 320 },
-    { num: '7', text: 'room document', fromX: 1590, toX: 1190, y: 350, isReturn: true },
-    { num: '8', text: 'Room entity instance', fromX: 1190, toX: 790, y: 370, isReturn: true },
-    { num: '9', text: 'return room', fromX: 790, toX: 600, y: 390, isReturn: true },
+    { num: '1', text: 'requestRentalBooking(roomId, checkIn, checkOut)', fromX: 70, toX: 230, y: 130 },
+    { num: '2', text: 'POST /api/rooms/rental-booking', fromX: 230, toX: 440, y: 170 },
+    { num: '3', text: 'checkRoomAvailable(roomId, checkIn, checkOut)', fromX: 440, toX: 670, y: 210 },
+    { num: '4', text: 'findById(roomId)', fromX: 670, toX: 910, y: 250 },
+    { num: '5', text: 'db.rooms.findOne({ _id: roomId })', fromX: 910, toX: 1400, y: 290 },
+    { num: '6', text: 'room document (BSON)', fromX: 1400, toX: 910, y: 320, isReturn: true },
+    { num: '7', text: 'Room entity instance', fromX: 910, toX: 670, y: 350, isReturn: true },
 
     // Alt [available: room.status == AVAILABLE]
-    { num: '10', text: 'available = true', fromX: 600, toX: 410, y: 440, isReturn: true },
-    { num: '11', text: 'generateNewBooking(customerId, roomId, checkIn, checkOut)', fromX: 410, toX: 600, y: 480 },
-    { num: '12', text: 'createRentalRequest(dto)', fromX: 600, toX: 990, y: 520 },
-    { num: '13', text: '«create» new RentalRequest(dto, PENDING)', fromX: 990, toX: 1390, y: 550, isCreate: true },
-    { num: '14', text: 'db.rentalRequests.insertOne(requestDoc)', fromX: 1390, toX: 1590, y: 590 },
-    { num: '15', text: 'inserted acknowledge & _id', fromX: 1590, toX: 1390, y: 620, isReturn: true },
-    { num: '16', text: 'RentalRequest saved entity', fromX: 1390, toX: 990, y: 650, isReturn: true },
-    { num: '17', text: 'updateRoomStatus(roomId, RESERVED)', fromX: 600, toX: 790, y: 690 },
-    { num: '18', text: 'db.rooms.updateOne({ _id: roomId }, { $set: { status: RESERVED } })', fromX: 790, toX: 1590, y: 730 },
-    { num: '19', text: 'update response OK', fromX: 1590, toX: 790, y: 760, isReturn: true },
-    { num: '20', text: 'confirmBooking(trackingId)', fromX: 410, toX: 220, y: 800, isReturn: true },
-    { num: '21', text: 'Rental Booking Confirmed', fromX: 220, toX: 65, y: 830, isReturn: true },
+    { num: '8', text: 'available = true', fromX: 670, toX: 440, y: 440, isReturn: true },
+    { num: '9', text: 'generateNewBooking(customerId, roomId, checkIn, checkOut)', fromX: 440, toX: 670, y: 480 },
+    { num: '10', text: '«create» new RentalRequest(dto, PENDING)', fromX: 670, toX: 1150, y: 520, isCreate: true },
+    { num: '11', text: 'db.rentalRequests.insertOne(requestDoc)', fromX: 1150, toX: 1400, y: 560 },
+    { num: '12', text: 'inserted ack with _id', fromX: 1400, toX: 1150, y: 590, isReturn: true },
+    { num: '13', text: 'saved RentalRequest entity', fromX: 1150, toX: 670, y: 620, isReturn: true },
+    { num: '14', text: 'updateStatus(roomId, RESERVED)', fromX: 670, toX: 910, y: 660 },
+    { num: '15', text: 'db.rooms.updateOne({ _id: roomId }, { $set: { status: RESERVED } })', fromX: 910, toX: 1400, y: 700 },
+    { num: '16', text: 'update response OK', fromX: 1400, toX: 910, y: 730, isReturn: true },
+    { num: '17', text: 'confirmBooking(trackingId)', fromX: 440, toX: 230, y: 770, isReturn: true },
+    { num: '18', text: 'Rental Booking Confirmed', fromX: 230, toX: 70, y: 800, isReturn: true },
 
     // Alt [unavailable: room.status != AVAILABLE]
-    { num: '22', text: 'available = false', fromX: 600, toX: 410, y: 920, isReturn: true },
-    { num: '23', text: '400 Bad Request ("Room is unavailable")', fromX: 410, toX: 220, y: 960, isReturn: true },
-    { num: '24', text: 'showBookingErrorToast("Room not available")', fromX: 220, toX: 65, y: 1000, isReturn: true }
+    { num: '19', text: 'available = false', fromX: 670, toX: 440, y: 900, isReturn: true },
+    { num: '20', text: '400 Bad Request ("Room is unavailable")', fromX: 440, toX: 230, y: 940, isReturn: true },
+    { num: '21', text: 'showBookingErrorToast("Room not available")', fromX: 230, toX: 70, y: 980, isReturn: true }
   ];
 
   const xml = buildSequenceXml(
@@ -278,40 +274,37 @@ function generateUCM03() {
 
 // -----------------------------------------------------------------------------
 // Sequence Diagram 2: UC-M02 Search & Filter Rooms
-// Lifelines: Customer -> UI -> Controller -> Service -> RoomRepo -> Model: Room -> Database: MongoDB
+// Lifelines: Customer -> UI -> Controller -> Service -> Model: Room -> Database: MongoDB
 // -----------------------------------------------------------------------------
 function generateUCM02() {
   const lifelines = [
-    { x: 250, stereo: 'user interaction', name: 'Room Search View' },
-    { x: 500, stereo: 'control', name: 'RoomController' },
-    { x: 750, stereo: 'service', name: 'RoomService' },
-    { x: 1000, stereo: 'repository', name: 'RoomRepository' },
-    { x: 1250, stereo: 'model', name: 'Room' },
-    { x: 1500, stereo: 'database', name: 'MongoDB' }
+    { x: 260, stereo: 'user interaction', name: 'Room Search View' },
+    { x: 520, stereo: 'control', name: 'RoomController' },
+    { x: 780, stereo: 'service', name: 'RoomService' },
+    { x: 1040, stereo: 'model', name: 'Room' },
+    { x: 1300, stereo: 'database', name: 'MongoDB' }
   ];
 
   const msgs = [
-    { num: '1', text: 'enterSearchCriteria(keyword, priceMin, priceMax, roomType)', fromX: 65, toX: 250, y: 130 },
-    { num: '2', text: 'GET /api/rooms/search?keyword=...&priceMin=...', fromX: 250, toX: 500, y: 170 },
-    { num: '3', text: 'searchRoom(searchCriteria)', fromX: 500, toX: 750, y: 210 },
-    { num: '4', text: 'findAvailableRoom(criteria)', fromX: 750, toX: 1000, y: 250 },
-    { num: '5', text: 'find(queryCriteria)', fromX: 1000, toX: 1250, y: 290 },
-    { num: '6', text: 'db.rooms.find({ status: AVAILABLE, price: { $gte, $lte } })', fromX: 1250, toX: 1500, y: 320 },
-    { num: '7', text: 'room documents cursor', fromX: 1500, toX: 1250, y: 350, isReturn: true },
-    { num: '8', text: 'List<Room> hydrated entities', fromX: 1250, toX: 1000, y: 370, isReturn: true },
-    { num: '9', text: 'return List<Room>', fromX: 1000, toX: 750, y: 390, isReturn: true },
+    { num: '1', text: 'enterSearchCriteria(keyword, priceMin, priceMax, roomType)', fromX: 70, toX: 260, y: 130 },
+    { num: '2', text: 'GET /api/rooms/search?keyword=...&priceMin=...', fromX: 260, toX: 520, y: 170 },
+    { num: '3', text: 'searchRoom(searchCriteria)', fromX: 520, toX: 780, y: 210 },
+    { num: '4', text: 'find(queryCriteria)', fromX: 780, toX: 1040, y: 250 },
+    { num: '5', text: 'db.rooms.find({ status: AVAILABLE, price: { $gte, $lte } })', fromX: 1040, toX: 1300, y: 290 },
+    { num: '6', text: 'room documents cursor (BSON)', fromX: 1300, toX: 1040, y: 320, isReturn: true },
+    { num: '7', text: 'List<Room> hydrated entities', fromX: 1040, toX: 780, y: 350, isReturn: true },
 
     // Alt [rooms.size() > 0]
-    { num: '10', text: 'hasResults = true', fromX: 750, toX: 500, y: 440, isReturn: true },
-    { num: '11', text: 'formatRoomCards(rooms)', fromX: 500, toX: 750, y: 480 },
-    { num: '12', text: 'return 200 OK (rooms array)', fromX: 750, toX: 500, y: 520, isReturn: true },
-    { num: '13', text: 'renderRoomList(rooms)', fromX: 500, toX: 250, y: 560, isReturn: true },
-    { num: '14', text: 'displayRoomCards(results)', fromX: 250, toX: 65, y: 600, isReturn: true },
+    { num: '8', text: 'hasResults = true', fromX: 780, toX: 520, y: 440, isReturn: true },
+    { num: '9', text: 'formatRoomCards(rooms)', fromX: 520, toX: 780, y: 480 },
+    { num: '10', text: 'return 200 OK (rooms array)', fromX: 780, toX: 520, y: 520, isReturn: true },
+    { num: '11', text: 'renderRoomList(rooms)', fromX: 520, toX: 260, y: 560, isReturn: true },
+    { num: '12', text: 'displayRoomCards(results)', fromX: 260, toX: 70, y: 600, isReturn: true },
 
     // Alt [rooms.isEmpty()]
-    { num: '15', text: 'hasResults = false', fromX: 750, toX: 500, y: 920, isReturn: true },
-    { num: '16', text: 'return 200 OK (empty array)', fromX: 500, toX: 250, y: 960, isReturn: true },
-    { num: '17', text: 'displayEmptyPlaceholder("No matching rooms found")', fromX: 250, toX: 65, y: 1000, isReturn: true }
+    { num: '13', text: 'hasResults = false', fromX: 780, toX: 520, y: 900, isReturn: true },
+    { num: '14', text: 'return 200 OK (empty array)', fromX: 520, toX: 260, y: 940, isReturn: true },
+    { num: '15', text: 'displayEmptyPlaceholder("No matching rooms found")', fromX: 260, toX: 70, y: 980, isReturn: true }
   ];
 
   const xml = buildSequenceXml(
@@ -329,43 +322,40 @@ function generateUCM02() {
 
 // -----------------------------------------------------------------------------
 // Sequence Diagram 3: UC-M04.1 Create Room
-// Lifelines: Staff -> UI -> Controller -> Service -> RoomRepo -> Model: Room -> Database: MongoDB
+// Lifelines: Staff -> UI -> Controller -> Service -> Model: Room -> Database: MongoDB
 // -----------------------------------------------------------------------------
 function generateUCM04_1() {
   const lifelines = [
-    { x: 250, stereo: 'user interaction', name: 'Create Room View' },
-    { x: 500, stereo: 'control', name: 'RoomController' },
-    { x: 750, stereo: 'service', name: 'RoomService' },
-    { x: 1000, stereo: 'repository', name: 'RoomRepository' },
-    { x: 1250, stereo: 'model', name: 'Room' },
-    { x: 1500, stereo: 'database', name: 'MongoDB' }
+    { x: 260, stereo: 'user interaction', name: 'Create Room View' },
+    { x: 520, stereo: 'control', name: 'RoomController' },
+    { x: 780, stereo: 'service', name: 'RoomService' },
+    { x: 1040, stereo: 'model', name: 'Room' },
+    { x: 1300, stereo: 'database', name: 'MongoDB' }
   ];
 
   const msgs = [
-    { num: '1', text: 'inputRoomDetails(roomNumber, type, price, area)', fromX: 65, toX: 250, y: 130 },
-    { num: '2', text: 'POST /api/rooms', fromX: 250, toX: 500, y: 170 },
-    { num: '3', text: 'createRoom(createRoomDTO)', fromX: 500, toX: 750, y: 210 },
-    { num: '4', text: 'findByRoomNumber(roomNumber)', fromX: 750, toX: 1000, y: 250 },
-    { num: '5', text: 'findOne({ roomNumber })', fromX: 1000, toX: 1250, y: 290 },
-    { num: '6', text: 'db.rooms.findOne({ roomNumber })', fromX: 1250, toX: 1500, y: 320 },
-    { num: '7', text: 'null or existing document', fromX: 1500, toX: 1250, y: 350, isReturn: true },
-    { num: '8', text: 'return existingRoom', fromX: 1250, toX: 750, y: 380, isReturn: true },
+    { num: '1', text: 'inputRoomDetails(roomNumber, type, price, area)', fromX: 70, toX: 260, y: 130 },
+    { num: '2', text: 'POST /api/rooms', fromX: 260, toX: 520, y: 170 },
+    { num: '3', text: 'createRoom(createRoomDTO)', fromX: 520, toX: 780, y: 210 },
+    { num: '4', text: 'findOne({ roomNumber })', fromX: 780, toX: 1040, y: 250 },
+    { num: '5', text: 'db.rooms.findOne({ roomNumber })', fromX: 1040, toX: 1300, y: 290 },
+    { num: '6', text: 'null or existing document', fromX: 1300, toX: 1040, y: 320, isReturn: true },
+    { num: '7', text: 'return existingRoom', fromX: 1040, toX: 780, y: 350, isReturn: true },
 
     // Alt [existingRoom == null (Unique)]
-    { num: '9', text: 'isValid = true', fromX: 750, toX: 500, y: 440, isReturn: true },
-    { num: '10', text: '«create» new Room(roomNumber, type, price, AVAILABLE)', fromX: 750, toX: 1250, y: 480, isCreate: true },
-    { num: '11', text: 'save(newRoom)', fromX: 750, toX: 1000, y: 520 },
-    { num: '12', text: 'db.rooms.insertOne(newRoomDoc)', fromX: 1000, toX: 1500, y: 560 },
-    { num: '13', text: 'inserted acknowledge', fromX: 1500, toX: 1000, y: 590, isReturn: true },
-    { num: '14', text: 'saved Room entity', fromX: 1000, toX: 750, y: 620, isReturn: true },
-    { num: '15', text: 'return 201 Created (Room)', fromX: 750, toX: 500, y: 650, isReturn: true },
-    { num: '16', text: 'displaySuccessToast("Room created successfully")', fromX: 500, toX: 250, y: 690, isReturn: true },
-    { num: '17', text: 'showRoomCreated()', fromX: 250, toX: 65, y: 730, isReturn: true },
+    { num: '8', text: 'isValid = true', fromX: 780, toX: 520, y: 440, isReturn: true },
+    { num: '9', text: '«create» new Room(roomNumber, type, price, AVAILABLE)', fromX: 780, toX: 1040, y: 480, isCreate: true },
+    { num: '10', text: 'db.rooms.insertOne(newRoomDoc)', fromX: 1040, toX: 1300, y: 520 },
+    { num: '11', text: 'inserted ack with _id', fromX: 1300, toX: 1040, y: 550, isReturn: true },
+    { num: '12', text: 'saved Room entity', fromX: 1040, toX: 780, y: 580, isReturn: true },
+    { num: '13', text: 'return 201 Created (Room)', fromX: 780, toX: 520, y: 610, isReturn: true },
+    { num: '14', text: 'displaySuccessToast("Room created successfully")', fromX: 520, toX: 260, y: 640, isReturn: true },
+    { num: '15', text: 'showRoomCreated()', fromX: 260, toX: 70, y: 670, isReturn: true },
 
     // Alt [existingRoom != null (Duplicate)]
-    { num: '18', text: 'isValid = false', fromX: 750, toX: 500, y: 920, isReturn: true },
-    { num: '19', text: 'return 409 Conflict ("Room number already exists")', fromX: 500, toX: 250, y: 960, isReturn: true },
-    { num: '20', text: 'displayValidationError("Duplicate room number")', fromX: 250, toX: 65, y: 1000, isReturn: true }
+    { num: '16', text: 'isValid = false', fromX: 780, toX: 520, y: 900, isReturn: true },
+    { num: '17', text: 'return 409 Conflict ("Room number already exists")', fromX: 520, toX: 260, y: 940, isReturn: true },
+    { num: '18', text: 'displayValidationError("Duplicate room number")', fromX: 260, toX: 70, y: 980, isReturn: true }
   ];
 
   const xml = buildSequenceXml(
@@ -383,43 +373,40 @@ function generateUCM04_1() {
 
 // -----------------------------------------------------------------------------
 // Sequence Diagram 4: UC-M04.2 Update Room Info
-// Lifelines: Staff -> UI -> Controller -> Service -> RoomRepo -> Model: Room -> Database: MongoDB
+// Lifelines: Staff -> UI -> Controller -> Service -> Model: Room -> Database: MongoDB
 // -----------------------------------------------------------------------------
 function generateUCM04_2() {
   const lifelines = [
-    { x: 250, stereo: 'user interaction', name: 'Edit Room View' },
-    { x: 500, stereo: 'control', name: 'RoomController' },
-    { x: 750, stereo: 'service', name: 'RoomService' },
-    { x: 1000, stereo: 'repository', name: 'RoomRepository' },
-    { x: 1250, stereo: 'model', name: 'Room' },
-    { x: 1500, stereo: 'database', name: 'MongoDB' }
+    { x: 260, stereo: 'user interaction', name: 'Edit Room View' },
+    { x: 520, stereo: 'control', name: 'RoomController' },
+    { x: 780, stereo: 'service', name: 'RoomService' },
+    { x: 1040, stereo: 'model', name: 'Room' },
+    { x: 1300, stereo: 'database', name: 'MongoDB' }
   ];
 
   const msgs = [
-    { num: '1', text: 'modifyRoomInfo(roomId, newPrice, newType, newStatus)', fromX: 65, toX: 250, y: 130 },
-    { num: '2', text: 'PUT /api/rooms/{id}', fromX: 250, toX: 500, y: 170 },
-    { num: '3', text: 'updateRoom(roomId, updateRoomDTO)', fromX: 500, toX: 750, y: 210 },
-    { num: '4', text: 'findById(roomId)', fromX: 750, toX: 1000, y: 250 },
-    { num: '5', text: 'findById(roomId)', fromX: 1000, toX: 1250, y: 290 },
-    { num: '6', text: 'db.rooms.findById(roomId)', fromX: 1250, toX: 1500, y: 320 },
-    { num: '7', text: 'room document', fromX: 1500, toX: 1250, y: 350, isReturn: true },
-    { num: '8', text: 'Room entity instance', fromX: 1250, toX: 750, y: 380, isReturn: true },
+    { num: '1', text: 'modifyRoomInfo(roomId, newPrice, newType, newStatus)', fromX: 70, toX: 260, y: 130 },
+    { num: '2', text: 'PUT /api/rooms/{id}', fromX: 260, toX: 520, y: 170 },
+    { num: '3', text: 'updateRoom(roomId, updateRoomDTO)', fromX: 520, toX: 780, y: 210 },
+    { num: '4', text: 'findById(roomId)', fromX: 780, toX: 1040, y: 250 },
+    { num: '5', text: 'db.rooms.findById(roomId)', fromX: 1040, toX: 1300, y: 290 },
+    { num: '6', text: 'room document', fromX: 1300, toX: 1040, y: 320, isReturn: true },
+    { num: '7', text: 'Room entity instance', fromX: 1040, toX: 780, y: 350, isReturn: true },
 
     // Alt [room != null]
-    { num: '9', text: 'isFound = true', fromX: 750, toX: 500, y: 440, isReturn: true },
-    { num: '10', text: 'updateAttributes(price, type, status)', fromX: 750, toX: 1250, y: 480 },
-    { num: '11', text: 'save(room)', fromX: 750, toX: 1000, y: 520 },
-    { num: '12', text: 'db.rooms.updateOne({ _id: roomId }, { $set: updateFields })', fromX: 1000, toX: 1500, y: 560 },
-    { num: '13', text: 'update acknowledgment', fromX: 1500, toX: 1000, y: 590, isReturn: true },
-    { num: '14', text: 'updated Room entity', fromX: 1000, toX: 750, y: 620, isReturn: true },
-    { num: '15', text: 'return 200 OK (updatedRoom)', fromX: 750, toX: 500, y: 650, isReturn: true },
-    { num: '16', text: 'displaySuccessToast("Room updated successfully")', fromX: 500, toX: 250, y: 690, isReturn: true },
-    { num: '17', text: 'showUpdatedRoomDetails()', fromX: 250, toX: 65, y: 730, isReturn: true },
+    { num: '8', text: 'isFound = true', fromX: 780, toX: 520, y: 440, isReturn: true },
+    { num: '9', text: 'updateAttributes(price, type, status)', fromX: 780, toX: 1040, y: 480 },
+    { num: '10', text: 'db.rooms.updateOne({ _id: roomId }, { $set: updateFields })', fromX: 1040, toX: 1300, y: 520 },
+    { num: '11', text: 'update acknowledgment', fromX: 1300, toX: 1040, y: 550, isReturn: true },
+    { num: '12', text: 'updated Room entity', fromX: 1040, toX: 780, y: 580, isReturn: true },
+    { num: '13', text: 'return 200 OK (updatedRoom)', fromX: 780, toX: 520, y: 610, isReturn: true },
+    { num: '14', text: 'displaySuccessToast("Room updated successfully")', fromX: 520, toX: 260, y: 640, isReturn: true },
+    { num: '15', text: 'showUpdatedRoomDetails()', fromX: 260, toX: 70, y: 670, isReturn: true },
 
     // Alt [room == null]
-    { num: '18', text: 'isFound = false', fromX: 750, toX: 500, y: 920, isReturn: true },
-    { num: '19', text: 'return 404 Not Found ("Room does not exist")', fromX: 500, toX: 250, y: 960, isReturn: true },
-    { num: '20', text: 'displayErrorMessage("Room not found")', fromX: 250, toX: 65, y: 1000, isReturn: true }
+    { num: '16', text: 'isFound = false', fromX: 780, toX: 520, y: 900, isReturn: true },
+    { num: '17', text: 'return 404 Not Found ("Room does not exist")', fromX: 520, toX: 260, y: 940, isReturn: true },
+    { num: '18', text: 'displayErrorMessage("Room not found")', fromX: 260, toX: 70, y: 980, isReturn: true }
   ];
 
   const xml = buildSequenceXml(
@@ -437,42 +424,40 @@ function generateUCM04_2() {
 
 // -----------------------------------------------------------------------------
 // Sequence Diagram 5: UC-M04.3 Delete Room
-// Lifelines: Staff -> UI -> Controller -> Service -> RoomRepo -> Model: Room -> Database: MongoDB
+// Lifelines: Staff -> UI -> Controller -> Service -> Model: Room -> Database: MongoDB
 // -----------------------------------------------------------------------------
 function generateUCM04_3() {
   const lifelines = [
-    { x: 250, stereo: 'user interaction', name: 'Room List View' },
-    { x: 500, stereo: 'control', name: 'RoomController' },
-    { x: 750, stereo: 'service', name: 'RoomService' },
-    { x: 1000, stereo: 'repository', name: 'RoomRepository' },
-    { x: 1250, stereo: 'model', name: 'Room' },
-    { x: 1500, stereo: 'database', name: 'MongoDB' }
+    { x: 260, stereo: 'user interaction', name: 'Room List View' },
+    { x: 520, stereo: 'control', name: 'RoomController' },
+    { x: 780, stereo: 'service', name: 'RoomService' },
+    { x: 1040, stereo: 'model', name: 'Room' },
+    { x: 1300, stereo: 'database', name: 'MongoDB' }
   ];
 
   const msgs = [
-    { num: '1', text: 'requestDeleteRoom(roomId)', fromX: 65, toX: 250, y: 130 },
-    { num: '2', text: 'DELETE /api/rooms/{id}', fromX: 250, toX: 500, y: 170 },
-    { num: '3', text: 'deleteRoom(roomId)', fromX: 500, toX: 750, y: 210 },
-    { num: '4', text: 'findById(roomId)', fromX: 750, toX: 1000, y: 250 },
-    { num: '5', text: 'findById(roomId)', fromX: 1000, toX: 1250, y: 290 },
-    { num: '6', text: 'db.rooms.findById(roomId)', fromX: 1250, toX: 1500, y: 320 },
-    { num: '7', text: 'room document with status', fromX: 1500, toX: 1250, y: 350, isReturn: true },
-    { num: '8', text: 'Room entity instance', fromX: 1250, toX: 750, y: 380, isReturn: true },
+    { num: '1', text: 'requestDeleteRoom(roomId)', fromX: 70, toX: 260, y: 130 },
+    { num: '2', text: 'DELETE /api/rooms/{id}', fromX: 260, toX: 520, y: 170 },
+    { num: '3', text: 'deleteRoom(roomId)', fromX: 520, toX: 780, y: 210 },
+    { num: '4', text: 'findById(roomId)', fromX: 780, toX: 1040, y: 250 },
+    { num: '5', text: 'db.rooms.findById(roomId)', fromX: 1040, toX: 1300, y: 290 },
+    { num: '6', text: 'room document with status', fromX: 1300, toX: 1040, y: 320, isReturn: true },
+    { num: '7', text: 'Room entity instance', fromX: 1040, toX: 780, y: 350, isReturn: true },
 
     // Alt [room.status != RENTED]
-    { num: '9', text: 'canDelete = true', fromX: 750, toX: 500, y: 440, isReturn: true },
-    { num: '10', text: 'deleteById(roomId)', fromX: 750, toX: 1000, y: 480 },
-    { num: '11', text: 'db.rooms.deleteOne({ _id: roomId })', fromX: 1000, toX: 1500, y: 520 },
-    { num: '12', text: 'delete result { deletedCount: 1 }', fromX: 1500, toX: 1000, y: 560, isReturn: true },
-    { num: '13', text: 'return deleteStatus = true', fromX: 1000, toX: 750, y: 590, isReturn: true },
-    { num: '14', text: 'return 200 OK ("Room deleted successfully")', fromX: 750, toX: 500, y: 620, isReturn: true },
-    { num: '15', text: 'refreshRoomTable("Room deleted")', fromX: 500, toX: 250, y: 660, isReturn: true },
-    { num: '16', text: 'displayDeleteConfirmation()', fromX: 250, toX: 65, y: 700, isReturn: true },
+    { num: '8', text: 'canDelete = true', fromX: 780, toX: 520, y: 440, isReturn: true },
+    { num: '9', text: 'deleteById(roomId)', fromX: 780, toX: 1040, y: 480 },
+    { num: '10', text: 'db.rooms.deleteOne({ _id: roomId })', fromX: 1040, toX: 1300, y: 520 },
+    { num: '11', text: 'delete result { deletedCount: 1 }', fromX: 1300, toX: 1040, y: 550, isReturn: true },
+    { num: '12', text: 'return deleteStatus = true', fromX: 1040, toX: 780, y: 580, isReturn: true },
+    { num: '13', text: 'return 200 OK ("Room deleted successfully")', fromX: 780, toX: 520, y: 610, isReturn: true },
+    { num: '14', text: 'refreshRoomTable("Room deleted")', fromX: 520, toX: 260, y: 640, isReturn: true },
+    { num: '15', text: 'displayDeleteConfirmation()', fromX: 260, toX: 70, y: 670, isReturn: true },
 
     // Alt [room.status == RENTED]
-    { num: '17', text: 'canDelete = false', fromX: 750, toX: 500, y: 920, isReturn: true },
-    { num: '18', text: 'return 400 Bad Request ("Cannot delete occupied room under lease")', fromX: 500, toX: 250, y: 960, isReturn: true },
-    { num: '19', text: 'displayWarningAlert("Cannot delete room currently rented")', fromX: 250, toX: 65, y: 1000, isReturn: true }
+    { num: '16', text: 'canDelete = false', fromX: 780, toX: 520, y: 900, isReturn: true },
+    { num: '17', text: 'return 400 Bad Request ("Cannot delete occupied room under lease")', fromX: 520, toX: 260, y: 940, isReturn: true },
+    { num: '18', text: 'displayWarningAlert("Cannot delete room currently rented")', fromX: 260, toX: 70, y: 980, isReturn: true }
   ];
 
   const xml = buildSequenceXml(
@@ -489,7 +474,7 @@ function generateUCM04_3() {
 }
 
 // Run all generators
-console.log('Generating Module 2 Draw.io diagrams with «model» and «database» MongoDB...');
+console.log('Generating Module 2 Draw.io diagrams (Deleted repository, direct Model -> MongoDB)...');
 generateClassDiagram();
 generateUCM03();
 generateUCM02();
