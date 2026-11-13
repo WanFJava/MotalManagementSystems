@@ -6,124 +6,93 @@
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- ==================== LEFT SIDE: REPOSITORY & SERVICE PATTERN ==================== -->
-
         <!-- <<Interface>> IGenericRepository -->
-        <mxCell id="repo_generic" value="&lt;b&gt;&amp;laquo;Interface&amp;raquo;&lt;br&gt;IGenericRepository&amp;lt;T, ID&amp;gt;&lt;/b&gt;&#xa;--&#xa;+ getById(id: ID): T&#xa;+ findAll(): List&amp;lt;T&amp;gt;&#xa;+ save(entity: T): T&#xa;+ deleteById(id: ID): void" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="160" y="220" width="220" height="150" as="geometry"/>
+        <mxCell id="repo_generic" value="&lt;b&gt;&amp;laquo;Interface&amp;raquo;&lt;br&gt;IGenericRepository&lt;/b&gt;&#xa;--&#xa;+ getById()&#xa;+ findAll()&#xa;+ save()&#xa;+ deleteById()" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="150" y="170" width="220" height="150" as="geometry"/>
         </mxCell>
 
-        <!-- BookingRepository / RentalRequestRepository -->
-        <mxCell id="repo_rental" value="&lt;b&gt;RentalRequestRepository&lt;/b&gt;&#xa;--&#xa;+ findByCustomerId(customerId: Long): List&amp;lt;RentalRequest&amp;gt;&#xa;+ findByRoomId(roomId: Long): List&amp;lt;RentalRequest&amp;gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="60" y="420" width="230" height="80" as="geometry"/>
+        <!-- RentalRequestRepository -->
+        <mxCell id="repo_rental" value="&lt;b&gt;RentalRequestRepository&lt;/b&gt;&#xa;--&#xa;+ findByCustomerId()&#xa;+ findByRoomId()" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="50" y="370" width="200" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- CarRepository / RoomRepository -->
-        <mxCell id="repo_room" value="&lt;b&gt;RoomRepository&lt;/b&gt;&#xa;--&#xa;+ findAvailableRoom(criteria: SearchCriteria): List&amp;lt;Room&amp;gt;&#xa;+ findByRoomNumber(roomNumber: String): Room" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="310" y="420" width="230" height="80" as="geometry"/>
+        <!-- RoomRepository -->
+        <mxCell id="repo_room" value="&lt;b&gt;RoomRepository&lt;/b&gt;&#xa;--&#xa;+ findAvailableRoom()&#xa;+ findByRoomNumber()" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="270" y="370" width="200" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- Realization: RentalRequestRepository - - |> IGenericRepository -->
+        <!-- Implements arrows -->
         <mxCell id="rel_impl1" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.25;entryY=1;" edge="1" parent="1" source="repo_rental" target="repo_generic">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-
-        <!-- Realization: RoomRepository - - |> IGenericRepository -->
         <mxCell id="rel_impl2" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.75;entryY=1;" edge="1" parent="1" source="repo_room" target="repo_generic">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- RoomService / BookingService -->
-        <mxCell id="service_room" value="&lt;b&gt;RoomService&lt;/b&gt;&#xa;--&#xa;- roomRepository: RoomRepository&#xa;- rentalRequestRepository: RentalRequestRepository&#xa;--&#xa;+ checkAvailability(roomId: Long, checkIn: LocalDateTime): boolean&#xa;+ createBooking(dto: RentalBookingDTO): RentalRequest&#xa;+ searchRoom(criteria: SearchCriteria): List&amp;lt;Room&amp;gt;&#xa;+ createRoom(dto: CreateRoomDTO): Room&#xa;+ updateRoom(id: Long, dto: UpdateRoomDTO): Room&#xa;+ deleteRoom(id: Long): boolean" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="140" y="580" width="320" height="170" as="geometry"/>
+        <!-- RoomService -->
+        <mxCell id="service_room" value="&lt;b&gt;RoomService&lt;/b&gt;&#xa;--&#xa;- roomRepository: RoomRepository&#xa;- rentalRequestRepo: RentalRequestRepository&#xa;--&#xa;+ checkAvailability()&#xa;+ createBooking()&#xa;+ searchRoom()&#xa;+ createRoom()&#xa;+ updateRoom()&#xa;+ deleteRoom()" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="550" width="360" height="210" as="geometry"/>
         </mxCell>
 
-        <!-- Use dependency: RoomService - - > RentalRequestRepository -->
+        <!-- Use dependencies -->
         <mxCell id="rel_use1" value="Use" style="endArrow=open;dashed=1;html=1;rounded=0;exitX=0.25;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="service_room" target="repo_rental">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-
-        <!-- Use dependency: RoomService - - > RoomRepository -->
         <mxCell id="rel_use2" value="Use" style="endArrow=open;dashed=1;html=1;rounded=0;exitX=0.75;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="service_room" target="repo_room">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== CENTER & RIGHT SIDE: DOMAIN ENTITIES ==================== -->
-
-        <!-- Base Class: User -->
+        <!-- User -->
         <mxCell id="cls_user" value="&lt;b&gt;User&lt;/b&gt;&#xa;--&#xa;- id: Long&#xa;- fullName: String&#xa;- email: String&#xa;- password: String&#xa;- phone: String&#xa;- role: Role &amp;laquo;enum&amp;raquo;&#xa;- isActive: boolean&#xa;- createdAt: LocalDateTime&#xa;--&#xa;+ login()&#xa;+ logout()" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="780" y="40" width="220" height="200" as="geometry"/>
+          <mxGeometry x="790" y="60" width="230" height="250" as="geometry"/>
         </mxCell>
 
-        <!-- Customer (Extends User) -->
+        <!-- Customer -->
         <mxCell id="cls_customer" value="&lt;b&gt;Customer&lt;/b&gt;&#xa;--&#xa;+ browseRoom()&#xa;+ searchRoom()&#xa;+ createRentalBooking()" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="660" y="320" width="200" height="90" as="geometry"/>
+          <mxGeometry x="660" y="370" width="200" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- Staff (Extends User) -->
+        <!-- Staff -->
         <mxCell id="cls_staff" value="&lt;b&gt;Staff&lt;/b&gt;&#xa;--&#xa;+ confirmBooking()&#xa;+ viewRoomBooking()&#xa;+ createRoom()&#xa;+ deleteRoom()&#xa;+ editRoom()" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="920" y="320" width="200" height="120" as="geometry"/>
+          <mxGeometry x="930" y="370" width="200" height="120" as="geometry"/>
         </mxCell>
 
-        <!-- Inheritance: Customer Extends User -->
+        <!-- Extends arrows -->
         <mxCell id="rel_ext1" value="Extends" style="endArrow=block;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.25;entryY=1;" edge="1" parent="1" source="cls_customer" target="cls_user">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-
-        <!-- Inheritance: Staff Extends User -->
         <mxCell id="rel_ext2" value="Extends" style="endArrow=block;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.75;entryY=1;" edge="1" parent="1" source="cls_staff" target="cls_user">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- Booking / RentalRequest -->
+        <!-- RentalRequest -->
         <mxCell id="cls_booking" value="&lt;b&gt;RentalRequest&lt;/b&gt;&#xa;--&#xa;- id: Long&#xa;- checkInDate: LocalDateTime&#xa;- checkOutDate: LocalDateTime&#xa;- totalAmount: BigDecimal&#xa;- status: BookingStatus &amp;laquo;enum&amp;raquo;&#xa;- createdAt: LocalDateTime&#xa;--&#xa;+ confirm()&#xa;+ cancel()" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="650" y="490" width="220" height="170" as="geometry"/>
+          <mxGeometry x="650" y="550" width="220" height="210" as="geometry"/>
         </mxCell>
 
-        <!-- Association: Customer creates RentalRequest (1 to 0..1*) -->
+        <!-- Customer creates RentalRequest (1 creates 0..1*) -->
         <mxCell id="rel_cust_book" value="creates" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cls_customer" target="cls_booking">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="750" y="420" as="sourcePoint"/>
-            <mxPoint x="750" y="480" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lbl_cust_book_1" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel_cust_book">
-          <mxGeometry x="-0.8" relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_cust_book_n" value="0..1*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=top;" connectable="0" vertex="1" parent="rel_cust_book">
-          <mxGeometry x="0.8" relative="1" as="geometry"/>
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
         <!-- Payment -->
         <mxCell id="cls_payment" value="&lt;b&gt;Payment&lt;/b&gt;&#xa;--&#xa;- id: Long&#xa;- amount: BigDecimal&#xa;- type: PaymentType &amp;laquo;enum&amp;raquo;&#xa;- status: PaymentStatus &amp;laquo;enum&amp;raquo;&#xa;- paidAt: LocalDateTime&#xa;--&#xa;+ process()" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="980" y="500" width="230" height="150" as="geometry"/>
+          <mxGeometry x="1000" y="550" width="220" height="150" as="geometry"/>
         </mxCell>
 
-        <!-- Association: RentalRequest involves Payment (1 involves 1..*) -->
+        <!-- RentalRequest involves Payment (1 involves 1..*) -->
         <mxCell id="rel_book_pay" value="involves" style="endArrow=none;startArrow=diamond;startFill=1;startSize=14;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="cls_booking" target="cls_payment">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="lbl_book_pay_1" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel_book_pay">
-          <mxGeometry x="-0.7" relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_book_pay_n" value="1..*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel_book_pay">
-          <mxGeometry x="0.7" relative="1" as="geometry"/>
-        </mxCell>
 
-        <!-- Car / Room -->
+        <!-- Room -->
         <mxCell id="cls_room" value="&lt;b&gt;Room&lt;/b&gt;&#xa;--&#xa;- id: Long&#xa;- roomNumber: String&#xa;- type: RoomType &amp;laquo;enum&amp;raquo;&#xa;- price: BigDecimal&#xa;- status: RoomStatus &amp;laquo;enum&amp;raquo;&#xa;- createdAt: LocalDateTime&#xa;--&#xa;+ checkAvailability()" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="660" y="740" width="200" height="160" as="geometry"/>
+          <mxGeometry x="660" y="850" width="200" height="160" as="geometry"/>
         </mxCell>
 
-        <!-- Association: RentalRequest linked to Room (0..1* linked to 1) -->
+        <!-- RentalRequest linked to Room (0..1* linked to 1) -->
         <mxCell id="rel_book_room" value="linked to" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cls_booking" target="cls_room">
           <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_book_room_n" value="0..1*" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;" connectable="0" vertex="1" parent="rel_book_room">
-          <mxGeometry x="-0.7" relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_book_room_1" value="1" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;" connectable="0" vertex="1" parent="rel_book_room">
-          <mxGeometry x="0.7" relative="1" as="geometry"/>
         </mxCell>
 
       </root>

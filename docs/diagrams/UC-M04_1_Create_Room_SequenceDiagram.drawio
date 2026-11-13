@@ -1,169 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
   <diagram name="UC-M04.1 Create Room" id="uc-m04-1-create-room">
-    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1300" math="0" shadow="0">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1300" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- Lifelines with stereotypes in header -->
+        <!-- Actor -->
         <mxCell id="lf_actor" value="Staff" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="60" y="40" width="30" height="1150" as="geometry"/>
+          <mxGeometry x="50" y="40" width="30" height="1150" as="geometry"/>
         </mxCell>
-        
-        <mxCell id="lf_ui" value="&amp;laquo;user interaction&amp;raquo;&lt;br&gt;&lt;b&gt;CreateRoomView&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="180" y="40" width="160" height="1150" as="geometry"/>
+        <mxCell id="lf_0" value="&amp;laquo;user interaction&amp;raquo;&lt;br&gt;&lt;b&gt;Create Room View&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="170" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
-
-        <mxCell id="lf_ctrl" value="&amp;laquo;control&amp;raquo;&lt;br&gt;&lt;b&gt;RoomController&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="400" y="40" width="160" height="1150" as="geometry"/>
+        <mxCell id="lf_1" value="&amp;laquo;control&amp;raquo;&lt;br&gt;&lt;b&gt;RoomController&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="420" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
-
-        <mxCell id="lf_srv" value="&amp;laquo;service&amp;raquo;&lt;br&gt;&lt;b&gt;RoomService&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="620" y="40" width="160" height="1150" as="geometry"/>
+        <mxCell id="lf_2" value="&amp;laquo;service&amp;raquo;&lt;br&gt;&lt;b&gt;RoomService&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="670" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
-
-        <mxCell id="lf_repo1" value="&amp;laquo;repository&amp;raquo;&lt;br&gt;&lt;b&gt;RoomRepository&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="840" y="40" width="160" height="1150" as="geometry"/>
+        <mxCell id="lf_3" value="&amp;laquo;repository&amp;raquo;&lt;br&gt;&lt;b&gt;RoomRepository&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="920" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
-        <mxCell id="lf_entity" value="&amp;laquo;entity&amp;raquo;&lt;br&gt;&lt;b&gt;Room&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
-          <mxGeometry x="1060" y="40" width="150" height="1150" as="geometry"/>
+        <mxCell id="lf_4" value="&amp;laquo;model&amp;raquo;&lt;br&gt;&lt;b&gt;Room&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="40" width="160" height="1150" as="geometry"/>
         </mxCell>
-        <!-- Message 1: inputRoomDetails(roomNumber, type, price, area) -->
+        <mxCell id="lf_5" value="&amp;laquo;database&amp;raquo;&lt;br&gt;&lt;b&gt;MongoDB&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="40" width="160" height="1150" as="geometry"/>
+        </mxCell>
         <mxCell id="msg_0" value="1: inputRoomDetails(roomNumber, type, price, area)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="75" y="130" as="sourcePoint"/>
-            <mxPoint x="260" y="130" as="targetPoint"/>
+            <mxPoint x="65" y="130" as="sourcePoint"/>
+            <mxPoint x="250" y="130" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 2: POST /api/rooms -->
         <mxCell id="msg_1" value="2: POST /api/rooms" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="260" y="170" as="sourcePoint"/>
-            <mxPoint x="480" y="170" as="targetPoint"/>
+            <mxPoint x="250" y="170" as="sourcePoint"/>
+            <mxPoint x="500" y="170" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 3: createRoom(createRoomDTO) -->
         <mxCell id="msg_2" value="3: createRoom(createRoomDTO)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="480" y="210" as="sourcePoint"/>
-            <mxPoint x="700" y="210" as="targetPoint"/>
+            <mxPoint x="500" y="210" as="sourcePoint"/>
+            <mxPoint x="750" y="210" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 4: findByRoomNumber(roomNumber) -->
         <mxCell id="msg_3" value="4: findByRoomNumber(roomNumber)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="700" y="250" as="sourcePoint"/>
-            <mxPoint x="920" y="250" as="targetPoint"/>
+            <mxPoint x="750" y="250" as="sourcePoint"/>
+            <mxPoint x="1000" y="250" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 5: queryByNumber(roomNumber) -->
-        <mxCell id="msg_4" value="5: queryByNumber(roomNumber)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_4" value="5: findOne({ roomNumber })" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="920" y="290" as="sourcePoint"/>
-            <mxPoint x="1140" y="290" as="targetPoint"/>
+            <mxPoint x="1000" y="290" as="sourcePoint"/>
+            <mxPoint x="1250" y="290" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 6: existingRoom document -->
-        <mxCell id="msg_5" value="6: existingRoom document" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_5" value="6: db.rooms.findOne({ roomNumber })" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1140" y="320" as="sourcePoint"/>
-            <mxPoint x="920" y="320" as="targetPoint"/>
+            <mxPoint x="1250" y="320" as="sourcePoint"/>
+            <mxPoint x="1500" y="320" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 7: return existingRoom -->
-        <mxCell id="msg_6" value="7: return existingRoom" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_6" value="7: null or existing document" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="920" y="350" as="sourcePoint"/>
-            <mxPoint x="700" y="350" as="targetPoint"/>
+            <mxPoint x="1500" y="350" as="sourcePoint"/>
+            <mxPoint x="1250" y="350" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 8: isValid = true -->
-        <mxCell id="msg_7" value="8: isValid = true" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_7" value="8: return existingRoom" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="700" y="440" as="sourcePoint"/>
-            <mxPoint x="480" y="440" as="targetPoint"/>
+            <mxPoint x="1250" y="380" as="sourcePoint"/>
+            <mxPoint x="750" y="380" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 9: «create» new Room(roomNumber, type, price, AVAILABLE) -->
-        <mxCell id="msg_8" value="9: «create» new Room(roomNumber, type, price, AVAILABLE)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_8" value="9: isValid = true" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="700" y="490" as="sourcePoint"/>
-            <mxPoint x="1140" y="490" as="targetPoint"/>
+            <mxPoint x="750" y="440" as="sourcePoint"/>
+            <mxPoint x="500" y="440" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 10: save(newRoom) -->
-        <mxCell id="msg_9" value="10: save(newRoom)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_9" value="10: «create» new Room(roomNumber, type, price, AVAILABLE)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="700" y="530" as="sourcePoint"/>
-            <mxPoint x="920" y="530" as="targetPoint"/>
+            <mxPoint x="750" y="480" as="sourcePoint"/>
+            <mxPoint x="1250" y="480" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 11: saved Room entity -->
-        <mxCell id="msg_10" value="11: saved Room entity" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_10" value="11: save(newRoom)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="920" y="570" as="sourcePoint"/>
-            <mxPoint x="700" y="570" as="targetPoint"/>
+            <mxPoint x="750" y="520" as="sourcePoint"/>
+            <mxPoint x="1000" y="520" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 12: return 201 Created (Room) -->
-        <mxCell id="msg_11" value="12: return 201 Created (Room)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_11" value="12: db.rooms.insertOne(newRoomDoc)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="700" y="610" as="sourcePoint"/>
-            <mxPoint x="480" y="610" as="targetPoint"/>
+            <mxPoint x="1000" y="560" as="sourcePoint"/>
+            <mxPoint x="1500" y="560" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 13: displaySuccessToast(&quot;Room created successfully&quot;) -->
-        <mxCell id="msg_12" value="13: displaySuccessToast(&quot;Room created successfully&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_12" value="13: inserted acknowledge" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="480" y="650" as="sourcePoint"/>
-            <mxPoint x="260" y="650" as="targetPoint"/>
+            <mxPoint x="1500" y="590" as="sourcePoint"/>
+            <mxPoint x="1000" y="590" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 14: showRoomCreated() -->
-        <mxCell id="msg_13" value="14: showRoomCreated()" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_13" value="14: saved Room entity" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="260" y="690" as="sourcePoint"/>
-            <mxPoint x="75" y="690" as="targetPoint"/>
+            <mxPoint x="1000" y="620" as="sourcePoint"/>
+            <mxPoint x="750" y="620" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 15: isValid = false -->
-        <mxCell id="msg_14" value="15: isValid = false" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_14" value="15: return 201 Created (Room)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="700" y="910" as="sourcePoint"/>
-            <mxPoint x="480" y="910" as="targetPoint"/>
+            <mxPoint x="750" y="650" as="sourcePoint"/>
+            <mxPoint x="500" y="650" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 16: return 409 Conflict (&quot;Room number already exists&quot;) -->
-        <mxCell id="msg_15" value="16: return 409 Conflict (&quot;Room number already exists&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_15" value="16: displaySuccessToast(&quot;Room created successfully&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="480" y="950" as="sourcePoint"/>
-            <mxPoint x="260" y="950" as="targetPoint"/>
+            <mxPoint x="500" y="690" as="sourcePoint"/>
+            <mxPoint x="250" y="690" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Message 17: displayValidationError(&quot;Duplicate room number&quot;) -->
-        <mxCell id="msg_16" value="17: displayValidationError(&quot;Duplicate room number&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+        <mxCell id="msg_16" value="17: showRoomCreated()" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="260" y="990" as="sourcePoint"/>
-            <mxPoint x="75" y="990" as="targetPoint"/>
+            <mxPoint x="250" y="730" as="sourcePoint"/>
+            <mxPoint x="65" y="730" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <!-- Alt Frame -->
+        <mxCell id="msg_17" value="18: isValid = false" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="750" y="920" as="sourcePoint"/>
+            <mxPoint x="500" y="920" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_18" value="19: return 409 Conflict (&quot;Room number already exists&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="960" as="sourcePoint"/>
+            <mxPoint x="250" y="960" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_19" value="20: displayValidationError(&quot;Duplicate room number&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="1000" as="sourcePoint"/>
+            <mxPoint x="65" y="1000" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
         <mxCell id="alt_frame" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="380" width="1400" height="660" as="geometry"/>
+          <mxGeometry x="30" y="380" width="1680" height="680" as="geometry"/>
         </mxCell>
         <mxCell id="lbl_guard_true" value="[existingRoom == null (Unique)]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="50" y="410" width="150" height="20" as="geometry"/>
+          <mxGeometry x="40" y="410" width="220" height="20" as="geometry"/>
         </mxCell>
-        <!-- Alt Divider -->
         <mxCell id="alt_divider" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="40" y="860" as="sourcePoint"/>
-            <mxPoint x="1440" y="860" as="targetPoint"/>
+            <mxPoint x="30" y="870" as="sourcePoint"/>
+            <mxPoint x="1710" y="870" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
         <mxCell id="lbl_guard_false" value="[existingRoom != null (Duplicate)]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="50" y="870" width="150" height="20" as="geometry"/>
+          <mxGeometry x="40" y="880" width="220" height="20" as="geometry"/>
         </mxCell>
       </root>
     </mxGraphModel>
