@@ -1,35 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
-  <diagram name="UC-M02 Search Room" id="uc-m02-search-room">
-    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1050" math="0" shadow="0">
+  <diagram name="UC-M02 Search Rooms" id="uc-m02-search-rooms">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1300" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="lf_tenant" value="Tenant / Guest" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="115" y="40" width="30" height="960" as="geometry"/></mxCell>
-        <mxCell id="lf_ui" value="«boundary»&lt;br&gt;RoomSearchPage" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="315" y="40" width="170" height="960" as="geometry"/></mxCell>
-        <mxCell id="lf_controller" value="«controller»&lt;br&gt;RoomController" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="615" y="40" width="170" height="960" as="geometry"/></mxCell>
-        <mxCell id="lf_room" value="«entity»&lt;br&gt;Room" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="930" y="40" width="140" height="960" as="geometry"/></mxCell>
-        <mxCell id="lf_db" value="«database»&lt;br&gt;MongoDB" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="1170" y="40" width="140" height="960" as="geometry"/></mxCell>
-        <mxCell id="bar_T_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_tenant"><mxGeometry x="9" y="90" width="12" height="810" as="geometry"/></mxCell>
-        <mxCell id="bar_UI_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_ui"><mxGeometry x="79" y="90" width="12" height="810" as="geometry"/></mxCell>
-        <mxCell id="bar_C_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_controller"><mxGeometry x="79" y="170" width="12" height="690" as="geometry"/></mxCell>
-        <mxCell id="bar_R_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_room"><mxGeometry x="64" y="280" width="12" height="220" as="geometry"/></mxCell>
-        <mxCell id="bar_DB_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db"><mxGeometry x="64" y="320" width="12" height="140" as="geometry"/></mxCell>
-        <mxCell id="alt_search" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;" vertex="1" parent="1"><mxGeometry x="40" y="520" width="1280" height="360" as="geometry"/></mxCell>
-        <mxCell id="div_0" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="40" y="680" as="sourcePoint"/><mxPoint x="1320" y="680" as="targetPoint"/></mxGeometry></mxCell>
-        <mxCell id="guard_0" value="[rooms.length === 0 (no matching rooms)]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="142" y="520" width="320" height="20" as="geometry"/></mxCell>
-        <mxCell id="guard_1" value="[rooms.length &gt; 0 (matches found)]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="142" y="682" width="280" height="20" as="geometry"/></mxCell>
-        <mxCell id="msg_0" value="select filter criteria (keyword, status, minPrice, maxPrice, area, amenities)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.0123;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.0123;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_T_0" target="bar_UI_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_1" value="click &quot;Search Rooms&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.0617;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.0617;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_T_0" target="bar_UI_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_2" value="GET /api/rooms/search?keyword=...&amp;status=AVAILABLE&amp;minPrice=...&amp;maxPrice=..." style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.1111;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.0145;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_UI_0" target="bar_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_3" value="build dynamic query filter object&#xa;{ status, basePrice: { $gte, $lte }, area, amenities }" style="html=1;align=left;spacingLeft=4;verticalAlign=middle;endArrow=block;endFill=1;rounded=0;fontSize=11;exitX=1;exitY=0.0725;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.1101;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_C_0"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="730" y="260"/><mxPoint x="730" y="286"/></Array></mxGeometry></mxCell>
-        <mxCell id="msg_4" value="find(queryCriteria).sort({ createdAt: -1 })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.1739;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.0455;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_R_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_5" value="db.rooms.find(queryCriteria)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.2273;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.0714;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_R_0" target="bar_DB_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_6" value="cursor of matching room documents" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.5714;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5455;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_DB_0" target="bar_R_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_7" value="rooms array" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.7727;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.4058;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_R_0" target="bar_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_8" value="200 OK (success: true, data: [])" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.5652;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5802;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_UI_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_9" value="show empty state: &quot;No rooms match your search criteria&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.6420;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.6420;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_UI_0" target="bar_T_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_10" value="200 OK (success: true, total: rooms.length, data: rooms)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.7971;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.7778;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_UI_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_11" value="render room cards in grid layout (photos, price, area, amenity badges)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.8519;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.8519;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_UI_0" target="bar_T_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Lifelines with stereotypes in header -->
+        <mxCell id="lf_actor" value="Customer" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="40" width="30" height="1150" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="lf_ui" value="&amp;laquo;user interaction&amp;raquo;&lt;br&gt;&lt;b&gt;RoomSearchView&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="180" y="40" width="160" height="1150" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lf_ctrl" value="&amp;laquo;control&amp;raquo;&lt;br&gt;&lt;b&gt;RoomController&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="400" y="40" width="160" height="1150" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lf_srv" value="&amp;laquo;service&amp;raquo;&lt;br&gt;&lt;b&gt;RoomService&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="620" y="40" width="160" height="1150" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lf_repo1" value="&amp;laquo;repository&amp;raquo;&lt;br&gt;&lt;b&gt;RoomRepository&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="840" y="40" width="160" height="1150" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf_entity" value="&amp;laquo;entity&amp;raquo;&lt;br&gt;&lt;b&gt;Room&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="40" width="150" height="1150" as="geometry"/>
+        </mxCell>
+        <!-- Message 1: enterSearchCriteria(keyword, priceMin, priceMax, roomType) -->
+        <mxCell id="msg_0" value="1: enterSearchCriteria(keyword, priceMin, priceMax, roomType)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="75" y="130" as="sourcePoint"/>
+            <mxPoint x="260" y="130" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 2: GET /api/rooms/search?keyword=...&amp;priceMin=... -->
+        <mxCell id="msg_1" value="2: GET /api/rooms/search?keyword=...&amp;priceMin=..." style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="170" as="sourcePoint"/>
+            <mxPoint x="480" y="170" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 3: searchRoom(searchCriteria) -->
+        <mxCell id="msg_2" value="3: searchRoom(searchCriteria)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="210" as="sourcePoint"/>
+            <mxPoint x="700" y="210" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 4: findAvailableRoom(criteria) -->
+        <mxCell id="msg_3" value="4: findAvailableRoom(criteria)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="250" as="sourcePoint"/>
+            <mxPoint x="920" y="250" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 5: queryAvailable(criteria) -->
+        <mxCell id="msg_4" value="5: queryAvailable(criteria)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="920" y="290" as="sourcePoint"/>
+            <mxPoint x="1140" y="290" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 6: List&lt;Room&gt; entities -->
+        <mxCell id="msg_5" value="6: List&lt;Room&gt; entities" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1140" y="320" as="sourcePoint"/>
+            <mxPoint x="920" y="320" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 7: return List&lt;Room&gt; -->
+        <mxCell id="msg_6" value="7: return List&lt;Room&gt;" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="920" y="350" as="sourcePoint"/>
+            <mxPoint x="700" y="350" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 8: hasResults = true -->
+        <mxCell id="msg_7" value="8: hasResults = true" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="440" as="sourcePoint"/>
+            <mxPoint x="480" y="440" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 9: formatRoomCards(rooms) -->
+        <mxCell id="msg_8" value="9: formatRoomCards(rooms)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="490" as="sourcePoint"/>
+            <mxPoint x="700" y="490" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 10: return 200 OK (rooms array) -->
+        <mxCell id="msg_9" value="10: return 200 OK (rooms array)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="530" as="sourcePoint"/>
+            <mxPoint x="480" y="530" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 11: renderRoomList(rooms) -->
+        <mxCell id="msg_10" value="11: renderRoomList(rooms)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="570" as="sourcePoint"/>
+            <mxPoint x="260" y="570" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 12: displayRoomCards(results) -->
+        <mxCell id="msg_11" value="12: displayRoomCards(results)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="610" as="sourcePoint"/>
+            <mxPoint x="75" y="610" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 13: hasResults = false -->
+        <mxCell id="msg_12" value="13: hasResults = false" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="910" as="sourcePoint"/>
+            <mxPoint x="480" y="910" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 14: return 200 OK (empty array) -->
+        <mxCell id="msg_13" value="14: return 200 OK (empty array)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="950" as="sourcePoint"/>
+            <mxPoint x="260" y="950" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 15: displayEmptyPlaceholder(&quot;No matching rooms found&quot;) -->
+        <mxCell id="msg_14" value="15: displayEmptyPlaceholder(&quot;No matching rooms found&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="990" as="sourcePoint"/>
+            <mxPoint x="75" y="990" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Alt Frame -->
+        <mxCell id="alt_frame" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="380" width="1400" height="660" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_guard_true" value="[rooms.size() &gt; 0]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="410" width="150" height="20" as="geometry"/>
+        </mxCell>
+        <!-- Alt Divider -->
+        <mxCell id="alt_divider" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="860" as="sourcePoint"/>
+            <mxPoint x="1440" y="860" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_guard_false" value="[rooms.isEmpty()]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="870" width="150" height="20" as="geometry"/>
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>

@@ -793,59 +793,73 @@ async function buildDocument() {
           createBodyP("Responsible for room inventory management, multi-criteria search algorithms, rental request processing, and operational room state transitions."),
 
           createHeading3("2.2.1 Class Diagram"),
-          createFigureBox("Figure 2.2.1. Room & Search Management Class Diagram", "ClassDiagram_Room_Module.drawio"),
-          new Paragraph({ spacing: { before: 120, after: 120 } }),
-
-          createHeading3("2.2.2 Search & Filter Rooms"),
-          createFigureBox("Figure 2.2.2. Search & Filter Rooms Sequence Diagram", "UC-M02_Search_Room_SequenceDiagram.drawio"),
-          createBodyP("1. User adjusts search criteria on SearchRoomScreen (keyword, minPrice, maxPrice, area, amenities) and clicks Search Rooms."),
-          createBodyP("2. SearchRoomScreen sends HTTP GET /api/rooms/search with query string parameters."),
-          createBodyP("3. room.controller delegates to room.service.filterRooms(queryCriteria)."),
-          createBodyP("4. room.service constructs MongoDB query with regex keyword and price bounds, executing db.rooms.find().sort({ createdAt: -1 })."),
-          createBodyP("5. MongoDB returns cursor of matching room documents."),
-          createBodyP("6. If matching rooms found: room.controller returns HTTP 200 OK with rooms array, UI renders room cards."),
-          createBodyP("7. If no rooms match: room.controller returns HTTP 200 OK with empty array, UI renders Empty State placeholder."),
+          createBodyP("The Class Diagram for Module 2 adopts the enterprise Repository and Service architectural pattern (matching the standardized software design curriculum). It decouples data access abstractions from domain logic and models clear inheritance and association hierarchies:"),
+          ...createImageParagraph("Figure_2_2_1_Class_Diagram_Room.png", 580, 450, "Figure 2.2.1. Room & Search Management Class Diagram"),
+          createBodyP("Architectural & Domain Structure:"),
+          createBulletP("Base class User specifies core authentication attributes (- id, - fullName, - email, - password, - phone, - role, - isActive, - createdAt) and operations (+ login(), + logout()). Customer and Staff specialize User via UML Generalization (Extends).", "• User Specialization: "),
+          createBulletP("Customer creates RentalRequest with 1 to 0..1* multiplicity. RentalRequest is linked to Room (0..1* to 1) and involves Payment (1 to 1..* composition).", "• Domain Relationships: "),
+          createBulletP("IGenericRepository<T, ID> defines standard CRUD contracts (+ getById(), + findAll(), + save(), + deleteById()). Concrete repositories RoomRepository and RentalRequestRepository realize this interface with domain-specific queries.", "• Repository Pattern: "),
+          createBulletP("RoomService encapsulates business workflows (+ checkAvailability(), + createBooking(), + searchRoom(), + createRoom(), + updateRoom(), + deleteRoom()), possessing dependencies on both RoomRepository and RentalRequestRepository.", "• Service Layer: "),
 
           new Paragraph({ spacing: { before: 120 } }),
-          createHeading3("2.2.3 Request Rental"),
-          createFigureBox("Figure 2.2.3. Request Rental Sequence Diagram", "UC-M03_Request_Rental_SequenceDiagram.drawio"),
-          createBodyP("1. Tenant views room details and clicks Request Rental / Hold Room."),
-          createBodyP("2. UI displays modal form; tenant inputs full name, phone number, expected move-in date, and notes."),
-          createBodyP("3. UI sends HTTP POST /api/rooms/:id/rental-request with tenant request payload."),
-          createBodyP("4. room.controller validates input fields and queries room document from MongoDB."),
-          createBodyP("5. If room status is not AVAILABLE (e.g. RENTED or MAINTENANCE): returns HTTP 400 Bad Request, UI shows warning toast."),
-          createBodyP("6. If room is AVAILABLE: room.service creates RentalRequest document with status = 'PENDING'."),
-          createBodyP("7. room.controller returns HTTP 201 Created; UI displays confirmation dialog with request tracking ID."),
+          createHeading3("2.2.2 Search & Filter Rooms"),
+          createBodyP("This sequence diagram illustrates the tiered execution flow for room browsing, querying available rental units across price ranges, room types, and keyword search filters:"),
+          ...createImageParagraph("Figure_2_2_2_Search_Room_Sequence.png", 580, 412, "Figure 2.2.2. Search & Filter Rooms Sequence Diagram"),
+          createBodyP("1. Customer inputs search criteria (keyword, price range, room type) into RoomSearchView and triggers search."),
+          createBodyP("2. RoomSearchView dispatches HTTP GET /api/rooms/search to RoomController."),
+          createBodyP("3. RoomController forwards request parameters to RoomService.searchRoom(criteria)."),
+          createBodyP("4. RoomService queries RoomRepository.findAvailableRoom(criteria)."),
+          createBodyP("5. RoomRepository executes query against MongoDB collection for active Room entities."),
+          createBodyP("6. Room entities are returned from storage to RoomRepository."),
+          createBodyP("7. RoomRepository returns List<Room> to RoomService."),
+          createBodyP("8. Alt [rooms.size() > 0]: RoomService formats room cards, returns HTTP 200 OK with rooms array, and RoomSearchView renders room cards."),
+          createBodyP("9. Alt [rooms.isEmpty()]: RoomService returns HTTP 200 OK with empty array, and RoomSearchView displays empty state placeholder."),
+
+          new Paragraph({ spacing: { before: 120 } }),
+          createHeading3("2.2.3 Request Rental / Booking Room"),
+          createBodyP("This sequence diagram models the room reservation workflow adhering strictly to the 4-tier pattern (Actor -> UI -> Controller -> Service -> Repository -> Entity):"),
+          ...createImageParagraph("Figure_2_2_3_Request_Rental_Sequence.png", 580, 412, "Figure 2.2.3. Request Rental / Booking Sequence Diagram"),
+          createBodyP("1. Customer selects room and scheduled dates, submitting requestRentalBooking() on Rental Booking View."),
+          createBodyP("2. Rental Booking View issues HTTP POST /api/rooms/rental-booking to RoomController."),
+          createBodyP("3. RoomController delegates validation to RoomService.checkRoomAvailable(roomId, checkIn, checkOut)."),
+          createBodyP("4. RoomService calls RoomRepository.findById(roomId)."),
+          createBodyP("5. RoomRepository loads Room entity from persistent database."),
+          createBodyP("6. Room entity state is returned to RoomRepository and passed to RoomService."),
+          createBodyP("7. Alt [available]: RoomService confirms room status == AVAILABLE, instantiates new RentalRequest, saves it via RentalRequestRepository, updates room status to RESERVED/UNAVAILABLE in RoomRepository, and returns HTTP 201 Created with tracking confirmation."),
+          createBodyP("8. Alt [unavailable]: RoomService detects room conflict, returns HTTP 400 Bad Request ('Room is unavailable'), and UI renders warning notification."),
 
           new Paragraph({ spacing: { before: 120 } }),
           createHeading3("2.2.4 Create Room"),
-          createFigureBox("Figure 2.2.4. Create Room Sequence Diagram", "UC-M04_1_Create_Room_SequenceDiagram.drawio"),
-          createBodyP("1. Landlord fills room number, type, monthly price, area, and amenity tags on Add Room screen."),
-          createBodyP("2. UI sends HTTP POST /api/rooms with room payload."),
-          createBodyP("3. room.controller validates input parameters (price > 0, area > 0, roomNumber not empty)."),
-          createBodyP("4. room.service queries db.rooms.findOne({ roomNumber }) to ensure uniqueness."),
-          createBodyP("5. If room number already exists: returns HTTP 409 Conflict; UI highlights duplicate input."),
-          createBodyP("6. If room number is unique: persists new Room document with status = 'AVAILABLE'."),
-          createBodyP("7. room.controller returns HTTP 201 Created; UI closes modal and updates room inventory table."),
+          createBodyP("This sequence diagram describes the staff inventory provisioning process with uniqueness validation:"),
+          ...createImageParagraph("Figure_2_2_4_Create_Room_Sequence.png", 580, 412, "Figure 2.2.4. Create Room Sequence Diagram"),
+          createBodyP("1. Staff fills room number, type, monthly price, and area on CreateRoomView and clicks Submit."),
+          createBodyP("2. CreateRoomView dispatches HTTP POST /api/rooms to RoomController."),
+          createBodyP("3. RoomController calls RoomService.createRoom(createRoomDTO)."),
+          createBodyP("4. RoomService calls RoomRepository.findByRoomNumber(roomNumber) to verify uniqueness."),
+          createBodyP("5. Alt [existingRoom == null (Unique)]: RoomService creates new Room entity with status = AVAILABLE, persists it via RoomRepository.save(), and returns HTTP 201 Created to display success confirmation."),
+          createBodyP("6. Alt [existingRoom != null (Duplicate)]: RoomService rejects the request, returns HTTP 409 Conflict ('Room number already exists'), and UI highlights validation error."),
 
           new Paragraph({ spacing: { before: 120 } }),
           createHeading3("2.2.5 Update Room Info"),
-          createFigureBox("Figure 2.2.5. Update Room Info Sequence Diagram", "UC-M04_2_Update_Room_SequenceDiagram.drawio"),
-          createBodyP("1. Landlord edits room details (price, description, amenities, images) on Edit Room modal."),
-          createBodyP("2. UI sends HTTP PUT /api/rooms/:id with updated fields."),
-          createBodyP("3. room.controller validates parameters and calls room.service.modifyRoom(id, payload)."),
-          createBodyP("4. room.service updates document in MongoDB via db.rooms.findByIdAndUpdate()."),
-          createBodyP("5. room.controller returns HTTP 200 OK; UI updates room row with updated information."),
+          createBodyP("This sequence diagram depicts modification of room pricing, amenities, and operational status:"),
+          ...createImageParagraph("Figure_2_2_5_Update_Room_Sequence.png", 580, 412, "Figure 2.2.5. Update Room Info Sequence Diagram"),
+          createBodyP("1. Staff modifies room properties (price, room type, status) on EditRoomView."),
+          createBodyP("2. EditRoomView dispatches HTTP PUT /api/rooms/{id} to RoomController."),
+          createBodyP("3. RoomController invokes RoomService.updateRoom(roomId, updateRoomDTO)."),
+          createBodyP("4. RoomService verifies room existence via RoomRepository.findById(roomId)."),
+          createBodyP("5. Alt [room != null]: RoomService mutates entity attributes, executes RoomRepository.save(), returns HTTP 200 OK with updated Room document, and UI displays success notification."),
+          createBodyP("6. Alt [room == null]: RoomService returns HTTP 404 Not Found ('Room does not exist'), and UI renders error notification."),
 
           new Paragraph({ spacing: { before: 120 } }),
           createHeading3("2.2.6 Delete Room"),
-          createFigureBox("Figure 2.2.6. Delete Room Sequence Diagram", "UC-M04_3_Delete_Room_SequenceDiagram.drawio"),
-          createBodyP("1. Landlord clicks Delete Room icon for a specific room."),
-          createBodyP("2. UI sends HTTP DELETE /api/rooms/:id."),
-          createBodyP("3. room.controller queries active contracts in db.contracts.find({ roomId, status: 'ACTIVE' })."),
-          createBodyP("4. Critical Business Guard: If active contracts exist or room.status is RENTED: system aborts deletion and returns HTTP 400 Bad Request ('Cannot delete room with active lease')."),
-          createBodyP("5. If room is AVAILABLE and has no active contracts: executes db.rooms.deleteOne({ _id: id })."),
-          createBodyP("6. room.controller returns HTTP 200 OK; UI removes room row from data table."),
+          createBodyP("This sequence diagram illustrates safe room decommissioning with active tenancy safeguards:"),
+          ...createImageParagraph("Figure_2_2_6_Delete_Room_Sequence.png", 580, 412, "Figure 2.2.6. Delete Room Sequence Diagram"),
+          createBodyP("1. Staff clicks Delete Room icon for a specific room on RoomListView."),
+          createBodyP("2. RoomListView sends HTTP DELETE /api/rooms/{id} to RoomController."),
+          createBodyP("3. RoomController delegates to RoomService.deleteRoom(roomId)."),
+          createBodyP("4. RoomService queries RoomRepository.findById(roomId) to inspect lease status."),
+          createBodyP("5. Alt [room.status != RENTED]: RoomService confirms no active leases exist, calls RoomRepository.deleteById(roomId), returns HTTP 200 OK ('Room deleted successfully'), and UI refreshes the room table."),
+          createBodyP("6. Alt [room.status == RENTED]: RoomService blocks deletion, returns HTTP 400 Bad Request ('Cannot delete occupied room under active lease'), and UI alerts staff of restriction."),
 
           new Paragraph({ children: [new PageBreak()] }),
 
@@ -1198,8 +1212,22 @@ async function buildDocument() {
   ];
 
   outPaths.forEach(p => {
-    fs.writeFileSync(p, buffer);
-    console.log(`Word file generated: ${p}`);
+    try {
+      fs.writeFileSync(p, buffer);
+      console.log(`Word file generated: ${p}`);
+    } catch (e) {
+      if (e.code === 'EBUSY') {
+        const altPath = p.replace('.docx', '_Updated.docx');
+        try {
+          fs.writeFileSync(altPath, buffer);
+          console.log(`Primary path was locked in Word. Generated copy instead: ${altPath}`);
+        } catch (e2) {
+          console.warn(`Could not write to ${altPath}: ${e2.message}`);
+        }
+      } else {
+        console.warn(`Could not write to ${p}: ${e.message}`);
+      }
+    }
   });
 }
 

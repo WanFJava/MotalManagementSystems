@@ -290,81 +290,183 @@ end
 
 ### 2.2.1 Class Diagram
 *Diagram File:* `docs/diagrams/ClassDiagram_Room_Module.drawio`  
-Manages room lifecycles, specifications, amenity tags, search/filter algorithms, and rental reservation requests.
+*Generated Image:* `docs/diagram_images/Figure_2_2_1_Class_Diagram_Room.png`
 
-```mermaid
-classDiagram
-    direction LR
-    class RoomController {
-        -roomService: RoomService
-        +searchRooms(req, res): Promise~void~
-        +createRoom(req, res): Promise~void~
-        +updateRoom(req, res): Promise~void~
-        +deleteRoom(req, res): Promise~void~
-        +requestRental(req, res): Promise~void~
-    }
-    class RoomService {
-        -roomModel: Model~IRoom~
-        -rentalRequestModel: Model~IRentalRequest~
-        +filterRooms(filterDTO): Promise~IRoom[]~
-        +insertRoom(data): Promise~IRoom~
-        +modifyRoom(id, data): Promise~IRoom~
-        +removeRoomSafely(id): Promise~boolean~
-        +submitRentalRequest(id, data): Promise~IRentalRequest~
-    }
-    class Room {
-        +_id: ObjectId
-        +roomNumber: string
-        +roomType: string
-        +price: number
-        +area: number
-        +maxOccupants: number
-        +amenities: string[]
-        +images: string[]
-        +status: RoomStatus
-        +isAvailable(): boolean
-    }
-    class RentalRequest {
-        +_id: ObjectId
-        +roomId: ObjectId
-        +tenantName: string
-        +tenantPhone: string
-        +moveInDate: Date
-        +status: RequestStatus
-    }
+The Class Diagram for Module 2 adopts the enterprise Repository and Service architectural pattern (matching the standardized software design curriculum). It decouples data access abstractions from domain logic and models clear inheritance and association hierarchies:
 
-    RoomController --> RoomService: uses
-    RoomService --> Room: queries & persists
-    RoomService --> RentalRequest: creates & verifies
-```
+![Figure 2.2.1. Room & Search Management Class Diagram](./diagram_images/Figure_2_2_1_Class_Diagram_Room.png)
+
+#### Architectural & Domain Structure:
+- **Base Class `User`:** Specifies core authentication attributes (`- id`, `- fullName`, `- email`, `- password`, `- phone`, `- role`, `- isActive`, `- createdAt`) and operations (`+ login()`, `+ logout()`).
+- **User Specialization (Extends):**
+  - `Customer` specializes `User` with methods: `+ browseRoom()`, `+ searchRoom()`, `+ createRentalBooking()`.
+  - `Staff` specializes `User` with methods: `+ confirmBooking()`, `+ viewRoomBooking()`, `+ createRoom()`, `+ deleteRoom()`, `+ editRoom()`.
+- **Domain Relationships:**
+  - `Customer` creates `RentalRequest` with `1` to `0..1*` multiplicity.
+  - `RentalRequest` is linked to `Room` with `0..1*` to `1` multiplicity.
+  - `RentalRequest` involves `Payment` with `1` to `1..*` composition multiplicity.
+- **Repository Pattern:**
+  - `<<Interface>> IGenericRepository<T, ID>` declares standard CRUD contracts (`+ getById()`, `+ findAll()`, `+ save()`, `+ deleteById()`).
+  - `RoomRepository` and `RentalRequestRepository` realize `IGenericRepository` with specialized queries (`+ findAvailableRoom()`, `+ findByCustomerId()`).
+- **Service Layer:**
+  - `RoomService` encapsulates domain logic (`+ checkAvailability()`, `+ createBooking()`, `+ searchRoom()`, `+ createRoom()`, `+ updateRoom()`, `+ deleteRoom()`) and maintains dependencies on both `RoomRepository` and `RentalRequestRepository`.
+
+---
 
 ### 2.2.2 Search & Filter Rooms Sequence Diagram
 *Diagram File:* `docs/diagrams/UC-M02_Search_Room_SequenceDiagram.drawio`  
-- **Actor:** Tenant / Guest.  
-- **Trigger:** Entering keyword and adjusting price/area filters on `SearchRoomScreen`.  
-- **Chronology:** Constructs MongoDB multi-criteria query (`$regex`, `$gte`, `$lte`), returns matched list, or renders Empty State if zero results.
+*Generated Image:* `docs/diagram_images/Figure_2_2_2_Search_Room_Sequence.png`
 
-### 2.2.3 Request Rental / Hold Room Sequence Diagram
+![Figure 2.2.2. Search & Filter Rooms Sequence Diagram](./diagram_images/Figure_2_2_2_Search_Room_Sequence.png)
+
+- **Actor:** Customer / Tenant.
+- **Lifelines:** `Customer` -> `«user interaction» Room Search View` -> `«control» RoomController` -> `«service» RoomService` -> `«repository» RoomRepository` -> `«entity» Room`.
+- **Step-by-step Flow:**
+  1. `1: enterSearchCriteria(keyword, priceMin, priceMax, roomType)` into Room Search View.
+  2. `2: GET /api/rooms/search?keyword=...&priceMin=...` sent to RoomController.
+  3. `3: searchRoom(searchCriteria)` forwarded to RoomService.
+  4. `4: findAvailableRoom(criteria)` called on RoomRepository.
+  5. `5: queryAvailable(criteria)` executed on database.
+  6. `6: List<Room> entities` returned from storage.
+  7. `7: return List<Room>` passed to RoomService.
+  8. `alt [rooms.size() > 0]`:
+     - `8: hasResults = true`
+     - `9: formatRoomCards(rooms)`
+     - `10: return 200 OK (rooms array)`
+     - `11: renderRoomList(rooms)`
+     - `12: displayRoomCards(results)`
+  9. `alt [rooms.isEmpty()]`:
+     - `13: hasResults = false`
+     - `14: return 200 OK (empty array)`
+     - `15: displayEmptyPlaceholder("No matching rooms found")`
+
+---
+
+### 2.2.3 Request Rental / Booking Room Sequence Diagram
 *Diagram File:* `docs/diagrams/UC-M03_Request_Rental_SequenceDiagram.drawio`  
-- **Actor:** Tenant.  
-- **Trigger:** Clicking *"Request Rental / Giữ chỗ"* on Room Detail.  
-- **Guards:** Checks room is `AVAILABLE`. Rejects if `RENTED` or `MAINTENANCE`. Creates `RentalRequest` record in `PENDING` status.
+*Generated Image:* `docs/diagram_images/Figure_2_2_3_Request_Rental_Sequence.png`
+
+![Figure 2.2.3. Request Rental / Booking Sequence Diagram](./diagram_images/Figure_2_2_3_Request_Rental_Sequence.png)
+
+- **Actor:** Customer / Tenant.
+- **Lifelines:** `Customer` -> `«user interaction» Rental Booking View` -> `«control» RoomController` -> `«service» RoomService` -> `«repository» RoomRepository` -> `«repository» RentalRequestRepository` -> `«entity» Room`.
+- **Step-by-step Flow:**
+  1. `1: requestRentalBooking(roomId, checkIn, checkOut)` submitted on Rental Booking View.
+  2. `2: POST /api/rooms/rental-booking` sent to RoomController.
+  3. `3: checkRoomAvailable(roomId, checkIn, checkOut)` validated by RoomService.
+  4. `4: findById(roomId)` called on RoomRepository.
+  5. `5: load(roomId)` executed on Room entity.
+  6. `6: Room entity` state returned.
+  7. `7: return Room` to RoomService.
+  8. `alt [available]`:
+     - `8: available = true`
+     - `9: generateNewBooking(customerId, roomId, checkIn, checkOut)`
+     - `10: «create» new RentalRequest`
+     - `11: saveRentalRequest()` on RentalRequestRepository
+     - `12: RentalRequest` entity returned
+     - `13: return RentalRequest` to RoomController
+     - `14: create successful`
+     - `15: updateRoomStatus(roomId, RESERVED)`
+     - `16: updateRoomStatus(roomId, UNAVAILABLE)`
+     - `17: update Response`
+     - `18: confirmBooking(trackingId)`
+     - UI displays confirmation: `Rental Booking Confirmed`.
+  9. `alt [unavailable]`:
+     - `19: available = false`
+     - `20: 400 Bad Request ("Room is unavailable")`
+     - `21: showBookingErrorToast("Room not available")`
+
+---
 
 ### 2.2.4 Create Room Sequence Diagram
 *Diagram File:* `docs/diagrams/UC-M04_1_Create_Room_SequenceDiagram.drawio`  
-- **Actor:** Landlord / Staff.  
-- **Trigger:** Submitting *"Add New Room"* form.  
-- **Validation:** Ensures `roomNumber` is unique and `price > 0`. Persists room in `AVAILABLE` status.
+*Generated Image:* `docs/diagram_images/Figure_2_2_4_Create_Room_Sequence.png`
+
+![Figure 2.2.4. Create Room Sequence Diagram](./diagram_images/Figure_2_2_4_Create_Room_Sequence.png)
+
+- **Actor:** Staff / Property Manager.
+- **Lifelines:** `Staff` -> `«user interaction» Create Room View` -> `«control» RoomController` -> `«service» RoomService` -> `«repository» RoomRepository` -> `«entity» Room`.
+- **Step-by-step Flow:**
+  1. `1: inputRoomDetails(roomNumber, type, price, area)` on Create Room View.
+  2. `2: POST /api/rooms` sent to RoomController.
+  3. `3: createRoom(createRoomDTO)` delegated to RoomService.
+  4. `4: findByRoomNumber(roomNumber)` called on RoomRepository.
+  5. `5: queryByNumber(roomNumber)` checked in database.
+  6. `6: existingRoom document` returned.
+  7. `7: return existingRoom` to RoomService.
+  8. `alt [existingRoom == null (Unique)]`:
+     - `8: isValid = true`
+     - `9: «create» new Room(roomNumber, type, price, AVAILABLE)`
+     - `10: save(newRoom)` on RoomRepository
+     - `11: saved Room entity`
+     - `12: return 201 Created (Room)`
+     - `13: displaySuccessToast("Room created successfully")`
+     - `14: showRoomCreated()`
+  9. `alt [existingRoom != null (Duplicate)]`:
+     - `15: isValid = false`
+     - `16: return 409 Conflict ("Room number already exists")`
+     - `17: displayValidationError("Duplicate room number")`
+
+---
 
 ### 2.2.5 Update Room Info Sequence Diagram
 *Diagram File:* `docs/diagrams/UC-M04_2_Update_Room_SequenceDiagram.drawio`  
-- **Actor:** Landlord / Staff.  
-- **Trigger:** Editing room price, description, images, or amenity tags. Matches teacher-approved UC-M09 specification.
+*Generated Image:* `docs/diagram_images/Figure_2_2_5_Update_Room_Sequence.png`
+
+![Figure 2.2.5. Update Room Info Sequence Diagram](./diagram_images/Figure_2_2_5_Update_Room_Sequence.png)
+
+- **Actor:** Staff / Property Manager.
+- **Lifelines:** `Staff` -> `«user interaction» Edit Room View` -> `«control» RoomController` -> `«service» RoomService` -> `«repository» RoomRepository` -> `«entity» Room`.
+- **Step-by-step Flow:**
+  1. `1: modifyRoomInfo(roomId, newPrice, newType, newStatus)` submitted on Edit Room View.
+  2. `2: PUT /api/rooms/{id}` dispatched to RoomController.
+  3. `3: updateRoom(roomId, updateRoomDTO)` delegated to RoomService.
+  4. `4: findById(roomId)` called on RoomRepository.
+  5. `5: load(roomId)` executed on database.
+  6. `6: Room entity` state returned.
+  7. `7: return room` to RoomService.
+  8. `alt [room != null]`:
+     - `8: isFound = true`
+     - `9: updateAttributes(price, type, status)` on Room entity
+     - `10: save(room)` via RoomRepository
+     - `11: updated Room entity`
+     - `12: return 200 OK (updatedRoom)`
+     - `13: displaySuccessToast("Room updated successfully")`
+     - `14: showUpdatedRoomDetails()`
+  9. `alt [room == null]`:
+     - `15: isFound = false`
+     - `16: return 404 Not Found ("Room does not exist")`
+     - `17: displayErrorMessage("Room not found")`
+
+---
 
 ### 2.2.6 Delete Room Sequence Diagram
 *Diagram File:* `docs/diagrams/UC-M04_3_Delete_Room_SequenceDiagram.drawio`  
-- **Actor:** Landlord.  
-- **Critical Business Guard:** System queries `contracts` collection: if an active contract exists (`status === 'ACTIVE'`) or room is `RENTED`, deletion is blocked with `400 Bad Request` to preserve financial and audit integrity.
+*Generated Image:* `docs/diagram_images/Figure_2_2_6_Delete_Room_Sequence.png`
+
+![Figure 2.2.6. Delete Room Sequence Diagram](./diagram_images/Figure_2_2_6_Delete_Room_Sequence.png)
+
+- **Actor:** Staff / Property Manager.
+- **Lifelines:** `Staff` -> `«user interaction» Room List View` -> `«control» RoomController` -> `«service» RoomService` -> `«repository» RoomRepository` -> `«entity» Room`.
+- **Step-by-step Flow:**
+  1. `1: requestDeleteRoom(roomId)` clicked on Room List View.
+  2. `2: DELETE /api/rooms/{id}` dispatched to RoomController.
+  3. `3: deleteRoom(roomId)` delegated to RoomService.
+  4. `4: findById(roomId)` called on RoomRepository.
+  5. `5: load(roomId)` checked on database.
+  6. `6: Room entity` returned.
+  7. `7: return room` to RoomService.
+  8. `alt [room.status != RENTED]`:
+     - `8: canDelete = true`
+     - `9: deleteById(roomId)` on RoomRepository
+     - `10: confirm delete`
+     - `11: return 200 OK ("Room deleted successfully")`
+     - `12: refreshRoomTable("Room deleted")`
+     - `13: displayDeleteConfirmation()`
+  9. `alt [room.status == RENTED]`:
+     - `14: canDelete = false`
+     - `15: return 400 Bad Request ("Cannot delete occupied room under lease")`
+     - `16: displayWarningAlert("Cannot delete room currently rented")`
 
 ---
 

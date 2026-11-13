@@ -1,57 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
   <diagram name="UC-M04.3 Delete Room" id="uc-m04-3-delete-room">
-    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1350" math="0" shadow="0">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1300" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="lf_manager" value="Manager" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="115" y="40" width="30" height="1260" as="geometry"/></mxCell>
-        <mxCell id="lf_ui" value="«boundary»&lt;br&gt;RoomInventoryPage" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="315" y="40" width="170" height="1260" as="geometry"/></mxCell>
-        <mxCell id="lf_controller" value="«controller»&lt;br&gt;RoomController" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="615" y="40" width="170" height="1260" as="geometry"/></mxCell>
-        <mxCell id="lf_room" value="«entity»&lt;br&gt;Room" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="930" y="40" width="140" height="1260" as="geometry"/></mxCell>
-        <mxCell id="lf_db" value="«database»&lt;br&gt;MongoDB" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=60;" vertex="1" parent="1"><mxGeometry x="1170" y="40" width="140" height="1260" as="geometry"/></mxCell>
-        <mxCell id="bar_M_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_manager"><mxGeometry x="9" y="90" width="12" height="110" as="geometry"/></mxCell>
-        <mxCell id="bar_M_1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_manager"><mxGeometry x="9" y="220" width="12" height="970" as="geometry"/></mxCell>
-        <mxCell id="bar_UI_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_ui"><mxGeometry x="79" y="90" width="12" height="110" as="geometry"/></mxCell>
-        <mxCell id="bar_UI_1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_ui"><mxGeometry x="79" y="220" width="12" height="970" as="geometry"/></mxCell>
-        <mxCell id="bar_C_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_controller"><mxGeometry x="79" y="260" width="12" height="900" as="geometry"/></mxCell>
-        <mxCell id="bar_R_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_room"><mxGeometry x="64" y="350" width="12" height="170" as="geometry"/></mxCell>
-        <mxCell id="bar_R_1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_room"><mxGeometry x="64" y="960" width="12" height="140" as="geometry"/></mxCell>
-        <mxCell id="bar_DB_0" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db"><mxGeometry x="64" y="380" width="12" height="90" as="geometry"/></mxCell>
-        <mxCell id="bar_DB_1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db"><mxGeometry x="64" y="730" width="12" height="80" as="geometry"/></mxCell>
-        <mxCell id="bar_DB_2" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;" vertex="1" parent="lf_db"><mxGeometry x="64" y="990" width="12" height="80" as="geometry"/></mxCell>
-        <mxCell id="alt_outer" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;" vertex="1" parent="1"><mxGeometry x="40" y="520" width="1280" height="660" as="geometry"/></mxCell>
-        <mxCell id="alt_inner" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;" vertex="1" parent="1"><mxGeometry x="65" y="780" width="1235" height="380" as="geometry"/></mxCell>
-        <mxCell id="div_0" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="40" y="610" as="sourcePoint"/><mxPoint x="1320" y="610" as="targetPoint"/></mxGeometry></mxCell>
-        <mxCell id="div_1" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="40" y="710" as="sourcePoint"/><mxPoint x="1320" y="710" as="targetPoint"/></mxGeometry></mxCell>
-        <mxCell id="div_2" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="65" y="930" as="sourcePoint"/><mxPoint x="1300" y="930" as="targetPoint"/></mxGeometry></mxCell>
-        <mxCell id="guard_0" value="[!room (Room not found)]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="142" y="520" width="250" height="20" as="geometry"/></mxCell>
-        <mxCell id="guard_1" value="[room.status === &#39;RENTED&#39; (Cannot delete occupied room)]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="142" y="612" width="360" height="20" as="geometry"/></mxCell>
-        <mxCell id="guard_2" value="[room.status !== &#39;RENTED&#39; - Check active lease contracts]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="142" y="712" width="360" height="20" as="geometry"/></mxCell>
-        <mxCell id="guard_3" value="[activeContract exists]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="142" y="780" width="250" height="20" as="geometry"/></mxCell>
-        <mxCell id="guard_4" value="[valid: no active contracts found (safe to delete)]" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=nowrap;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="142" y="932" width="320" height="20" as="geometry"/></mxCell>
-        <mxCell id="msg_0" value="select room and click &quot;Delete Room&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.0909;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.0909;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_M_0" target="bar_UI_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_1" value="show delete confirmation modal dialog" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.6364;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.6364;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_UI_0" target="bar_M_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_2" value="confirm &quot;Yes, Delete&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.0103;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.0103;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_M_1" target="bar_UI_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_3" value="DELETE /api/rooms/:id" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.0515;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.0111;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_UI_1" target="bar_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_4" value="authenticate, requireRole(&#39;MANAGER&#39;)" style="html=1;align=left;spacingLeft=4;verticalAlign=middle;endArrow=block;endFill=1;rounded=0;fontSize=11;exitX=1;exitY=0.0556;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.0844;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_C_0"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="730" y="350"/><mxPoint x="730" y="376"/></Array></mxGeometry></mxCell>
-        <mxCell id="msg_5" value="findById(id)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.1111;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.0588;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_R_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_6" value="db.rooms.findOne({ _id: id })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.2353;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.1111;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_R_0" target="bar_DB_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_7" value="room document" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.5556;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.4706;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_DB_0" target="bar_R_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_8" value="room instance" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.7059;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.2333;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_R_0" target="bar_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_9" value="404 Not Found (&quot;Room not found&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.3111;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.3299;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_UI_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_10" value="show error message: &quot;Room not found&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.3711;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.3711;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_UI_1" target="bar_M_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_11" value="400 Bad Request (&quot;Cannot delete occupied room&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.4111;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.4227;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_UI_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_12" value="show warning: &quot;Cannot delete room currently occupied by tenant!&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.4639;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.4639;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_UI_1" target="bar_M_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_13" value="db.contracts.findOne({ room: id, status: &#39;ACTIVE&#39; })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.5333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.1250;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_DB_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_14" value="activeContract document" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=1.0000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.6111;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_DB_1" target="bar_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_15" value="400 Bad Request (&quot;Active contract exists for this room&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.6556;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.6495;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_UI_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_16" value="show error toast: &quot;Please terminate the active lease contract before deleting&quot;" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.6907;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.6907;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_UI_1" target="bar_M_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_17" value="deleteOne({ _id: id })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.7889;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.0714;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_R_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_18" value="db.rooms.deleteOne({ _id: id })" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;endArrow=block;endFill=1;exitX=1;exitY=0.2857;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.1250;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_R_1" target="bar_DB_2"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_19" value="{ acknowledged: true, deletedCount: 1 }" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.6250;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5714;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_DB_2" target="bar_R_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_20" value="delete result" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.7857;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.9000;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_R_1" target="bar_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_21" value="200 OK (success: true, message: &quot;Room deleted successfully&quot;)" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.9333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.9072;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_C_0" target="bar_UI_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="msg_22" value="show success toast notification, remove room row from table" style="html=1;verticalAlign=bottom;rounded=0;fontSize=11;dashed=1;endArrow=open;endSize=8;exitX=0;exitY=0.9381;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.9381;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bar_UI_1" target="bar_M_1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Lifelines with stereotypes in header -->
+        <mxCell id="lf_actor" value="Staff" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=nowrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=52;outlineConnect=0;size=50;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="40" width="30" height="1150" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="lf_ui" value="&amp;laquo;user interaction&amp;raquo;&lt;br&gt;&lt;b&gt;RoomListView&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="180" y="40" width="160" height="1150" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lf_ctrl" value="&amp;laquo;control&amp;raquo;&lt;br&gt;&lt;b&gt;RoomController&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="400" y="40" width="160" height="1150" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lf_srv" value="&amp;laquo;service&amp;raquo;&lt;br&gt;&lt;b&gt;RoomService&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="620" y="40" width="160" height="1150" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lf_repo1" value="&amp;laquo;repository&amp;raquo;&lt;br&gt;&lt;b&gt;RoomRepository&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="840" y="40" width="160" height="1150" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf_entity" value="&amp;laquo;entity&amp;raquo;&lt;br&gt;&lt;b&gt;Room&lt;/b&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;size=50;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="40" width="150" height="1150" as="geometry"/>
+        </mxCell>
+        <!-- Message 1: requestDeleteRoom(roomId) -->
+        <mxCell id="msg_0" value="1: requestDeleteRoom(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="75" y="130" as="sourcePoint"/>
+            <mxPoint x="260" y="130" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 2: DELETE /api/rooms/{id} -->
+        <mxCell id="msg_1" value="2: DELETE /api/rooms/{id}" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="170" as="sourcePoint"/>
+            <mxPoint x="480" y="170" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 3: deleteRoom(roomId) -->
+        <mxCell id="msg_2" value="3: deleteRoom(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="210" as="sourcePoint"/>
+            <mxPoint x="700" y="210" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 4: findById(roomId) -->
+        <mxCell id="msg_3" value="4: findById(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="250" as="sourcePoint"/>
+            <mxPoint x="920" y="250" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 5: load(roomId) -->
+        <mxCell id="msg_4" value="5: load(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="920" y="290" as="sourcePoint"/>
+            <mxPoint x="1140" y="290" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 6: Room entity -->
+        <mxCell id="msg_5" value="6: Room entity" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1140" y="320" as="sourcePoint"/>
+            <mxPoint x="920" y="320" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 7: return room -->
+        <mxCell id="msg_6" value="7: return room" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="920" y="350" as="sourcePoint"/>
+            <mxPoint x="700" y="350" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 8: canDelete = true -->
+        <mxCell id="msg_7" value="8: canDelete = true" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="440" as="sourcePoint"/>
+            <mxPoint x="480" y="440" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 9: deleteById(roomId) -->
+        <mxCell id="msg_8" value="9: deleteById(roomId)" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="490" as="sourcePoint"/>
+            <mxPoint x="920" y="490" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 10: confirm delete -->
+        <mxCell id="msg_9" value="10: confirm delete" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="920" y="530" as="sourcePoint"/>
+            <mxPoint x="700" y="530" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 11: return 200 OK (&quot;Room deleted successfully&quot;) -->
+        <mxCell id="msg_10" value="11: return 200 OK (&quot;Room deleted successfully&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="570" as="sourcePoint"/>
+            <mxPoint x="480" y="570" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 12: refreshRoomTable(&quot;Room deleted&quot;) -->
+        <mxCell id="msg_11" value="12: refreshRoomTable(&quot;Room deleted&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="610" as="sourcePoint"/>
+            <mxPoint x="260" y="610" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 13: displayDeleteConfirmation() -->
+        <mxCell id="msg_12" value="13: displayDeleteConfirmation()" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="650" as="sourcePoint"/>
+            <mxPoint x="75" y="650" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 14: canDelete = false -->
+        <mxCell id="msg_13" value="14: canDelete = false" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="910" as="sourcePoint"/>
+            <mxPoint x="480" y="910" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 15: return 400 Bad Request (&quot;Cannot delete occupied room under active lease&quot;) -->
+        <mxCell id="msg_14" value="15: return 400 Bad Request (&quot;Cannot delete occupied room under active lease&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="950" as="sourcePoint"/>
+            <mxPoint x="260" y="950" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Message 16: displayWarningAlert(&quot;Cannot delete room currently rented&quot;) -->
+        <mxCell id="msg_15" value="16: displayWarningAlert(&quot;Cannot delete room currently rented&quot;)" style="endArrow=open;dashed=1;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=0;fontSize=11;verticalAlign=bottom;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="990" as="sourcePoint"/>
+            <mxPoint x="75" y="990" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <!-- Alt Frame -->
+        <mxCell id="alt_frame" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=40;height=20;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="380" width="1400" height="660" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_guard_true" value="[room.status != RENTED]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="410" width="150" height="20" as="geometry"/>
+        </mxCell>
+        <!-- Alt Divider -->
+        <mxCell id="alt_divider" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="860" as="sourcePoint"/>
+            <mxPoint x="1440" y="860" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_guard_false" value="[room.status == RENTED]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="870" width="150" height="20" as="geometry"/>
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
